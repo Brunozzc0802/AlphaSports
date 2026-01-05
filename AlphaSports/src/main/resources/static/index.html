@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaSports - Loja de Esportes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <span>Frete grátis para compras acima de R$ 299</span>
+            <span>Atendimento: (11) 4002-8922</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="/images/logoalphasports.png" alt="AlphaSports">
+            </a>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar produtos..." id="searchInput">
+                <button class="search-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                </button>
+            </div>
+
+            <nav class="header-nav">
+                <a href="login.html" class="nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Entrar</span>
+                </a>
+                <a href="carrinho.html" class="nav-link cart-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                    <span>Carrinho</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+            </nav>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <!-- Categories Nav -->
+        <nav class="categories-nav">
+            <div class="container">
+                <ul class="categories-list">
+                    <li><a href="produtos.html?categoria=calcados">Calçados</a></li>
+                    <li><a href="produtos.html?categoria=roupas">Roupas</a></li>
+                    <li><a href="produtos.html?categoria=acessorios">Acessórios</a></li>
+                    <li><a href="produtos.html?categoria=equipamentos">Equipamentos</a></li>
+                    <li><a href="produtos.html?categoria=futebol">Futebol</a></li>
+                    <li><a href="produtos.html?categoria=corrida">Corrida</a></li>
+                    <li><a href="produtos.html?categoria=fitness">Fitness</a></li>
+                    <li><a href="produtos.html" class="promo-link">Promoções</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <span>Menu</span>
+            <button class="close-menu" id="closeMenu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </button>
+        </div>
+        <nav class="mobile-nav">
+            <a href="login.html">Entrar / Cadastrar</a>
+            <a href="produtos.html?categoria=calcados">Calçados</a>
+            <a href="produtos.html?categoria=roupas">Roupas</a>
+            <a href="produtos.html?categoria=acessorios">Acessórios</a>
+            <a href="produtos.html?categoria=equipamentos">Equipamentos</a>
+            <a href="produtos.html?categoria=futebol">Futebol</a>
+            <a href="produtos.html?categoria=corrida">Corrida</a>
+            <a href="produtos.html?categoria=fitness">Fitness</a>
+            <a href="carrinho.html">Carrinho</a>
+        </nav>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="banner-slider" id="bannerSlider">
+            <div class="banner-slide active" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                <div class="container banner-content">
+                    <div class="banner-text">
+                        <span class="banner-tag">Oferta Especial</span>
+                        <h1>Até 50% OFF em Calçados</h1>
+                        <p>Aproveite as melhores marcas com preços imperdíveis</p>
+                        <a href="produtos.html?categoria=calcados" class="btn btn-white">Ver Ofertas</a>
+                    </div>
+                    <div class="banner-image">
+                        <img src="/placeholder.svg?height=400&width=500" alt="Calçados em promoção">
+                    </div>
+                </div>
+            </div>
+            <div class="banner-slide" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%);">
+                <div class="container banner-content">
+                    <div class="banner-text">
+                        <span class="banner-tag">Nova Coleção</span>
+                        <h1>Linha Fitness 2025</h1>
+                        <p>Roupas de alta performance para seus treinos</p>
+                        <a href="produtos.html?categoria=fitness" class="btn btn-primary">Confira</a>
+                    </div>
+                    <div class="banner-image">
+                        <img src="/placeholder.svg?height=400&width=500" alt="Linha Fitness">
+                    </div>
+                </div>
+            </div>
+            <div class="banner-slide" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+                <div class="container banner-content">
+                    <div class="banner-text">
+                        <span class="banner-tag">Futebol</span>
+                        <h1>Camisas Oficiais</h1>
+                        <p>Vista a camisa do seu time do coração</p>
+                        <a href="produtos.html?categoria=futebol" class="btn btn-white">Comprar Agora</a>
+                    </div>
+                    <div class="banner-image">
+                        <img src="/placeholder.svg?height=400&width=500" alt="Camisas de Futebol">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="banner-dots">
+            <button class="dot active" data-slide="0"></button>
+            <button class="dot" data-slide="1"></button>
+            <button class="dot" data-slide="2"></button>
+        </div>
+        <button class="banner-arrow prev" id="prevSlide">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+        </button>
+        <button class="banner-arrow next" id="nextSlide">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+        </button>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="section categories-section">
+        <div class="container">
+            <h2 class="section-title">Categorias</h2>
+            <div class="categories-grid">
+                <a href="produtos.html?categoria=calcados" class="category-card">
+                    <div class="category-icon">
+                        <img src="/placeholder.svg?height=80&width=80" alt="Calçados">
+                    </div>
+                    <span>Calçados</span>
+                </a>
+                <a href="produtos.html?categoria=roupas" class="category-card">
+                    <div class="category-icon">
+                        <img src="/placeholder.svg?height=80&width=80" alt="Roupas">
+                    </div>
+                    <span>Roupas</span>
+                </a>
+                <a href="produtos.html?categoria=acessorios" class="category-card">
+                    <div class="category-icon">
+                        <img src="/placeholder.svg?height=80&width=80" alt="Acessórios">
+                    </div>
+                    <span>Acessórios</span>
+                </a>
+                <a href="produtos.html?categoria=equipamentos" class="category-card">
+                    <div class="category-icon">
+                        <img src="/placeholder.svg?height=80&width=80" alt="Equipamentos">
+                    </div>
+                    <span>Equipamentos</span>
+                </a>
+                <a href="produtos.html?categoria=futebol" class="category-card">
+                    <div class="category-icon">
+                        <img src="/placeholder.svg?height=80&width=80" alt="Futebol">
+                    </div>
+                    <span>Futebol</span>
+                </a>
+                <a href="produtos.html?categoria=corrida" class="category-card">
+                    <div class="category-icon">
+                        <img src="/placeholder.svg?height=80&width=80" alt="Corrida">
+                    </div>
+                    <span>Corrida</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Sellers Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Mais Vendidos</h2>
+                <a href="produtos.html" class="see-all">Ver todos</a>
+            </div>
+            <div class="products-grid" id="bestSellersGrid">
+                <!-- Products will be inserted by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="promo-section">
+        <div class="container">
+            <div class="promo-banner">
+                <div class="promo-content">
+                    <h2>Cadastre-se e ganhe 10% OFF</h2>
+                    <p>Na sua primeira compra</p>
+                    <a href="cadastro.html" class="btn btn-white">Cadastrar Agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section class="section brands-section">
+        <div class="container">
+            <h2 class="section-title">Marcas</h2>
+            <div class="brands-grid">
+                <a href="produtos.html?marca=nike" class="brand-card">
+                    <img src="/placeholder.svg?height=60&width=120" alt="Nike">
+                </a>
+                <a href="produtos.html?marca=adidas" class="brand-card">
+                    <img src="/placeholder.svg?height=60&width=120" alt="Adidas">
+                </a>
+                <a href="produtos.html?marca=puma" class="brand-card">
+                    <img src="/placeholder.svg?height=60&width=120" alt="Puma">
+                </a>
+                <a href="produtos.html?marca=mizuno" class="brand-card">
+                    <img src="/placeholder.svg?height=60&width=120" alt="Mizuno">
+                </a>
+                <a href="produtos.html?marca=asics" class="brand-card">
+                    <img src="/placeholder.svg?height=60&width=120" alt="Asics">
+                </a>
+                <a href="produtos.html?marca=under-armour" class="brand-card">
+                    <img src="/placeholder.svg?height=60&width=120" alt="Under Armour">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Arrivals Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Lançamentos</h2>
+                <a href="produtos.html" class="see-all">Ver todos</a>
+            </div>
+            <div class="products-grid" id="newArrivalsGrid">
+                <!-- Products will be inserted by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <img src="/images/logoalphasports.png" alt="AlphaSports" class="footer-logo">
+                    <p>Sua loja de artigos esportivos com as melhores marcas e preços.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                        </a>
+                        <a href="#" aria-label="YouTube">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Institucional</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nós</a></li>
+                        <li><a href="#">Nossas Lojas</a></li>
+                        <li><a href="#">Trabalhe Conosco</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Ajuda</h4>
+                    <ul>
+                        <li><a href="#">Central de Atendimento</a></li>
+                        <li><a href="#">Trocas e Devoluções</a></li>
+                        <li><a href="#">Prazo de Entrega</a></li>
+                        <li><a href="#">Formas de Pagamento</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Minha Conta</h4>
+                    <ul>
+                        <li><a href="login.html">Entrar</a></li>
+                        <li><a href="cadastro.html">Cadastrar</a></li>
+                        <li><a href="#">Meus Pedidos</a></li>
+                        <li><a href="carrinho.html">Carrinho</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AlphaSports. Todos os direitos reservados.</p>
+                <div class="payment-methods">
+                    <img src="/placeholder.svg?height=30&width=50" alt="Visa">
+                    <img src="/placeholder.svg?height=30&width=50" alt="Mastercard">
+                    <img src="/placeholder.svg?height=30&width=50" alt="Pix">
+                    <img src="/placeholder.svg?height=30&width=50" alt="Boleto">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
