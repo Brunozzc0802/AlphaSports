@@ -12,7 +12,9 @@
   --dark: #111827;
   --light: #f3f4f6;
   --white: #ffffff;
-  --red: #b81414;
+  --red1: #d11507;
+  --red2: #df0000;
+  --red3: #f92420;
   --gray-100: #f9fafb;
   --gray-200: #e5e7eb;
   --gray-300: #d1d5db;
@@ -115,10 +117,11 @@ img {
 
 /* Top Bar */
 .top-bar {
-  background-color: var(--gray-900);
+  background-color: var(--red2);
   color: var(--white);
   padding: 0.5rem 0;
   font-size: 0.75rem;
+
 }
 
 .top-bar-content {
@@ -135,10 +138,8 @@ img {
 
 /* Header */
 .header {
-  background-color: var(--white);
+  background-color: var(--red1);
   box-shadow: var(--shadow);
-  position: sticky;
-  top: 0;
   z-index: 100;
 }
 
@@ -151,13 +152,13 @@ img {
 }
 
 .logo img {
-  height: 150px;
-  width: 150px;
+  height: 80px;
+  width: 100px;
 }
 
 .search-bar {
   flex: 1;
-  max-width: 500px;
+  max-width: 720px;
   display: flex;
   position: relative;
 }
@@ -209,12 +210,12 @@ img {
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
-  color: var(--gray-700);
+  color: var(--white);
   transition: color 0.2s;
 }
 
 .nav-link:hover {
-  color: var(--primary);
+  color: var(--gray-300);
 }
 
 .nav-link svg {
@@ -252,8 +253,8 @@ img {
 
 /* Categories Nav */
 .categories-nav {
-  background-color: var(--gray-100);
-  border-top: 1px solid var(--gray-200);
+  background-color: var(--red);
+  border-top: 0px solid var(--gray-200);
 }
 
 .categories-list {
@@ -268,17 +269,16 @@ img {
 .categories-list a {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--gray-700);
+  color: var(--gray-100);
   white-space: nowrap;
   transition: color 0.2s;
 }
 
 .categories-list a:hover {
-  color: var(--primary);
+  color: var(--gray-400);
 }
 
 .promo-link {
-  color: var(--primary) !important;
   font-weight: 600 !important;
 }
 
@@ -407,7 +407,6 @@ img {
 }
 
 .banner-image img {
-  max-width: 450px;
   border-radius: var(--radius-lg);
 }
 
@@ -725,7 +724,7 @@ img {
 }
 
 .promo-banner {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: var(--red1);
   border-radius: var(--radius-lg);
   padding: 3rem;
   text-align: center;
@@ -772,8 +771,8 @@ img {
 }
 
 .brand-card img {
-  max-height: 40px;
-  width: auto;
+  max-height: 80px;
+  max-width: 100px;
   filter: grayscale(100%);
   opacity: 0.7;
   transition: all 0.2s;
@@ -783,6 +782,7 @@ img {
   filter: grayscale(0%);
   opacity: 1;
 }
+
 
 /* Footer */
 .footer {
@@ -800,7 +800,8 @@ img {
 }
 
 .footer-logo {
-  height: 50px;
+  height: 70px;
+  width: 80px;
   margin-bottom: 1rem;
 }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,7 @@
     <div class="top-bar">
         <div class="container top-bar-content">
             <span>Frete grátis para compras acima de R$ 299</span>
-            <span>Atendimento: (11) 4002-8922</span>
+            <span>Atendimento: (42) 99837-9401</span>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
     <header class="header">
         <div class="container header-content">
             <a href="index.html" class="logo">
-                <img src="/images/logoalphasports.png" alt="AlphaSports">
+                <img src="/images/Logo.png" alt="AlphaSports">
             </a>
             
             <div class="search-bar">
@@ -90,7 +90,7 @@
     <!-- Hero Banner -->
     <section class="hero-banner">
         <div class="banner-slider" id="bannerSlider">
-            <div class="banner-slide active" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+            <div class="banner-slide active" style="background: var(--red3);">
                 <div class="container banner-content">
                     <div class="banner-text">
                         <span class="banner-tag">Oferta Especial</span>
@@ -99,7 +99,7 @@
                         <a href="produtos.html?categoria=calcados" class="btn btn-white">Ver Ofertas</a>
                     </div>
                     <div class="banner-image">
-                        <img src="/placeholder.svg?height=400&width=500" alt="Calçados em promoção">
+                        <img src="/images/tenisbanner.png" alt="AlphaSports" width="400px">
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
                         <a href="produtos.html?categoria=futebol" class="btn btn-white">Comprar Agora</a>
                     </div>
                     <div class="banner-image">
-                        <img src="/placeholder.svg?height=400&width=500" alt="Camisas de Futebol">
+                        <img src="/images/camisabanner.png" alt="AlphaSports" width="400px">
                     </div>
                 </div>
             </div>
@@ -220,22 +220,22 @@
             <h2 class="section-title">Marcas</h2>
             <div class="brands-grid">
                 <a href="produtos.html?marca=nike" class="brand-card">
-                    <img src="/placeholder.svg?height=60&width=120" alt="Nike">
+                    <img src="/images/nike logo.png" alt="Nike" class="nike"   >
                 </a>
                 <a href="produtos.html?marca=adidas" class="brand-card">
-                    <img src="/placeholder.svg?height=60&width=120" alt="Adidas">
+                    <img src="/images/adidas logo.png" alt="Adidas" class="adidas">
                 </a>
                 <a href="produtos.html?marca=puma" class="brand-card">
-                    <img src="/placeholder.svg?height=60&width=120" alt="Puma">
+                    <img src="/images/puma logo.png" alt="Puma" class="puma">
                 </a>
                 <a href="produtos.html?marca=mizuno" class="brand-card">
-                    <img src="/placeholder.svg?height=60&width=120" alt="Mizuno">
+                    <img src="/images/mizuno logo.png" alt="Mizuno" class="mizuno">
                 </a>
                 <a href="produtos.html?marca=asics" class="brand-card">
-                    <img src="/placeholder.svg?height=60&width=120" alt="Asics">
+                    <img src="/images/asics logo.png" alt="Asics" class="asics">
                 </a>
                 <a href="produtos.html?marca=under-armour" class="brand-card">
-                    <img src="/placeholder.svg?height=60&width=120" alt="Under Armour">
+                    <img src="/images/under armour logo.png" alt="Under Armour" class="under-armour">
                 </a>
             </div>
         </div>
@@ -259,7 +259,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <img src="/images/logoalphasports.png" alt="AlphaSports" class="footer-logo">
+                    <img src="/images/Logo.png" alt="AlphaSports" class="footer-logo">
                     <p>Sua loja de artigos esportivos com as melhores marcas e preços.</p>
                     <div class="social-links">
                         <a href="#" aria-label="Facebook">
@@ -267,12 +267,6 @@
                         </a>
                         <a href="#" aria-label="Instagram">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
-                        </a>
-                        <a href="#" aria-label="Twitter">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-                        </a>
-                        <a href="#" aria-label="YouTube">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
                         </a>
                     </div>
                 </div>
@@ -306,12 +300,6 @@
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 AlphaSports. Todos os direitos reservados.</p>
-                <div class="payment-methods">
-                    <img src="/placeholder.svg?height=30&width=50" alt="Visa">
-                    <img src="/placeholder.svg?height=30&width=50" alt="Mastercard">
-                    <img src="/placeholder.svg?height=30&width=50" alt="Pix">
-                    <img src="/placeholder.svg?height=30&width=50" alt="Boleto">
-                </div>
             </div>
         </div>
     </footer>
