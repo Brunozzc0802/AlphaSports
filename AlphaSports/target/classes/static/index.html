@@ -88,23 +88,30 @@
     </div>
 
     <!-- Hero Banner -->
-    <section class="main-banners">
-        <div class="container banners-grid">
+    <section class="banner-slider">
 
-            <!-- Banner 1 -->
-            <div class="banner-item">
-                <img src="/images/banner1.png" alt="Frete Grátis AlphaSports">
-            </div>
-
-            <!-- Banner 2 (placeholder por enquanto) -->
-            <div class="banner-item">
-                <img src="/images/banner2.png" alt="Banner promocional">
-            </div>
-            <div class="banner-dots">
-                <button class="dot active" data-slide="0"></button>
-                <button class="dot" data-slide="1"></button>
-            </div>
+        <!-- Banner 1 -->
+        <div class="banner-slide active">
+            <a href="produtos.html">
+                <img src="/images/banner1.png" alt="AlphaSports">
+            </a>
         </div>
+
+        <!-- Banner 2 -->
+        <div class="banner-slide">
+            <a href="produtos.html">
+                <img src="/images/banner2.png" alt="AlphaSports">
+            </a>
+        </div>
+
+        <button id="prevSlide" class="banner-btn prev">❮</button>
+        <button id="nextSlide" class="banner-btn next">❯</button>
+
+        <div class="banner-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+        </div>
+
     </section>
 
     <!-- Categories Section -->
@@ -132,19 +139,19 @@
                 </a>
                 <a href="produtos.html?categoria=equipamentos" class="category-card">
                     <div class="category-icon">
-                        <img src="/placeholder.svg?height=80&width=80" alt="Equipamentos">
+                        <img src="/images/equipamentos.png" alt="AlphaSports">
                     </div>
                     <span>Equipamentos</span>
                 </a>
                 <a href="produtos.html?categoria=futebol" class="category-card">
                     <div class="category-icon">
-                        <img src="/placeholder.svg?height=80&width=80" alt="Futebol">
+                        <img src="/images/futebol.png" alt="AlphaSports">
                     </div>
                     <span>Futebol</span>
                 </a>
                 <a href="produtos.html?categoria=corrida" class="category-card">
                     <div class="category-icon">
-                        <img src="/placeholder.svg?height=80&width=80" alt="Corrida">
+                        <img src="/images/corrida.png" alt="AlphaSports">
                     </div>
                     <span>Corrida</span>
                 </a>
