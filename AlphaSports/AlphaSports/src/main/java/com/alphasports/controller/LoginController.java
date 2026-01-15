@@ -1,0 +1,83 @@
+package com.alphasports.controller;
+
+import com.alphasports.dto.LoginRequest;
+import com.alphasports.dto.LoginResponse;
+import com.alphasports.model.Usuario;
+import com.alphasports.service.UsuarioService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+
+public class LoginController {
+
+    @Autowired
+    private UsuarioService usuarioService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpSession session) {
+        try {
+            Usuario usuario = usuarioService.autenticar(request);
+
+            // Salvar informações na sessão
+            session.setAttribute("usuarioId", usuario.getId());
+            session.setAttribute("email", usuario.getEmail());
+            session.setAttribute("cargo", usuario.getCargo().toString());
+
+            return ResponseEntity.ok(new LoginResponse(
+                    "Login realizado com sucesso",
+                    usuario.getId(),
+                    usuario.getNome(),
+                    usuario.getEmail(),
+                    usuario.getCargo()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok("Logout realizado com sucesso");
+    }
+
+    @GetMapping("/verificar")
+    public ResponseEntity<?> verificarSessao(HttpSession session) {
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId != null) {
+            try {
+                Usuario usuario = usuarioService.buscarPorId(usuarioId);
+                return ResponseEntity.ok(new LoginResponse(
+                        "Sessão ativa",
+                        usuario.getId(),
+                        usuario.getNome(),
+                        usuario.getEmail(),
+                        usuario.getCargo()
+                ));
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Não autenticado");
+    }
+
+    @GetMapping("/verificar-admin")
+    public ResponseEntity<?> verificarAdmin(HttpSession session) {
+        String cargo = (String) session.getAttribute("cargo");
+        if (cargo != null && cargo.equals("ADMINISTRADOR")) {
+            return ResponseEntity.ok("Usuário é administrador");
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+    }
+}
+
