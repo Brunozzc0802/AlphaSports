@@ -275,7 +275,7 @@ img {
 }
 
 .categories-list a:hover {
-  color: var(--gray-400);
+  color: var(--gray-300);
 }
 
 .promo-link {

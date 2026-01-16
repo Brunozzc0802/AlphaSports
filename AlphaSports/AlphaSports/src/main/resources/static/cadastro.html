@@ -10,128 +10,176 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="auth-page">
-        <div class="auth-container">
-            <div class="auth-card">
-                <div class="auth-header">
-                    <a href="index.html">
-                        <img src="/images/logoRed.png" alt="AlphaSports">
-                    </a>
-                    <h1>Crie sua conta</h1>
-                    <p>Cadastre-se e ganhe até 50% na primeira compra</p>
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="index.html">
+                    <img src="/images/logoRed.png" alt="AlphaSports">
+                </a>
+                <h1>Crie sua conta</h1>
+                <p>Cadastre-se e ganhe até 50% na primeira compra</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Nome completo</label>
+                    <input type="text" id="name" name="name" placeholder="Seu nome" required>
+                    <span class="error-message" id="nameError"></span>
                 </div>
 
-                <form id="registerForm">
-                    <div class="form-group">
-                        <label for="name">Nome completo</label>
-                        <input type="text" id="name" name="name" placeholder="Seu nome" required>
-                        <span class="error-message" id="nameError"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
-                        <span class="error-message" id="emailError"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Telefone</label>
-                        <input type="tel" id="phone" name="phone" placeholder="(11) 99999-9999">
-                        <span class="error-message" id="phoneError"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Senha</label>
-                        <input type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required>
-                        <span class="error-message" id="passwordError"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirmar senha</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repita a senha" required>
-                        <span class="error-message" id="confirmPasswordError"></span>
-                    </div>
-
-                    <div class="form-options">
-                        <label class="remember-me">
-                            <input type="checkbox" name="terms" id="terms" required>
-                            <span>Aceito os <a href="#">termos de uso</a> e <a href="#">política de privacidade</a></span>
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary auth-btn">Cadastrar</button>
-                </form>
-
-                <div class="auth-footer">
-                    Já tem uma conta? <a href="login.html">Entrar</a>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    <span class="error-message" id="emailError"></span>
                 </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(11) 99999-9999">
+                    <span class="error-message" id="phoneError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar senha</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repita a senha" required>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="terms" id="terms" required>
+                        <span>Aceito os <a href="#">termos de uso</a> e <a href="#">política de privacidade</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary auth-btn" id="registerButton">
+                    Cadastrar
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Já tem uma conta? <a href="login.html">Entrar</a>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="data.js"></script>
-    <script src="script.js"></script>
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const terms = document.getElementById('terms').checked;
-            
-            let isValid = true;
-            
-            if (!name || name.length < 3) {
-                document.getElementById('nameError').textContent = 'Digite seu nome completo';
-                document.getElementById('name').classList.add('error');
-                isValid = false;
-            } else {
-                document.getElementById('nameError').textContent = '';
-                document.getElementById('name').classList.remove('error');
-            }
-            
-            if (!email || !email.includes('@')) {
-                document.getElementById('emailError').textContent = 'Digite um e-mail válido';
-                document.getElementById('email').classList.add('error');
-                isValid = false;
-            } else {
-                document.getElementById('emailError').textContent = '';
-                document.getElementById('email').classList.remove('error');
-            }
-            
-            if (!password || password.length < 6) {
-                document.getElementById('passwordError').textContent = 'A senha deve ter pelo menos 6 caracteres';
-                document.getElementById('password').classList.add('error');
-                isValid = false;
-            } else {
-                document.getElementById('passwordError').textContent = '';
-                document.getElementById('password').classList.remove('error');
-            }
-            
-            if (password !== confirmPassword) {
-                document.getElementById('confirmPasswordError').textContent = 'As senhas não coincidem';
-                document.getElementById('confirmPassword').classList.add('error');
-                isValid = false;
-            } else {
-                document.getElementById('confirmPasswordError').textContent = '';
-                document.getElementById('confirmPassword').classList.remove('error');
-            }
-            
-            if (!terms) {
-                isValid = false;
-                alert('Você deve aceitar os termos de uso');
-            }
-            
-            if (isValid) {
-                localStorage.setItem('alphasports_user', JSON.stringify({ email, name }));
+<script src="data.js"></script>
+<script src="script.js"></script>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const nome = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const telefone = document.getElementById('phone').value;
+        const senha = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const terms = document.getElementById('terms').checked;
+        const registerButton = document.getElementById('registerButton');
+
+        // Validações do frontend
+        let isValid = true;
+
+        if (!nome || nome.length < 3) {
+            document.getElementById('nameError').textContent = 'Digite seu nome completo';
+            document.getElementById('name').classList.add('error');
+            isValid = false;
+        } else {
+            document.getElementById('nameError').textContent = '';
+            document.getElementById('name').classList.remove('error');
+        }
+
+        if (!email || !email.includes('@')) {
+            document.getElementById('emailError').textContent = 'Digite um e-mail válido';
+            document.getElementById('email').classList.add('error');
+            isValid = false;
+        } else {
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('email').classList.remove('error');
+        }
+
+        if (!senha || senha.length < 6) {
+            document.getElementById('passwordError').textContent = 'A senha deve ter pelo menos 6 caracteres';
+            document.getElementById('password').classList.add('error');
+            isValid = false;
+        } else {
+            document.getElementById('passwordError').textContent = '';
+            document.getElementById('password').classList.remove('error');
+        }
+
+        if (senha !== confirmPassword) {
+            document.getElementById('confirmPasswordError').textContent = 'As senhas não coincidem';
+            document.getElementById('confirmPassword').classList.add('error');
+            isValid = false;
+        } else {
+            document.getElementById('confirmPasswordError').textContent = '';
+            document.getElementById('confirmPassword').classList.remove('error');
+        }
+
+        if (!terms) {
+            isValid = false;
+            alert('Você deve aceitar os termos de uso');
+            return;
+        }
+
+        if (!isValid) return;
+
+        // Desabilitar botão durante o cadastro
+        registerButton.disabled = true;
+        registerButton.textContent = 'Cadastrando...';
+
+        try {
+            // Fazer requisição para o backend
+            const response = await fetch('http://localhost:2022/api/auth/registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    nome,
+                    email,
+                    telefone: telefone || null,
+                    senha
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Cadastro realizado:', data);
+
                 showToast('Cadastro realizado com sucesso!', 'success');
+
+                // Redirecionar para login
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'login.html';
                 }, 1500);
+            } else {
+                // Erro no cadastro
+                const errorMessage = await response.text();
+                showToast(errorMessage || 'Erro ao realizar cadastro', 'error');
+
+                // Reabilitar botão
+                registerButton.disabled = false;
+                registerButton.textContent = 'Cadastrar';
             }
-        });
-    </script>
+        } catch (error) {
+            console.error('Erro ao cadastrar:', error);
+            showToast('Erro ao conectar com o servidor. Tente novamente.', 'error');
+
+            // Reabilitar botão
+            registerButton.disabled = false;
+            registerButton.textContent = 'Cadastrar';
+        }
+    });
+</script>
 </body>
 </html>

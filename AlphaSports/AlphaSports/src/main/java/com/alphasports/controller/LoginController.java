@@ -2,6 +2,7 @@ package com.alphasports.controller;
 
 import com.alphasports.dto.LoginRequest;
 import com.alphasports.dto.LoginResponse;
+import com.alphasports.dto.RegistroRequest;
 import com.alphasports.model.Usuario;
 import com.alphasports.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +23,22 @@ public class LoginController {
     private UsuarioService usuarioService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @PostMapping("/registro")
+    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroRequest request) {
+        try {
+            Usuario usuario = usuarioService.registrar(request);
+            return ResponseEntity.ok(new LoginResponse(
+                    "Cadastro realizado com sucesso",
+                    usuario.getId(),
+                    usuario.getNome(),
+                    usuario.getEmail(),
+                    usuario.getCargo()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpSession session) {
