@@ -46,7 +46,10 @@ public class LoginController {
         try {
             Usuario usuario = usuarioService.autenticar(request);
 
-            // Salvar informações na sessão
+            // MUDANÇA AQUI: Salvar o OBJETO Usuario completo na sessão
+            session.setAttribute("usuarioLogado", usuario);
+
+            // Manter compatibilidade com código existente
             session.setAttribute("usuarioId", usuario.getId());
             session.setAttribute("email", usuario.getEmail());
             session.setAttribute("cargo", usuario.getCargo().toString());
@@ -72,10 +75,27 @@ public class LoginController {
 
     @GetMapping("/verificar")
     public ResponseEntity<?> verificarSessao(HttpSession session) {
+        // Pode usar tanto o objeto completo quanto o ID
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+
+        if (usuarioLogado != null) {
+            return ResponseEntity.ok(new LoginResponse(
+                    "Sessão ativa",
+                    usuarioLogado.getId(),
+                    usuarioLogado.getNome(),
+                    usuarioLogado.getEmail(),
+                    usuarioLogado.getCpf(),
+                    usuarioLogado.getCargo()
+            ));
+        }
+
+        // Fallback para código legado que usa apenas o ID
         Long usuarioId = (Long) session.getAttribute("usuarioId");
         if (usuarioId != null) {
             try {
                 Usuario usuario = usuarioService.buscarPorId(usuarioId);
+                // Atualizar sessão com objeto completo
+                session.setAttribute("usuarioLogado", usuario);
                 return ResponseEntity.ok(new LoginResponse(
                         "Sessão ativa",
                         usuario.getId(),
@@ -88,6 +108,7 @@ public class LoginController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida");
             }
         }
+
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Não autenticado");
     }
 
@@ -100,4 +121,3 @@ public class LoginController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
     }
 }
-

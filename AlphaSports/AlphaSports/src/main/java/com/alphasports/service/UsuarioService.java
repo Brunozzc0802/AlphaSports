@@ -3,6 +3,7 @@ package com.alphasports.service;
 
 import com.alphasports.dto.LoginRequest;
 import com.alphasports.dto.RegistroRequest;
+import com.alphasports.dto.UsuarioPerfilUpdateRequest;
 import com.alphasports.model.Usuario;
 import com.alphasports.model.Cargo;
 import com.alphasports.repository.UsuarioRepository;
@@ -44,6 +45,8 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+
+
     public Usuario autenticar(LoginRequest request) {
         System.out.println("=== DEBUG LOGIN ===");
         System.out.println("Email recebido: " + request.getEmail());
@@ -74,4 +77,22 @@ public class UsuarioService {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+
+    public Usuario atualizarPerfil(Long id, UsuarioPerfilUpdateRequest request) {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        usuario.setNome(request.getNome());
+        usuario.setEmail(request.getEmail());
+        usuario.setTelefone(request.getTelefone());
+
+        // Atualiza senha somente se o campo foi preenchido
+        if (request.getSenha() != null && !request.getSenha().isBlank()) {
+            usuario.setSenha(passwordEncoder.encode(request.getSenha()));
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+
 }

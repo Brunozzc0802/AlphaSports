@@ -38,13 +38,19 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span id="userName">Entrar</span>
                 </a>
-                <!-- Dropdown será inserido aqui pelo JavaScript -->
+
             </div>
             <a href="carrinho.html" class="nav-link cart-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
                 <span>Carrinho</span>
                 <span class="cart-count" id="cartCount">0</span>
             </a>
+
+            <a href="#" onclick="fazerLogout(event)"  class="nav-link cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Sair
+            </a>
+
         </nav>
 
         <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -304,58 +310,13 @@
                 mobileUserLink.textContent = `Olá, ${primeiroNome}`;
 
                 // Mudar comportamento do link
-                userLink.href = '#';
-                userLink.onclick = (e) => {
-                    e.preventDefault();
-                    toggleMenuUsuario();
-                };
+                userLink.href = 'perfil.html';
+                userLink.onclick = null;
 
-                // Criar menu dropdown
-                criarMenuDropdown(data);
             }
         } catch (error) {
             console.error('Erro ao verificar autenticação:', error);
         }
-    }
-
-    // Criar menu dropdown
-    function criarMenuDropdown(userData) {
-        const userInfo = document.getElementById('userInfo');
-
-        // Verificar se já existe
-        if (document.getElementById('userDropdown')) return;
-
-        const dropdown = document.createElement('div');
-        dropdown.id = 'userDropdown';
-        dropdown.className = 'user-dropdown';
-        dropdown.style.display = 'none';
-
-        dropdown.innerHTML = `
-                <div class="dropdown-header">
-                    <strong>${userData.nome}</strong>
-                    <span>${userData.email}</span>
-                </div>
-                <a href="meus-pedidos.html">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><polyline points="1 10 12 17 23 10"></polyline></svg>
-                    Meus pedidos
-                </a>
-                <a href="perfil.html">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    Meu perfil
-                </a>
-                ${userData.cargo === 'ADMINISTRADOR' ? `
-                <a href="admin/dashboard.html">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-                    Dashboard Admin
-                </a>
-                ` : ''}
-                <a href="#" onclick="fazerLogout(event)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    Sair
-                </a>
-            `;
-
-        userInfo.appendChild(dropdown);
     }
 
     function toggleMenuUsuario() {
@@ -364,16 +325,6 @@
             dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
         }
     }
-
-    // Fechar dropdown ao clicar fora
-    document.addEventListener('click', function(event) {
-        const userInfo = document.getElementById('userInfo');
-        const dropdown = document.getElementById('userDropdown');
-
-        if (dropdown && !userInfo.contains(event.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
 
     // Função de logout
     async function fazerLogout(event) {
