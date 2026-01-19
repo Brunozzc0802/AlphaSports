@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Data
 public class RegistroRequest {
@@ -16,6 +17,10 @@ public class RegistroRequest {
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email inválido")
     private String email;
+
+    @NotBlank(message = "CPF é obrigatório")
+    @CPF(message = "CPF inválido")
+    private String cpf;
 
     private String telefone;
 

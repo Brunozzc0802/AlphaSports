@@ -11,5 +11,6 @@ public class LoginResponse {
     private Long id;
     private String nome;
     private String email;
+    private String cpf;
     private Cargo cargo;
 }

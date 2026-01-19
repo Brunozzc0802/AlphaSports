@@ -33,6 +33,7 @@ public class LoginController {
                     usuario.getId(),
                     usuario.getNome(),
                     usuario.getEmail(),
+                    usuario.getCpf(),
                     usuario.getCargo()
             ));
         } catch (RuntimeException e) {
@@ -55,6 +56,7 @@ public class LoginController {
                     usuario.getId(),
                     usuario.getNome(),
                     usuario.getEmail(),
+                    usuario.getCpf(),
                     usuario.getCargo()
             ));
         } catch (RuntimeException e) {
@@ -79,6 +81,7 @@ public class LoginController {
                         usuario.getId(),
                         usuario.getNome(),
                         usuario.getEmail(),
+                        usuario.getCpf(),
                         usuario.getCargo()
                 ));
             } catch (RuntimeException e) {

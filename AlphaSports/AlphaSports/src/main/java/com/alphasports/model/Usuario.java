@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
 @Table(name = "usuarios")
@@ -26,6 +27,11 @@ public class Usuario {
     @Email(message = "Email inválido")
     @NotBlank(message = "Email é obrigatório")
     private String email;
+
+    @Column(nullable = false, unique = true, length = 14)
+    @CPF(message = "CPF inválido")
+    @NotBlank(message = "CPF é obrigatório")
+    private String cpf;
 
     @Column(length = 20)
     private String telefone;

@@ -20,14 +20,23 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     public Usuario registrar(RegistroRequest request) {
-        // Verificar se email já existe
+
         if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new RuntimeException("Esse Email já está cadastrado");
+        }
+
+        if (usuarioRepository.existsByCpf((request.getCpf()))) {
+            throw new RuntimeException("Esse CPF já está cadastrado");
+        }
+
+        if (usuarioRepository.existsByTelefone(((request.getTelefone())))) {
+            throw new RuntimeException("Esse telefone já está cadastrado");
         }
 
         Usuario usuario = new Usuario();
         usuario.setNome(request.getNome());
         usuario.setEmail(request.getEmail());
+        usuario.setCpf(request.getCpf());
         usuario.setTelefone(request.getTelefone());
         usuario.setSenha(passwordEncoder.encode(request.getSenha()));
         usuario.setCargo(Cargo.CLIENTE);

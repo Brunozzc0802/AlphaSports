@@ -35,6 +35,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="cpf">CPF</label>
+                    <input type="text" id="cpf" name="cpf" placeholder="---.---.---.--" required>
+                    <span class="error-message" id="cpfError"></span>
+                </div>
+
+                <div class="form-group">
                     <label for="phone">Telefone</label>
                     <input type="tel" id="phone" name="phone" placeholder="(11) 99999-9999">
                     <span class="error-message" id="phoneError"></span>
@@ -79,6 +85,7 @@
 
         const nome = document.getElementById('name').value;
         const email = document.getElementById('email').value;
+        const cpf = document.getElementById('cpf').value;
         const telefone = document.getElementById('phone').value;
         const senha = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
@@ -147,6 +154,7 @@
                 body: JSON.stringify({
                     nome,
                     email,
+                    cpf,
                     telefone: telefone || null,
                     senha
                 })
