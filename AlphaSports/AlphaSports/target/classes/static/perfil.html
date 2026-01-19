@@ -170,34 +170,41 @@
 </div>
 
 <script>
-    // Verificar se usuário está logado e atualizar header
-    async function atualizarHeader() {
+
+  async function atualizarHeader() {
     try {
-    const response = await fetch('http://localhost:2022/api/auth/verificar', {
-    credentials: 'include'
-  });
+      const response = await fetch('http://localhost:2022/api/auth/verificar', {
+        credentials: 'include'
+      });
 
-    if (response.ok) {
-    const data = await response.json();
+      if (response.ok) {
+        const data = await response.json();
+        const primeiroNome = data.nome.split(' ')[0];
 
-    // Usuário está logado
-    const userName = document.getElementById('userName');
-    const userLink = document.getElementById('userLink');
-    const mobileUserLink = document.getElementById('mobileUserLink');
+        // 1. Atualizar o texto do Desktop (verifica se existe antes)
+        const userName = document.getElementById('userName');
+        if (userName) userName.textContent = `Olá, ${primeiroNome}`;
 
-    // Pegar primeiro nome
-    const primeiroNome = data.nome.split(' ')[0];
-    userName.textContent = `Olá, ${primeiroNome}`;
-    mobileUserLink.textContent = `Olá, ${primeiroNome}`;
+        // 2. Atualizar o link do Desktop
+        const userLink = document.getElementById('userLink');
+        if (userLink) {
+          userLink.href = 'perfil.html';
 
-    // Mudar comportamento do link
-    userLink.href = 'perfil.html';
-    userLink.onclick = null;
+          // FORMA INFALÍVEL: Remove qualquer evento de clique anterior clonando o botão
+          const novoLink = userLink.cloneNode(true);
+          userLink.parentNode.replaceChild(novoLink, userLink);
+        }
 
-  }
-  } catch (error) {
-    console.error('Erro ao verificar autenticação:', error);
-  }
+        // 3. Atualizar o Mobile (SÓ se o elemento existir no HTML)
+        const mobileUserLink = document.getElementById('mobileUserLink');
+        if (mobileUserLink) {
+          mobileUserLink.textContent = `Olá, ${primeiroNome}`;
+          mobileUserLink.href = 'perfil.html';
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao verificar autenticação:', error);
+    }
   }
 
     function toggleMenuUsuario() {
