@@ -38,7 +38,6 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span id="userName">Entrar</span>
                 </a>
-
             </div>
             <a href="carrinho.html" class="nav-link cart-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
@@ -50,7 +49,6 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 Sair
             </a>
-
         </nav>
 
         <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -62,9 +60,9 @@
     <nav class="categories-nav">
         <div class="container">
             <ul class="categories-list">
+                <li><a href="produtos.html?categoria=todos">Todos</a></li>
                 <li><a href="produtos.html?categoria=calcados">Calçados</a></li>
                 <li><a href="produtos.html?categoria=roupas">Roupas</a></li>
-                <li><a href="produtos.html?categoria=acessorios">Acessórios</a></li>
                 <li><a href="produtos.html?categoria=equipamentos">Equipamentos</a></li>
                 <li><a href="produtos.html?categoria=futebol">Futebol</a></li>
                 <li><a href="produtos.html?categoria=corrida">Corrida</a></li>
@@ -85,9 +83,9 @@
     </div>
     <nav class="mobile-nav">
         <a href="login.html" id="mobileUserLink">Entrar / Cadastrar</a>
+        <a href="produtos.html?categoria=todos">Todos</a>
         <a href="produtos.html?categoria=calcados">Calçados</a>
         <a href="produtos.html?categoria=roupas">Roupas</a>
-        <a href="produtos.html?categoria=acessorios">Acessórios</a>
         <a href="produtos.html?categoria=equipamentos">Equipamentos</a>
         <a href="produtos.html?categoria=futebol">Futebol</a>
         <a href="produtos.html?categoria=corrida">Corrida</a>
@@ -98,29 +96,24 @@
 
 <!-- Hero Banner -->
 <section class="banner-slider">
-
-    <!-- Banner 1 -->
     <div class="banner-slide active">
         <a href="produtos.html">
             <img src="/images/banner1.png" alt="AlphaSports">
         </a>
     </div>
-
-    <!-- Banner 2 -->
     <div class="banner-slide">
         <a href="produtos.html">
             <img src="/images/banner2.png" alt="AlphaSports">
         </a>
     </div>
 
-    <button id="prevSlide" class="banner-btn prev">❮</button>
-    <button id="nextSlide" class="banner-btn next">❯</button>
+    <button id="prevSlide" class="banner-btn prev">◀</button>
+    <button id="nextSlide" class="banner-btn next">▶</button>
 
     <div class="banner-dots">
         <span class="dot active"></span>
         <span class="dot"></span>
     </div>
-
 </section>
 
 <!-- Categories Section -->
@@ -128,39 +121,39 @@
     <div class="container">
         <h2 class="section-title">Categorias</h2>
         <div class="categories-grid">
+            <a href="produtos.html?categoria=todos" class="category-card">
+                <div class="category-icon">
+                    <img src="/images/todos.png" alt="Todos os Produtos">
+                </div>
+                <span>Todos</span>
+            </a>
             <a href="produtos.html?categoria=calcados" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/calcados.png" alt="AlphaSports">
+                    <img src="/images/calcados.png" alt="Calçados">
                 </div>
                 <span>Calçados</span>
             </a>
             <a href="produtos.html?categoria=roupas" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/roupas.png" alt="AlphaSports">
+                    <img src="/images/roupas.png" alt="Roupas">
                 </div>
                 <span>Roupas</span>
             </a>
-            <a href="produtos.html?categoria=acessorios" class="category-card">
-                <div class="category-icon">
-                    <img src="/images/acessorios.png" alt="AlphaSports">
-                </div>
-                <span>Acessórios</span>
-            </a>
             <a href="produtos.html?categoria=equipamentos" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/equipamentos.png" alt="AlphaSports">
+                    <img src="/images/equipamentos.png" alt="Equipamentos">
                 </div>
                 <span>Equipamentos</span>
             </a>
             <a href="produtos.html?categoria=futebol" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/futebol.png" alt="AlphaSports">
+                    <img src="/images/futebol.png" alt="Futebol">
                 </div>
                 <span>Futebol</span>
             </a>
             <a href="produtos.html?categoria=corrida" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/corrida.png" alt="AlphaSports">
+                    <img src="/images/corrida.png" alt="Corrida">
                 </div>
                 <span>Corrida</span>
             </a>
@@ -176,7 +169,7 @@
             <a href="produtos.html" class="see-all">Ver todos</a>
         </div>
         <div class="products-grid" id="bestSellersGrid">
-            <!-- Products will be inserted by JavaScript -->
+            <!-- Products will be inserted by JavaScript from database -->
         </div>
     </div>
 </section>
@@ -200,7 +193,7 @@
         <h2 class="section-title">Marcas</h2>
         <div class="brands-grid">
             <a href="produtos.html?marca=nike" class="brand-card">
-                <img src="/images/nike logo.png" alt="Nike" class="nike"   >
+                <img src="/images/nike logo.png" alt="Nike" class="nike">
             </a>
             <a href="produtos.html?marca=adidas" class="brand-card">
                 <img src="/images/adidas logo.png" alt="Adidas" class="adidas">
@@ -229,7 +222,7 @@
             <a href="produtos.html" class="see-all">Ver todos</a>
         </div>
         <div class="products-grid" id="newArrivalsGrid">
-            <!-- Products will be inserted by JavaScript -->
+            <!-- Products will be inserted by JavaScript from database -->
         </div>
     </div>
 </section>
@@ -271,8 +264,6 @@
             <div class="footer-col">
                 <h4>Minha Conta</h4>
                 <ul>
-                    <li><a href="login.html">Entrar</a></li>
-                    <li><a href="cadastro.html">Cadastrar</a></li>
                     <li><a href="#">Meus Pedidos</a></li>
                     <li><a href="carrinho.html">Carrinho</a></li>
                 </ul>
@@ -287,9 +278,7 @@
 <script src="data.js"></script>
 <script src="script.js"></script>
 
-<!-- Script para atualizar o header com informações do usuário logado -->
 <script>
-    // Verificar se usuário está logado e atualizar header
     async function atualizarHeader() {
         try {
             const response = await fetch('http://localhost:2022/api/auth/verificar', {
@@ -298,35 +287,22 @@
 
             if (response.ok) {
                 const data = await response.json();
-
-                // Usuário está logado
                 const userName = document.getElementById('userName');
                 const userLink = document.getElementById('userLink');
                 const mobileUserLink = document.getElementById('mobileUserLink');
 
-                // Pegar primeiro nome
                 const primeiroNome = data.nome.split(' ')[0];
                 userName.textContent = `Olá, ${primeiroNome}`;
                 mobileUserLink.textContent = `Olá, ${primeiroNome}`;
 
-                // Mudar comportamento do link
                 userLink.href = 'perfil.html';
                 userLink.onclick = null;
-
             }
         } catch (error) {
             console.error('Erro ao verificar autenticação:', error);
         }
     }
 
-    function toggleMenuUsuario() {
-        const dropdown = document.getElementById('userDropdown');
-        if (dropdown) {
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-        }
-    }
-
-    // Função de logout
     async function fazerLogout(event) {
         event.preventDefault();
 
