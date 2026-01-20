@@ -3,29 +3,35 @@ let cart = JSON.parse(localStorage.getItem("alphasports_cart")) || []
 let products = [] // Agora será carregado do banco de dados
 
 // Carregar produtos do banco de dados
-async function carregarProdutos(categoria = null) {
+async function carregarProdutos() {
   try {
-    let url = 'http://localhost:2022/api/produtos'
+    const params = new URLSearchParams(window.location.search)
+    const categoria = params.get("categoria")
+    const busca = params.get("busca")
 
-    // Se uma categoria específica foi selecionada, adiciona à URL
-    if (categoria && categoria !== 'todos') {
-      url += `?categoria=${categoria}`
+    let url = "http://localhost:2022/api/produtos"
+    const query = []
+
+    if (categoria && categoria !== "todos") {
+      query.push(`categoria=${categoria}`)
     }
 
-    const response = await fetch(url, {
-      credentials: 'include'
-    })
-
-    if (response.ok) {
-      products = await response.json()
-      console.log('Produtos carregados:', products)
-      return products
-    } else {
-      console.error('Erro ao carregar produtos')
-      return []
+    if (busca) {
+      query.push(`busca=${encodeURIComponent(busca)}`)
     }
+
+    if (query.length > 0) {
+      url += "?" + query.join("&")
+    }
+
+    const response = await fetch(url, { credentials: "include" })
+
+    if (!response.ok) throw new Error("Erro ao buscar produtos")
+
+    products = await response.json()
+    return products
   } catch (error) {
-    console.error('Erro ao conectar com o servidor:', error)
+    console.error(error)
     return []
   }
 }
@@ -167,6 +173,22 @@ function createProductCard(product) {
     `
 }
 
+function renderizarListaProdutos(lista) {
+  const container = document.getElementById("productsList")
+  const contador = document.getElementById("resultsCount")
+
+  if (!container) return
+
+  if (!lista || lista.length === 0) {
+    container.innerHTML = "<p>Nenhum produto encontrado.</p>"
+    if (contador) contador.textContent = "0 produtos encontrados"
+    return
+  }
+
+  container.innerHTML = lista.map(createProductCard).join("")
+  if (contador) contador.textContent = `${lista.length} produtos encontrados`
+}
+
 function generateStars(rating) {
   let stars = ""
   for (let i = 1; i <= 5; i++) {
@@ -185,8 +207,8 @@ function generateStars(rating) {
 document.addEventListener("DOMContentLoaded", async () => {
   updateCartCount()
 
-  // Carregar produtos do banco de dados
-  await carregarProdutos()
+  const lista = await carregarProdutos()
+  renderizarListaProdutos(lista)
 
   // Mobile Menu
   const mobileMenuBtn = document.getElementById("mobileMenuBtn")

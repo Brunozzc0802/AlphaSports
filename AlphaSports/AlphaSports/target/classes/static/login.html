@@ -54,7 +54,6 @@
     </div>
 </div>
 
-<script src="data.js"></script>
 <script src="script.js"></script>
 <script>
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -119,7 +118,7 @@
                 // Redirecionar baseado no cargo
                 setTimeout(() => {
                     if (data.cargo === 'ADMINISTRADOR') {
-                        window.location.href = 'admin/dashboard.html'; // Página de admin
+                        window.location.href = 'admin.html'; // Página de admin
                     } else {
                         window.location.href = 'index.html'; // Página de cliente
                     }
