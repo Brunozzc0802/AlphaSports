@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaSports - Admin Produtos</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-content">
+        <a href="index.html" class="logo">
+            <img src="/images/Logo.png" alt="AlphaSports">
+        </a>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar produtos..." id="searchInput">
+            <button class="search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            </button>
+        </div>
+
+        <nav class="header-nav">
+            <div class="nav-link user-dropdown-container" id="userInfo">
+                <a href="login.html" class="nav-link user-link" id="userLink">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span id="userName">Entrar</span>
+                </a>
+            </div>
+            <a href="carrinho.html" class="nav-link cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                <span>Carrinho</span>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+
+            <a href="#" onclick="fazerLogout(event)"  class="nav-link cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Sair
+            </a>
+        </nav>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        </button>
+    </div>
+
+    <!-- Categories Nav -->
+    <nav class="categories-nav">
+        <div class="container">
+            <ul class="categories-list">
+                <li><a href="produtos.html?categoria=todos">Todos</a></li>
+                <li><a href="produtos.html?categoria=calcados">Calçados</a></li>
+                <li><a href="produtos.html?categoria=roupas">Roupas</a></li>
+                <li><a href="produtos.html?categoria=equipamentos">Equipamentos</a></li>
+                <li><a href="produtos.html?categoria=futebol">Futebol</a></li>
+                <li><a href="produtos.html?categoria=corrida">Corrida</a></li>
+                <li><a href="produtos.html?categoria=fitness">Fitness</a></li>
+                <li><a href="produtos.html" class="promo-link">Promoções</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="perfil-wrapper container">
+    <aside class="perfil-menu">
+        <h3 id="adminTitle">Admin</h3>
+        <ul id="adminSidebar">
+            <li data-tab="usuarios">Usuários</li>
+            <li class="active" data-tab="produtos">Produtos</li>
+            <li data-tab="clientes">Clientes</li>
+            <li data-tab="marca">Marca</li>
+            <li data-tab="categoria">Categoria</li>
+            <li data-tab="estoque">Estoque</li>
+        </ul>
+    </aside>
+
+    <main class="perfil-content">
+        <div class="admin-header-flex">
+            <h1>Produtos</h1>
+            <button class="btn-primary" id="btnAdicionar">
+                <i class="fas fa-plus"></i> Adicionar
+            </button>
+        </div>
+
+        <div class="card">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>NOME</th>
+                    <th>MARCA</th>
+                    <th>CATEGORIA</th>
+                    <th>PREÇO</th>
+                    <th style="text-align: right;">AÇÕES</th>
+                </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script>
+
+        // Configurações globais
+        const API_BASE = "http://localhost:2022/api";
+
+        // 1. FUNÇÃO DO HEADER E SEGURANÇA (O que você pediu)
+        async function atualizarHeader() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/verificar`, {
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // SEGURANÇA: Se não for administrador, volta para a index
+                    if (data.cargo !== 'ADMINISTRADOR' && data.role !== 'ADMIN') {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+
+                    // Pega os elementos
+                    const userName = document.getElementById('userName');
+                    const adminTitle = document.getElementById('adminTitle');
+                    const userLink = document.getElementById('userLink');
+
+                    const primeiroNome = data.nome ? data.nome.split(' ')[0] : "Admin";
+
+                    // Atualiza os textos
+                    if (userName) userName.textContent = `Olá, ${primeiroNome}`;
+                    if (adminTitle) adminTitle.textContent = `Admin: ${primeiroNome}`;
+
+                    // Ajusta o link para o perfil
+                    if (userLink) {
+                        userLink.href = 'perfil.html';
+                        userLink.onclick = null;
+                    }
+                } else {
+                    // Se não estiver logado, vai para o login
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+            }
+        }
+
+        // 2. FUNÇÃO DE LISTAGEM DOS PRODUTOS
+        async function carregarProdutos() {
+            const tableBody = document.getElementById('adminTableBody');
+            try {
+                const response = await fetch(`${API_BASE}/produtos`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('Erro ao buscar produtos');
+
+                const produtos = await response.json();
+                tableBody.innerHTML = '';
+
+                if (produtos.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Nenhum produto no banco.</td></tr>';
+                    return;
+                }
+
+                produtos.forEach(p => {
+                    const precoFormatado = new Intl.NumberFormat('pt-BR', {
+                        style: 'currency', currency: 'BRL'
+                    }).format(p.preco);
+
+                    const row = `
+                <tr>
+                    <td style="font-weight: 600;">${p.nome}</td>
+                    <td>${p.marca}</td>
+                    <td><span class="badge-categoria">${p.categoria}</span></td>
+                    <td style="font-weight: 600; color: #10b981;">${precoFormatado}</td>
+                    <td class="actions-cell">
+                        <button class="btn-action edit" onclick="editarProduto(${p.id})"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn-action delete" onclick="excluirProduto(${p.id})"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (error) {
+                console.error("Erro na listagem:", error);
+            }
+        }
+
+        // 3. FUNÇÃO DE LOGOUT
+        async function fazerLogout(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch(`${API_BASE}/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                if (response.ok) window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Erro ao sair:', error);
+            }
+        }
+
+        // 4. FUNÇÃO DE EXCLUSÃO
+        async function excluirProduto(id) {
+            if (!confirm('Deseja excluir este produto?')) return;
+            try {
+                const response = await fetch(`${API_BASE}/produtos/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (response.ok) carregarProdutos();
+            } catch (error) {
+                console.error('Erro ao excluir:', error);
+            }
+        }
+
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', () => {
+            atualizarHeader();   // Chama a segurança e header
+            carregarProdutos(); // Chama a lista
+
+            // Busca em tempo real
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll("#adminTableBody tr");
+                    rows.forEach(row => {
+                        row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -23,7 +23,7 @@
   --gray-600: #4b5563;
   --gray-700: #374151;
   --gray-800: #1f2937;
-  --gray-900: #111827;
+  --gray-900: #111b2f;
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
@@ -2131,4 +2131,5 @@ padding: 20px 10px;
   .info-grid {
     grid-template-columns: 1fr;
   }
+
 }

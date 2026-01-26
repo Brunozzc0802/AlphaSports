@@ -1,0 +1,161 @@
+/* ADMIN.CSS COMPLETO */
+
+/* 1. VARIÁVEIS E RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #dc2626;
+    --primary-dark: #b91c1c;
+    --white: #ffffff;
+    --red1: #d11507;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111826;
+    --error: #ef4444;
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    --radius: 8px;
+    --success: #10b981;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--white);
+    color: var(--gray-900);
+}
+
+/* 3. LAYOUT ADMIN (SIDEBAR + CONTENT) */
+.perfil-wrapper {
+    display: flex;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    gap: 30px;
+}
+
+.perfil-menu {
+    width: 280px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    height: fit-content;
+}
+
+.perfil-menu h3 {
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.perfil-menu ul { list-style: none; }
+.perfil-menu li {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--gray-50);
+    display: flex;
+    justify-content: space-between;
+    transition: 0.2s;
+}
+
+.perfil-menu li.active {
+    background: #fff5f5;
+    border-left: 4px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* 4. TABELA E COMPONENTES */
+.perfil-content { flex: 1; }
+
+.admin-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    background: var(--gray-100);
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 12px;
+    color: var(--gray-500);
+    text-transform: uppercase;
+}
+
+.admin-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--gray-50);
+    font-size: 14px;
+}
+
+.actions-cell {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.btn-action {
+    border: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action.edit {
+    background-color: #e0efff;
+    color: #2563eb;
+}
+
+
+.btn-action.delete {
+    background-color: #ffe4e4;
+    color: #dc2626;
+}
+
+.btn-action.edit:hover {
+    background-color: #e0efff;
+    transform: translateY(-2px);
+}
+
+.btn-action.delete:hover {
+    background-color: #ffe4e4;
+    transform: translateY(-2px);
+}
+
+/* Garante que o ícone do FontAwesome use a cor do botão */
+.btn-action i {
+    color: inherit;
+}

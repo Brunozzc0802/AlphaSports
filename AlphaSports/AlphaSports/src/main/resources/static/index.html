@@ -295,8 +295,22 @@
                 userName.textContent = `Olá, ${primeiroNome}`;
                 mobileUserLink.textContent = `Olá, ${primeiroNome}`;
 
-                userLink.href = 'perfil.html';
-                userLink.onclick = null;
+                // Remove o link direto para login.html e adiciona a lógica de cargo
+                userLink.href = "javascript:void(0)";
+
+                userLink.onclick = (event) => {
+                    event.preventDefault();
+                    // Verifica o cargo que vem do seu backend (ajuste 'admin' e 'cliente' conforme seu banco)
+                    if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'perfil.html';
+                    }
+                };
+
+                // Aplica a mesma lógica para o menu mobile
+                mobileUserLink.onclick = userLink.onclick;
+                mobileUserLink.href = "javascript:void(0)";
             }
         } catch (error) {
             console.error('Erro ao verificar autenticação:', error);
