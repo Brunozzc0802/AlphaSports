@@ -1,6 +1,4 @@
-/* ADMIN.CSS COMPLETO */
 
-/* 1. VARIÁVEIS E RESET */
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +12,8 @@
     --red1: #d11507;
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
+    --gray-200: #d20707;
+    --gray-300: #d1d5db;
     --gray-400: #9ca3af;
     --gray-500: #6b7280;
     --gray-700: #374151;
@@ -31,7 +30,6 @@ body {
     color: var(--gray-900);
 }
 
-/* 3. LAYOUT ADMIN (SIDEBAR + CONTENT) */
 .perfil-wrapper {
     display: flex;
     margin-top: 40px;
@@ -43,16 +41,18 @@ body {
     width: 280px;
     background: white;
     border-radius: var(--radius);
+    border : 1px solid #dc0b0b;
     box-shadow: var(--shadow);
     height: fit-content;
 }
 
 .perfil-menu h3 {
     padding: 20px;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 5px solid var(--gray-50);
 }
 
 .perfil-menu ul { list-style: none; }
+
 .perfil-menu li {
     padding: 15px 20px;
     cursor: pointer;
@@ -69,14 +69,20 @@ body {
     font-weight: 600;
 }
 
-/* 4. TABELA E COMPONENTES */
-.perfil-content { flex: 1; }
+.perfil-content {
+    flex: 1;
+}
 
 .admin-header-flex {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+}
+
+.admin-header-actions {
+    display: flex;
+    align-items: center;
 }
 
 .btn-primary {
@@ -88,6 +94,16 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transition: all 0.2s ease;
+    transform: translateY(-1px);
+}
+
+/* =======================
+   TABELA
+======================= */
 
 .card {
     background: white;
@@ -139,23 +155,249 @@ body {
     color: #2563eb;
 }
 
-
 .btn-action.delete {
     background-color: #ffe4e4;
     color: #dc2626;
 }
 
-.btn-action.edit:hover {
-    background-color: #e0efff;
+.btn-action:hover {
     transform: translateY(-2px);
 }
 
-.btn-action.delete:hover {
-    background-color: #ffe4e4;
-    transform: translateY(-2px);
-}
-
-/* Garante que o ícone do FontAwesome use a cor do botão */
 .btn-action i {
     color: inherit;
 }
+
+/* =======================
+   MODAL
+======================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: #fff;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 24px;
+    animation: slideUp .25s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--gray-400);
+}
+
+.modal-close:hover {
+    color: var(--gray-700);
+}
+
+/* =======================
+   FORM MODAL
+======================= */
+
+.modal-form label {
+    font-weight: 600;
+    margin-top: 18px;
+    display: block;
+    font-size: 14px;
+}
+
+.modal-form input,
+.modal-form textarea,
+.modal-form select {
+    width: 100%;
+    padding: 11px;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-300);
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.modal-form textarea {
+    resize: none;
+    min-height: 90px;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* =======================
+   UPLOAD
+======================= */
+
+.upload-box {
+    margin-top: 10px;
+    padding: 14px;
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius);
+    text-align: center;
+    cursor: pointer;
+    background: var(--gray-50);
+    transition: 0.2s;
+}
+
+.upload-box:hover {
+    border-color: var(--primary);
+    background: #fff5f5;
+}
+
+.upload-box input {
+    display: none;
+}
+
+.upload-box span {
+    font-size: 14px;
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+/* =======================
+   PREVIEW
+======================= */
+
+.image-preview {
+    margin-top: 12px;
+    height: 140px;
+    border-radius: var(--radius);
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-preview span {
+    font-size: 14px;
+    color: var(--gray-400);
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* =======================
+   ACTIONS
+======================= */
+
+.modal-actions {
+    margin-top: 26px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-100);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background: var(--gray-200);
+    color: var(--gray-700);
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: var(--gray-300);
+}
+.required{
+    color: var(--error); /* vermelho */
+    margin-left: 4px;
+}
+
+.input-error {
+    border: 2px solid var(--error) !important;
+    background: #fff5f5;
+}
+
+.ativo{
+
+    width: fit-content;
+    min-width: 70px;
+    height: 30px;
+    padding: 0 6px;
+    background-color: rgba(0, 255, 9, 0.2);
+    color: #166534; /* Verde escuro para leitura */
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tab-container {
+    display: inline-flex;
+    background-color: #e7e7e7;
+    padding: 3px;
+    border-radius: 12px;
+    font-family: inherit;
+    margin-right: 15px;
+}
+
+/* Estilo dos botões (Menores e com fonte reduzida) */
+.tab-button {
+    border: none;
+    outline: none;
+    padding: 6px 16px; /* Padding reduzido para ficar menor */
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 13px;    /* Fonte menor */
+    font-weight: 500;
+    background: transparent;
+    color: var(--gray-500);
+    transition: all 0.2s ease;
+}
+
+/* Estado ativo */
+.tab-button.active {
+    background-color: var(--white);
+    color: var(--gray-900);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+

@@ -17,7 +17,6 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-    // Listar todos os produtos ou por categoria
     @GetMapping
     public ResponseEntity<List<Produto>> listarProdutos(
             @RequestParam(required = false) String categoria,
@@ -30,7 +29,7 @@ public class ProdutoController {
         } else if (categoria != null && !categoria.isEmpty() && !categoria.equals("todos")) {
             produtos = produtoService.listarPorCategoria(categoria);
         } else {
-            produtos = produtoService.listarTodos();
+            produtos = produtoService.listarAtivos();
         }
 
         return ResponseEntity.ok(produtos);
@@ -49,6 +48,7 @@ public class ProdutoController {
     // Criar novo produto (apenas admin)
     @PostMapping
     public ResponseEntity<Produto> criarProduto(@RequestBody Produto produto) {
+        produto.setAtivo(true); // segurança extra
         Produto novoProduto = produtoService.salvar(produto);
         return ResponseEntity.ok(novoProduto);
     }
@@ -68,11 +68,11 @@ public class ProdutoController {
         return ResponseEntity.notFound().build();
     }
 
-    // Deletar produto (apenas admin)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProduto(@PathVariable Long id) {
-        boolean deletado = produtoService.deletar(id);
-        if (deletado) {
+        boolean desativado = produtoService.desativar(id);
+
+        if (desativado) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
@@ -90,19 +90,5 @@ public class ProdutoController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Erro ao fazer upload da imagem");
         }
-    }
-
-    // Listar produtos mais vendidos
-    @GetMapping("/mais-vendidos")
-    public ResponseEntity<List<Produto>> listarMaisVendidos() {
-        List<Produto> produtos = produtoService.listarMaisVendidos();
-        return ResponseEntity.ok(produtos);
-    }
-
-    // Listar novos produtos
-    @GetMapping("/novos")
-    public ResponseEntity<List<Produto>> listarNovos() {
-        List<Produto> produtos = produtoService.listarNovos();
-        return ResponseEntity.ok(produtos);
     }
 }

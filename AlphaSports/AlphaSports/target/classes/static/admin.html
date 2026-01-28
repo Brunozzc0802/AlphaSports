@@ -80,9 +80,17 @@
     <main class="perfil-content">
         <div class="admin-header-flex">
             <h1>Produtos</h1>
-            <button class="btn-primary" id="btnAdicionar">
-                <i class="fas fa-plus"></i> Adicionar
-            </button>
+
+            <div class="admin-header-actions">
+                <div class="tab-container">
+                    <button class="tab-button active" id="btnAtivo">Produtos Ativos</button>
+                    <button class="tab-button" id="btnInativo">Produtos Inativos</button>
+                </div>
+
+                <button class="btn-primary" id="btnAdicionar">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </div>
         </div>
 
         <div class="card">
@@ -93,6 +101,7 @@
                     <th>MARCA</th>
                     <th>CATEGORIA</th>
                     <th>PREÇO</th>
+                    <th>Status</th>
                     <th style="text-align: right;">AÇÕES</th>
                 </tr>
                 </thead>
@@ -103,9 +112,124 @@
 
     </main>
 
-    <script>
+    <!-- MODAL ADICIONAR PRODUTO -->
+    <div class="modal-overlay" id="modalProduto">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Adicionar Novo Produto</h2>
+                <button class="modal-close" id="fecharModal">&times;</button>
+            </div>
 
-        // Configurações globais
+            <form class="modal-form">
+                <label>Nome do Produto <span class="required"> * </span> </label>
+                <input type="text" class="required-field" placeholder="Ex: Camiseta Nike">
+
+                <div class="form-row">
+                    <div>
+                        <label>Marca <span class="required">*</span> </label>
+                        <select class="required-field">
+                            <option>Selecione uma marca</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Categoria <span class="required">*</span> </label>
+                        <select class="required-field">
+                            <option>Selecione uma categoria</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label>Preço (R$)<span class="required">*</span> </label>
+                        <input type="number" class="required-field" min="0" step="0.01">
+                    </div>
+                    <div>
+                        <label>Desconto (%)</label>
+                        <input type="number" min="0" value="0">
+                    </div>
+                </div>
+
+                <label>Descrição </label>
+                <textarea placeholder="Descreva o produto..."></textarea>
+
+                <!-- URL DA IMAGEM -->
+                <label>URL da Imagem</label>
+                <input type="text" id="imageUrlInput" placeholder="https://exemplo.com/imagem.jpg">
+
+                <!-- UPLOAD -->
+                <label>Ou envie uma imagem</label>
+                <div class="upload-box">
+                    <input type="file" id="imageFileInput" accept="image/png, image/jpeg">
+                    <span>Selecionar imagem (PNG ou JPG)</span>
+                </div>
+
+                <!-- PREVIEW -->
+                <div class="image-preview" id="imagePreview">
+                    <span>Prévia da imagem</span>
+                </div>
+
+                <label>Tamanhos<span class="required">*</span> </label>
+                <input type="text" class="required-field" placeholder="P, M, G, GG">
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelarModal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Adicionar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalProduto');
+        const btnAdicionar = document.getElementById('btnAdicionar');
+        const fecharModal = document.getElementById('fecharModal');
+        const cancelarModal = document.getElementById('cancelarModal');
+
+        const imageFileInput = document.getElementById('imageFileInput');
+        const imageUrlInput = document.getElementById('imageUrlInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        btnAdicionar.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        [fecharModal, cancelarModal].forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                resetPreview();
+            });
+        });
+
+        document.querySelector('.upload-box').addEventListener('click', () => {
+            imageFileInput.click();
+        });
+
+        imageFileInput.addEventListener('change', () => {
+            const file = imageFileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                imagePreview.innerHTML = `<img src="${e.target.result}">`;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        imageUrlInput.addEventListener('input', () => {
+            const url = imageUrlInput.value;
+            if (url.startsWith('http')) {
+                imagePreview.innerHTML = `<img src="${url}">`;
+            }
+        });
+
+        function resetPreview() {
+            imagePreview.innerHTML = `<span>Prévia da imagem</span>`;
+            imageFileInput.value = '';
+            imageUrlInput.value = '';
+        }
+
         const API_BASE = "http://localhost:2022/api";
 
         // 1. FUNÇÃO DO HEADER E SEGURANÇA (O que você pediu)
@@ -178,6 +302,7 @@
                     <td>${p.marca}</td>
                     <td><span class="badge-categoria">${p.categoria}</span></td>
                     <td style="font-weight: 600; color: #10b981;">${precoFormatado}</td>
+                    <td class="ativo">${p.ativo ? 'Ativo' : 'Inativo'}</td>
                     <td class="actions-cell">
                         <button class="btn-action edit" onclick="editarProduto(${p.id})"><i class="fas fa-pencil-alt"></i></button>
                         <button class="btn-action delete" onclick="excluirProduto(${p.id})"><i class="fas fa-trash-alt"></i></button>
@@ -235,6 +360,48 @@
                 });
             }
         });
+
+        const form = document.querySelector('.modal-form');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); // bloqueia envio por enquanto
+
+            let valido = true;
+
+            const camposObrigatorios = form.querySelectorAll('.required-field');
+
+            camposObrigatorios.forEach(campo => {
+                campo.classList.remove('input-error');
+
+                if (
+                    campo.value === '' ||
+                    campo.value === null ||
+                    campo.value.trim() === ''
+                ) {
+                    campo.classList.add('input-error');
+                    valido = false;
+                }
+            });
+
+            // valida imagem (URL OU upload)
+            if (
+                imageFileInput.files.length === 0 &&
+                imageUrlInput.value.trim() === ''
+            ) {
+                alert('Informe uma imagem (URL ou upload)');
+                valido = false;
+            }
+
+            if (!valido) {
+                alert('Preencha todos os campos obrigatórios (*)');
+                return;
+            }
+
+            // ✅ AQUI DEPOIS VOCÊ CONECTA COM O BACKEND
+            alert('Formulário válido ✔');
+        });
+
+
     </script>
 
 </body>

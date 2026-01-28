@@ -24,9 +24,6 @@ public class Produto {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
-    @Column(name = "preco_original", precision = 10, scale = 2)
-    private BigDecimal precoOriginal;
-
     @Column
     private Integer desconto;
 
@@ -36,38 +33,23 @@ public class Produto {
     @Column
     private String imagem;
 
-    @Column(name = "avaliacoes_media")
-    private Double avaliacao;
-
-    @Column(name = "numero_avaliacoes")
-    private Integer numeroAvaliacoes;
 
     @Column
     private String tamanhos; // JSON array: ["P", "M", "G", "GG"]
 
-    @Column(name = "mais_vendido")
-    private Boolean maisVendido;
-
-    @Column
-    private Boolean novo;
-
     @Column(name = "estoque")
     private Integer estoque;
+
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo = true;
 
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
 
-    @Column(name = "data_atualizacao")
-    private LocalDateTime dataAtualizacao;
-
-    // Construtores
     public Produto() {
         this.dataCriacao = LocalDateTime.now();
-        this.maisVendido = false;
-        this.novo = false;
         this.desconto = 0;
-        this.avaliacao = 4.5;
-        this.numeroAvaliacoes = 0;
+        this.ativo = true;
     }
 
     // Getters e Setters
@@ -111,14 +93,6 @@ public class Produto {
         this.preco = preco;
     }
 
-    public BigDecimal getPrecoOriginal() {
-        return precoOriginal;
-    }
-
-    public void setPrecoOriginal(BigDecimal precoOriginal) {
-        this.precoOriginal = precoOriginal;
-    }
-
     public Integer getDesconto() {
         return desconto;
     }
@@ -143,44 +117,12 @@ public class Produto {
         this.imagem = imagem;
     }
 
-    public Double getAvaliacao() {
-        return avaliacao;
-    }
-
-    public void setAvaliacao(Double avaliacao) {
-        this.avaliacao = avaliacao;
-    }
-
-    public Integer getNumeroAvaliacoes() {
-        return numeroAvaliacoes;
-    }
-
-    public void setNumeroAvaliacoes(Integer numeroAvaliacoes) {
-        this.numeroAvaliacoes = numeroAvaliacoes;
-    }
-
     public String getTamanhos() {
         return tamanhos;
     }
 
     public void setTamanhos(String tamanhos) {
         this.tamanhos = tamanhos;
-    }
-
-    public Boolean getMaisVendido() {
-        return maisVendido;
-    }
-
-    public void setMaisVendido(Boolean maisVendido) {
-        this.maisVendido = maisVendido;
-    }
-
-    public Boolean getNovo() {
-        return novo;
-    }
-
-    public void setNovo(Boolean novo) {
-        this.novo = novo;
     }
 
     public Integer getEstoque() {
@@ -191,6 +133,10 @@ public class Produto {
         this.estoque = estoque;
     }
 
+    public Boolean getAtivo() { return ativo; }
+
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
@@ -199,16 +145,4 @@ public class Produto {
         this.dataCriacao = dataCriacao;
     }
 
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
-
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.dataAtualizacao = LocalDateTime.now();
-    }
 }

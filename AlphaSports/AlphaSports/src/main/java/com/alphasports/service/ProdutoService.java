@@ -37,6 +37,8 @@ public class ProdutoService {
         return produtoRepository.findById(id).orElse(null);
     }
 
+    public List<Produto> listarAtivos() { return produtoRepository.findByAtivo(true);}
+
     public Produto salvar(Produto produto) {
         return produtoRepository.save(produto);
     }
@@ -48,12 +50,12 @@ public class ProdutoService {
         return null;
     }
 
-    public boolean deletar(Long id) {
-        if (produtoRepository.existsById(id)) {
-            produtoRepository.deleteById(id);
+    public boolean desativar(Long id) {
+        return produtoRepository.findById(id).map(produto -> {
+            produto.setAtivo(false);
+            produtoRepository.save(produto);
             return true;
-        }
-        return false;
+        }).orElse(false);
     }
 
     public String salvarImagem(Long produtoId, MultipartFile file) throws Exception {
@@ -83,14 +85,6 @@ public class ProdutoService {
         produtoRepository.save(produto);
 
         return urlImagem;
-    }
-
-    public List<Produto> listarMaisVendidos() {
-        return produtoRepository.findByMaisVendidoTrue();
-    }
-
-    public List<Produto> listarNovos() {
-        return produtoRepository.findByNovoTrue();
     }
 
     public List<Produto> listarPorMarca(String marca) {
