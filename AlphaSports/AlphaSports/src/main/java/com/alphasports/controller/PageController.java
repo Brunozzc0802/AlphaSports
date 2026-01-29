@@ -1,4 +1,3 @@
-
 package com.alphasports.controller;
 
 import org.springframework.stereotype.Controller;
@@ -9,6 +8,6 @@ public class PageController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/index.html";
+        return "index";
     }
 }

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - AlphaSports</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="/">
+                    <img th:src="@{/images/logoRed.png}" alt="AlphaSports">
+                </a>
+                <h1>Bem-vindo de volta!</h1>
+                <p>Entre na sua conta para continuar</p>
+            </div>
+
+            <!-- Mensagens de erro/sucesso -->
+            <div th:if="${erro}" class="alert alert-danger" role="alert">
+                <span th:text="${erro}"></span>
+            </div>
+
+            <form th:action="@{/api/auth/login}" th:object="${loginRequest}" method="post" id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input
+                            type="email"
+                            id="email"
+                            th:field="*{email}"
+                            placeholder="seu@email.com"
+                            th:classappend="${#fields.hasErrors('email')} ? 'error' : ''"
+                            required>
+                    <span class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input
+                            type="password"
+                            id="senha"
+                            th:field="*{senha}"
+                            placeholder="Sua senha"
+                            th:classappend="${#fields.hasErrors('senha')} ? 'error' : ''"
+                            required>
+                    <span class="error-message" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></span>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember">
+                        <span>Lembrar de mim</span>
+                    </label>
+                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary auth-btn" id="loginButton">
+                    Entrar
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Não tem uma conta? <a th:href="@{/cadastro}">Cadastre-se</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/script.js}"></script>
+<script>
+    // Validação no cliente (opcional, pois o servidor já valida)
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const email = document.getElementById('email');
+        const senha = document.getElementById('senha');
+
+        // Limpar erros anteriores
+        document.querySelectorAll('.error-message').forEach(el => {
+            if (!el.textContent.trim()) {
+                el.style.display = 'none';
+            }
+        });
+
+        // Validação simples do lado do cliente
+        let isValid = true;
+
+        if (!email.value || !email.value.includes('@')) {
+            const errorEl = email.nextElementSibling;
+            if (errorEl && errorEl.classList.contains('error-message')) {
+                errorEl.textContent = 'Digite um e-mail válido';
+                errorEl.style.display = 'block';
+            }
+            email.classList.add('error');
+            isValid = false;
+        } else {
+            email.classList.remove('error');
+        }
+
+        if (!senha.value || senha.value.length < 6) {
+            const errorEl = senha.nextElementSibling;
+            if (errorEl && errorEl.classList.contains('error-message')) {
+                errorEl.textContent = 'A senha deve ter pelo menos 6 caracteres';
+                errorEl.style.display = 'block';
+            }
+            senha.classList.add('error');
+            isValid = false;
+        } else {
+            senha.classList.remove('error');
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Desabilitar botão durante o envio
+        const loginButton = document.getElementById('loginButton');
+        loginButton.disabled = true;
+        loginButton.textContent = 'Entrando...';
+    });
+
+    // Mostrar mensagem de sucesso se houver
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert-danger');
+        if (alerts.length > 0) {
+            // Erro será exibido automaticamente pelo Thymeleaf
+            console.log('Erro ao fazer login');
+        }
+    });
+</script>
+</body>
+</html>

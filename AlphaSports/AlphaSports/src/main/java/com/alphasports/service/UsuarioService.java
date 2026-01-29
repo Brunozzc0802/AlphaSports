@@ -1,6 +1,5 @@
 package com.alphasports.service;
 
-
 import com.alphasports.dto.LoginRequest;
 import com.alphasports.dto.RegistroRequest;
 import com.alphasports.dto.UsuarioPerfilUpdateRequest;
@@ -10,8 +9,10 @@ import com.alphasports.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UsuarioService {
 
     @Autowired
@@ -21,22 +22,25 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     public Usuario registrar(RegistroRequest request) {
+        // Validações de campos vazios
+        validarRegistroRequest(request);
+
 
         if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Esse Email já está cadastrado");
+            throw new RuntimeException("Este email já está cadastrado");
         }
 
-        if (usuarioRepository.existsByCpf((request.getCpf()))) {
-            throw new RuntimeException("Esse CPF já está cadastrado");
+        if (usuarioRepository.existsByCpf(request.getCpf())) {
+            throw new RuntimeException("Este CPF já está cadastrado");
         }
 
-        if (usuarioRepository.existsByTelefone(((request.getTelefone())))) {
-            throw new RuntimeException("Esse telefone já está cadastrado");
+        if (usuarioRepository.existsByTelefone(request.getTelefone())) {
+            throw new RuntimeException("Este telefone já está cadastrado");
         }
 
         Usuario usuario = new Usuario();
         usuario.setNome(request.getNome());
-        usuario.setEmail(request.getEmail());
+        usuario.setEmail(request.getEmail().toLowerCase().trim());
         usuario.setCpf(request.getCpf());
         usuario.setTelefone(request.getTelefone());
         usuario.setSenha(passwordEncoder.encode(request.getSenha()));
@@ -45,49 +49,61 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-
-
     public Usuario autenticar(LoginRequest request) {
-        System.out.println("=== DEBUG LOGIN ===");
-        System.out.println("Email recebido: " + request.getEmail());
-        System.out.println("Senha recebida: " + request.getSenha());
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new RuntimeException("Email é obrigatório");
+        }
+        if (request.getSenha() == null || request.getSenha().isBlank()) {
+            throw new RuntimeException("Senha é obrigatória");
+        }
 
-        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> {
-                    System.out.println("ERRO: Usuário não encontrado no banco");
-                    return new RuntimeException("Email ou senha incorretos");
-                });
+        String emailNormalizado = request.getEmail().toLowerCase().trim();
 
-        System.out.println("Usuário encontrado: " + usuario.getNome());
-        System.out.println("Hash no banco: " + usuario.getSenha());
+        Usuario usuario = usuarioRepository.findByEmail(emailNormalizado)
+                .orElseThrow(() -> new RuntimeException("Email ou senha incorretos"));
 
         boolean senhaCorreta = passwordEncoder.matches(request.getSenha(), usuario.getSenha());
-        System.out.println("Senha corresponde? " + senhaCorreta);
 
         if (!senhaCorreta) {
-            System.out.println("ERRO: Senha não corresponde");
             throw new RuntimeException("Email ou senha incorretos");
         }
 
-        System.out.println("Login bem-sucedido!");
         return usuario;
     }
 
     public Usuario buscarPorId(Long id) {
+        if (id == null || id <= 0) {
+            throw new RuntimeException("ID inválido");
+        }
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
-    public Usuario atualizarPerfil(Long id, UsuarioPerfilUpdateRequest request) {
-
-        Usuario usuario = usuarioRepository.findById(id)
+    public Usuario buscarPorEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new RuntimeException("Email é obrigatório");
+        }
+        return usuarioRepository.findByEmail(email.toLowerCase().trim())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
 
-        usuario.setNome(request.getNome());
-        usuario.setEmail(request.getEmail());
+    public Usuario atualizarPerfil(Long id, UsuarioPerfilUpdateRequest request) {
+        Usuario usuario = buscarPorId(id);
+
+
+        if (request.getNome() == null || request.getNome().isBlank()) {
+            throw new RuntimeException("Nome é obrigatório");
+        }
+
+        if (!usuario.getEmail().equals(request.getEmail())) {
+            if (usuarioRepository.existsByEmail(request.getEmail())) {
+                throw new RuntimeException("Este email já está cadastrado");
+            }
+        }
+        usuario.setNome(request.getNome().trim());
+        usuario.setEmail(request.getEmail().toLowerCase().trim());
         usuario.setTelefone(request.getTelefone());
 
-        // Atualiza senha somente se o campo foi preenchido
         if (request.getSenha() != null && !request.getSenha().isBlank()) {
             usuario.setSenha(passwordEncoder.encode(request.getSenha()));
         }
@@ -95,4 +111,36 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    private void validarRegistroRequest(RegistroRequest request) {
+        if (request.getNome() == null || request.getNome().isBlank()) {
+            throw new RuntimeException("Nome é obrigatório");
+        }
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new RuntimeException("Email é obrigatório");
+        }
+        if (request.getCpf() == null || request.getCpf().isBlank()) {
+            throw new RuntimeException("CPF é obrigatório");
+        }
+        if (request.getTelefone() == null || request.getTelefone().isBlank()) {
+            throw new RuntimeException("Telefone é obrigatório");
+        }
+        if (request.getSenha() == null || request.getSenha().isBlank()) {
+            throw new RuntimeException("Senha é obrigatória");
+        }
+        if (request.getSenha().length() < 6) {
+            throw new RuntimeException("Senha deve ter no mínimo 6 caracteres");
+        }
+    }
+
+    public boolean emailJaExiste(String email) {
+        return usuarioRepository.existsByEmail(email.toLowerCase().trim());
+    }
+
+    public boolean cpfJaExiste(String cpf) {
+        return usuarioRepository.existsByCpf(cpf);
+    }
+
+    public boolean telefoneJaExiste(String telefone) {
+        return usuarioRepository.existsByTelefone(telefone);
+    }
 }

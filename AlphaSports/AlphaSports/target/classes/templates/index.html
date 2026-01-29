@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaSports - Loja de Esportes</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,8 +21,8 @@
 <!-- Header -->
 <header class="header">
     <div class="container header-content">
-        <a href="index.html" class="logo">
-            <img src="/images/Logo.png" alt="AlphaSports">
+        <a href="/" class="logo">
+            <img th:src="@{/images/Logo.png}" alt="AlphaSports">
         </a>
 
         <div class="search-bar">
@@ -34,12 +34,12 @@
 
         <nav class="header-nav">
             <div class="nav-link user-dropdown-container" id="userInfo">
-                <a href="login.html" class="nav-link user-link" id="userLink">
+                <a th:href="@{/login}" class="nav-link user-link" id="userLink">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span id="userName">Entrar</span>
                 </a>
             </div>
-            <a href="carrinho.html" class="nav-link cart-link">
+            <a th:href="@{/carrinho}" class="nav-link cart-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
                 <span>Carrinho</span>
                 <span class="cart-count" id="cartCount">0</span>
@@ -60,14 +60,14 @@
     <nav class="categories-nav">
         <div class="container">
             <ul class="categories-list">
-                <li><a href="produtos.html?categoria=todos">Todos</a></li>
-                <li><a href="produtos.html?categoria=calcados">Calçados</a></li>
-                <li><a href="produtos.html?categoria=roupas">Roupas</a></li>
-                <li><a href="produtos.html?categoria=equipamentos">Equipamentos</a></li>
-                <li><a href="produtos.html?categoria=futebol">Futebol</a></li>
-                <li><a href="produtos.html?categoria=corrida">Corrida</a></li>
-                <li><a href="produtos.html?categoria=fitness">Fitness</a></li>
-                <li><a href="produtos.html" class="promo-link">Promoções</a></li>
+                <li><a th:href="@{/produtos(categoria=todos)}">Todos</a></li>
+                <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
+                <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
+                <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
+                <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
+                <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
+                <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
+                <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
             </ul>
         </div>
     </nav>
@@ -82,28 +82,28 @@
         </button>
     </div>
     <nav class="mobile-nav">
-        <a href="login.html" id="mobileUserLink">Entrar / Cadastrar</a>
-        <a href="produtos.html?categoria=todos">Todos</a>
-        <a href="produtos.html?categoria=calcados">Calçados</a>
-        <a href="produtos.html?categoria=roupas">Roupas</a>
-        <a href="produtos.html?categoria=equipamentos">Equipamentos</a>
-        <a href="produtos.html?categoria=futebol">Futebol</a>
-        <a href="produtos.html?categoria=corrida">Corrida</a>
-        <a href="produtos.html?categoria=fitness">Fitness</a>
-        <a href="carrinho.html">Carrinho</a>
+        <a th:href="@{/login}" id="mobileUserLink">Entrar / Cadastrar</a>
+        <a th:href="@{/produtos(categoria=todos)}">Todos</a>
+        <a th:href="@{/produtos(categoria=calcados)}">Calçados</a>
+        <a th:href="@{/produtos(categoria=roupas)}">Roupas</a>
+        <a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a>
+        <a th:href="@{/produtos(categoria=futebol)}">Futebol</a>
+        <a th:href="@{/produtos(categoria=corrida)}">Corrida</a>
+        <a th:href="@{/produtos(categoria=fitness)}">Fitness</a>
+        <a th:href="@{/carrinho}">Carrinho</a>
     </nav>
 </div>
 
 <!-- Hero Banner -->
 <section class="banner-slider">
     <div class="banner-slide active">
-        <a href="produtos.html">
-            <img src="/images/banner1.png" alt="AlphaSports">
+        <a th:href="@{/produtos}">
+            <img th:src="@{/images/banner1.png}" alt="AlphaSports">
         </a>
     </div>
     <div class="banner-slide">
-        <a href="produtos.html">
-            <img src="/images/banner2.png" alt="AlphaSports">
+        <a th:href="@{/produtos}">
+            <img th:src="@{/images/banner2.png}" alt="AlphaSports">
         </a>
     </div>
 
@@ -121,39 +121,39 @@
     <div class="container">
         <h2 class="section-title">Categorias</h2>
         <div class="categories-grid">
-            <a href="produtos.html?categoria=todos" class="category-card">
+            <a th:href="@{/produtos(categoria=todos)}" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/todos.png" alt="Todos os Produtos">
+                    <img th:src="@{/images/todos.png}" alt="Todos os Produtos">
                 </div>
                 <span>Todos</span>
             </a>
-            <a href="produtos.html?categoria=calcados" class="category-card">
+            <a th:href="@{/produtos(categoria=calcados)}" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/calcados.png" alt="Calçados">
+                    <img th:src="@{/images/calcados.png}" alt="Calçados">
                 </div>
                 <span>Calçados</span>
             </a>
-            <a href="produtos.html?categoria=roupas" class="category-card">
+            <a th:href="@{/produtos(categoria=roupas)}" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/roupas.png" alt="Roupas">
+                    <img th:src="@{/images/roupas.png}" alt="Roupas">
                 </div>
                 <span>Roupas</span>
             </a>
-            <a href="produtos.html?categoria=equipamentos" class="category-card">
+            <a th:href="@{/produtos(categoria=equipamentos)}" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/equipamentos.png" alt="Equipamentos">
+                    <img th:src="@{/images/equipamentos.png}" alt="Equipamentos">
                 </div>
                 <span>Equipamentos</span>
             </a>
-            <a href="produtos.html?categoria=futebol" class="category-card">
+            <a th:href="@{/produtos(categoria=futebol)}" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/futebol.png" alt="Futebol">
+                    <img th:src="@{/images/futebol.png}" alt="Futebol">
                 </div>
                 <span>Futebol</span>
             </a>
-            <a href="produtos.html?categoria=corrida" class="category-card">
+            <a th:href="@{/produtos(categoria=corrida)}" class="category-card">
                 <div class="category-icon">
-                    <img src="/images/corrida.png" alt="Corrida">
+                    <img th:src="@{/images/corrida.png}" alt="Corrida">
                 </div>
                 <span>Corrida</span>
             </a>
@@ -166,7 +166,7 @@
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">Mais Vendidos</h2>
-            <a href="produtos.html" class="see-all">Ver todos</a>
+            <a th:href="@{/produtos}" class="see-all">Ver todos</a>
         </div>
         <div class="products-grid" id="bestSellersGrid">
             <!-- Products will be inserted by JavaScript from database -->
@@ -181,7 +181,7 @@
             <div class="promo-content">
                 <h2>Cadastre-se e ganhe até 50% OFF</h2>
                 <p>Na sua primeira compra</p>
-                <a href="cadastro.html" class="btn btn-white">Cadastrar Agora</a>
+                <a th:href="@{/cadastro}" class="btn btn-white">Cadastrar Agora</a>
             </div>
         </div>
     </div>
@@ -192,23 +192,23 @@
     <div class="container">
         <h2 class="section-title">Marcas</h2>
         <div class="brands-grid">
-            <a href="produtos.html?marca=nike" class="brand-card">
-                <img src="/images/nike logo.png" alt="Nike" class="nike">
+            <a th:href="@{/produtos(marca=nike)}" class="brand-card">
+                <img th:src="@{/images/nike logo.png}" alt="Nike" class="nike">
             </a>
-            <a href="produtos.html?marca=adidas" class="brand-card">
-                <img src="/images/adidas logo.png" alt="Adidas" class="adidas">
+            <a th:href="@{/produtos(marca=adidas)}" class="brand-card">
+                <img th:src="@{/images/adidas logo.png}" alt="Adidas" class="adidas">
             </a>
-            <a href="produtos.html?marca=puma" class="brand-card">
-                <img src="/images/puma logo.png" alt="Puma" class="puma">
+            <a th:href="@{/produtos(marca=puma)}" class="brand-card">
+                <img th:src="@{/images/puma logo.png}" alt="Puma" class="puma">
             </a>
-            <a href="produtos.html?marca=mizuno" class="brand-card">
-                <img src="/images/mizuno logo.png" alt="Mizuno" class="mizuno">
+            <a th:href="@{/produtos(marca=mizuno)}" class="brand-card">
+                <img th:src="@{/images/mizuno logo.png}" alt="Mizuno" class="mizuno">
             </a>
-            <a href="produtos.html?marca=asics" class="brand-card">
-                <img src="/images/asics logo.png" alt="Asics" class="asics">
+            <a th:href="@{/produtos(marca=asics)}" class="brand-card">
+                <img th:src="@{/images/asics logo.png}" alt="Asics" class="asics">
             </a>
-            <a href="produtos.html?marca=under-armour" class="brand-card">
-                <img src="/images/under armour logo.png" alt="Under Armour" class="under-armour">
+            <a th:href="@{/produtos(marca=under-armour)}" class="brand-card">
+                <img th:src="@{/images/under armour logo.png}" alt="Under Armour" class="under-armour">
             </a>
         </div>
     </div>
@@ -219,7 +219,7 @@
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">Lançamentos</h2>
-            <a href="produtos.html" class="see-all">Ver todos</a>
+            <a th:href="@{/produtos}" class="see-all">Ver todos</a>
         </div>
         <div class="products-grid" id="newArrivalsGrid">
             <!-- Products will be inserted by JavaScript from database -->
@@ -232,7 +232,7 @@
     <div class="container">
         <div class="footer-grid">
             <div class="footer-col">
-                <img src="/images/Logo.png" alt="AlphaSports" class="footer-logo">
+                <img th:src="@{/images/Logo.png}" alt="AlphaSports" class="footer-logo">
                 <p>Sua loja de artigos esportivos com as melhores marcas e preços.</p>
                 <div class="social-links">
                     <a href="#" aria-label="Facebook">
@@ -265,7 +265,7 @@
                 <h4>Minha Conta</h4>
                 <ul>
                     <li><a href="#">Meus Pedidos</a></li>
-                    <li><a href="carrinho.html">Carrinho</a></li>
+                    <li><a th:href="@{/carrinho}">Carrinho</a></li>
                 </ul>
             </div>
         </div>
@@ -275,13 +275,13 @@
     </div>
 </footer>
 
-
-<script src="script.js"></script>
+<script th:src="@{/js/script.js}"></script>
 
 <script>
     async function atualizarHeader() {
         try {
-            const response = await fetch('http://localhost:2022/api/auth/verificar', {
+            // ✅ Usar a porta correta do Spring Boot (8080, não 2022)
+            const response = await fetch('/api/auth/verificar', {
                 credentials: 'include'
             });
 
@@ -300,11 +300,11 @@
 
                 userLink.onclick = (event) => {
                     event.preventDefault();
-                    // Verifica o cargo que vem do seu backend (ajuste 'admin' e 'cliente' conforme seu banco)
+                    // Verifica o cargo que vem do seu backend
                     if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
-                        window.location.href = 'admin.html';
+                        window.location.href = '/admin';
                     } else {
-                        window.location.href = 'perfil.html';
+                        window.location.href = '/perfil';
                     }
                 };
 
@@ -377,7 +377,8 @@
         event.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:2022/api/auth/logout', {
+            // ✅ Usar a porta correta do Spring Boot (8080, não 2022)
+            const response = await fetch('/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -388,7 +389,7 @@
                     showToast('Logout realizado com sucesso!', 'success');
                 }
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = '/login';
                 }, 1000);
             }
         } catch (error) {

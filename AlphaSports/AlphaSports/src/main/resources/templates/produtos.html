@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - AlphaSports</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+    <div class="container top-bar-content">
+        <span>Frete grátis para todos os produtos</span>
+        <span>Atendimento: (42) 99837-9401</span>
+    </div>
+</div>
+
+<!-- Header -->
+<header class="header">
+    <div class="container header-content">
+
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/images/Logo.png}" alt="AlphaSports">
+        </a>
+
+        <!-- Busca -->
+        <form class="search-bar" th:action="@{/produtos}" method="get">
+            <input type="text" name="busca" placeholder="Buscar produtos...">
+            <button class="search-btn" type="submit">
+                🔍
+            </button>
+        </form>
+
+        <!-- Nav -->
+        <nav class="header-nav">
+
+            <a th:href="${usuario != null} ? @{/perfil} : @{/login}"
+               class="nav-link user-link">
+                <span th:if="${usuario != null}"
+                      th:text="'Olá, ' + ${#strings.substringBefore(usuario.nome,' ')}"></span>
+                <span th:if="${usuario == null}">Entrar</span>
+            </a>
+
+            <a th:href="@{/carrinho}" class="nav-link cart-link">
+                Carrinho
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+
+            <a th:if="${usuario != null}"
+               th:href="@{/logout}"
+               class="nav-link cart-link">
+                Sair
+            </a>
+        </nav>
+    </div>
+
+    <!-- Categories -->
+    <nav class="categories-nav">
+        <div class="container">
+            <ul class="categories-list">
+                <li><a th:href="@{/produtos}">Todos</a></li>
+                <li><a th:href="@{/produtos(categoria='calcados')}">Calçados</a></li>
+                <li><a th:href="@{/produtos(categoria='roupas')}">Roupas</a></li>
+                <li><a th:href="@{/produtos(categoria='equipamentos')}">Equipamentos</a></li>
+                <li><a th:href="@{/produtos(categoria='futebol')}">Futebol</a></li>
+                <li><a th:href="@{/produtos(categoria='corrida')}">Corrida</a></li>
+                <li><a th:href="@{/produtos(categoria='fitness')}">Fitness</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- Conteúdo -->
+<main class="products-page">
+    <div class="container">
+        <div class="products-layout">
+
+            <!-- Sidebar simples (server-side) -->
+            <aside class="filters-sidebar">
+                <h3>Categorias</h3>
+                <ul>
+                    <li><a th:href="@{/produtos}">Todas</a></li>
+                    <li><a th:href="@{/produtos(categoria='calcados')}">Calçados</a></li>
+                    <li><a th:href="@{/produtos(categoria='roupas')}">Roupas</a></li>
+                    <li><a th:href="@{/produtos(categoria='fitness')}">Fitness</a></li>
+                </ul>
+            </aside>
+
+            <!-- Produtos -->
+            <div class="products-content">
+
+                <div class="products-header">
+                    <span class="results-count"
+                          th:text="${produtos.size()} + ' produtos encontrados'"></span>
+                </div>
+
+                <div class="products-grid">
+
+                    <div class="product-card"
+                         th:each="p : ${produtos}">
+
+                        <div class="product-image">
+                            <a th:href="@{/produto/{id}(id=${p.id})}">
+                                <img th:src="${p.imagem}"
+                                     th:alt="${p.nome}">
+                            </a>
+
+                            <span class="product-badge"
+                                  th:if="${p.desconto != null and p.desconto > 0}"
+                                  th:text="'-' + ${p.desconto} + '%'"></span>
+                        </div>
+
+                        <div class="product-info">
+                            <span class="product-brand"
+                                  th:text="${p.marca}"></span>
+
+                            <h3 class="product-name"
+                                th:text="${p.nome}"></h3>
+
+                            <div class="product-price">
+                                <span class="current-price"
+                                      th:text="${#numbers.formatCurrency(p.preco)}"></span>
+                            </div>
+
+                            <button class="add-to-cart-btn"
+                                    th:onclick="'addToCart(' + ${p.id} + ')'">
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- vazio -->
+                    <div th:if="${produtos.isEmpty()}"
+                         style="grid-column:1/-1; text-align:center;">
+                        <h3>Nenhum produto encontrado</h3>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 AlphaSports. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

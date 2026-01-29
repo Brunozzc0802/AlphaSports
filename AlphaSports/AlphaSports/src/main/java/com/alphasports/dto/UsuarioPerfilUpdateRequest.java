@@ -1,41 +1,40 @@
 package com.alphasports.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
 public class UsuarioPerfilUpdateRequest {
 
+ @NotBlank(message = "Nome é obrigatório")
+ @Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
  private String nome;
+
+ @NotBlank(message = "Email é obrigatório")
+ @Email(message = "Email inválido")
  private String email;
+
+ @NotBlank(message = "Telefone é obrigatório")
+ @Size(min = 10, max = 15, message = "Telefone inválido")
  private String telefone;
+
+ @Size(min = 6, max = 50, message = "Senha deve ter entre 6 e 50 caracteres")
  private String senha;
 
- public String getNome() {
-  return nome;
- }
+ private String senhaConfirmacao;
 
- public void setNome(String nome) {
-  this.nome = nome;
- }
+ public boolean senhasValidas() {
 
- public String getEmail() {
-  return email;
- }
+  if ((senha == null || senha.isBlank()) && (senhaConfirmacao == null || senhaConfirmacao.isBlank())) {
+   return true;
+  }
 
- public void setEmail(String email) {
-  this.email = email;
- }
+  if ((senha == null || senha.isBlank()) || (senhaConfirmacao == null || senhaConfirmacao.isBlank())) {
+   return false;
+  }
 
- public String getTelefone() {
-  return telefone;
- }
-
- public void setTelefone(String telefone) {
-  this.telefone = telefone;
- }
-
- public String getSenha() {
-  return senha;
- }
-
- public void setSenha(String senha) {
-  this.senha = senha;
+  return this.senha.equals(this.senhaConfirmacao);
  }
 }
