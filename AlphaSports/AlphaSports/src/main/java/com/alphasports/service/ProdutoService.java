@@ -16,8 +16,12 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    public List<Produto> listarTodos() {
-        return produtoRepository.findAll();
+    public List<Produto> listarAtivo() {
+        return produtoRepository.findByAtivoTrueOrderById();
+    }
+
+    public List<Produto> listarInativo() {
+        return produtoRepository.findByAtivoFalseOrderById();
     }
 
     public List<Produto> buscarPorCategoria(String categoria) {
@@ -67,13 +71,5 @@ public class ProdutoService {
 
     public List<Produto> buscarPorMarca(String marca) {
         return produtoRepository.findByMarca(marca);
-    }
-
-    public List<Produto> listarAtivos() {
-        return produtoRepository.findByAtivo(true);
-    }
-
-    public List<Produto> listarInativos() {
-        return produtoRepository.findByAtivo(false);
     }
 }

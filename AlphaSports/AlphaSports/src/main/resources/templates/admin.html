@@ -105,6 +105,26 @@
                 </tr>
                 </thead>
                 <tbody id="adminTableBody">
+                <tr th:each="p : ${ListaAtivos}">
+                    <td style="font-weight: 600;" th:text="${p.nome}">Nome</td>
+                    <td th:text="${p.marca}">Marca</td>
+                    <td><span class="badge-categoria" th:text="${p.categoria}">Categoria</span></td>
+                    <td style="font-weight: 600; color: #10b981;">
+                        R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
+                    </td>
+                    <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
+                        th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
+                    <td class="actions-cell">
+                        <a th:href="@{/admin/produtos/editar/{id}(id=${p.id})}" class="btn-action edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <a th:href="@{/admin/produtos/desativar/{id}(id=${p.id})}"
+                           class="btn-action delete"
+                           onclick="return confirm('Deseja desativar este produto?')">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -268,47 +288,6 @@
             }
         }
 
-        async function carregarProdutos() {
-            const tableBody = document.getElementById('adminTableBody');
-            try {
-                const response = await fetch(`/api/produtos`, {
-                    credentials: 'include'
-                });
-
-                if (!response.ok) throw new Error('Erro ao buscar produtos');
-
-                const produtos = await response.json();
-                tableBody.innerHTML = '';
-
-                if (produtos.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Nenhum produto no banco.</td></tr>';
-                    return;
-                }
-
-                produtos.forEach(p => {
-                    const precoFormatado = new Intl.NumberFormat('pt-BR', {
-                        style: 'currency', currency: 'BRL'
-                    }).format(p.preco);
-
-                    const row = `
-                <tr>
-                    <td style="font-weight: 600;">${p.nome}</td>
-                    <td>${p.marca}</td>
-                    <td><span class="badge-categoria">${p.categoria}</span></td>
-                    <td style="font-weight: 600; color: #10b981;">${precoFormatado}</td>
-                    <td class="ativo">${p.ativo ? 'Ativo' : 'Inativo'}</td>
-                    <td class="actions-cell">
-                        <button class="btn-action edit" onclick="editarProduto(${p.id})"><i class="fas fa-pencil-alt"></i></button>
-                        <button class="btn-action delete" onclick="excluirProduto(${p.id})"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                </tr>`;
-                    tableBody.insertAdjacentHTML('beforeend', row);
-                });
-            } catch (error) {
-                console.error("Erro na listagem:", error);
-            }
-        }
-
         async function fazerLogout(event) {
             event.preventDefault();
 
@@ -349,7 +328,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             atualizarHeader();
-            carregarProdutos();
 
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {

@@ -15,5 +15,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByMarca(String marca);
 
-    List<Produto> findByAtivo(Boolean ativo);
+    List<Produto> findByAtivoTrueOrderById();
+    List<Produto> findByAtivoFalseOrderById( );
 }

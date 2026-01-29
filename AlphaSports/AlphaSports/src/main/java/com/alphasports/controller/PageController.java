@@ -43,15 +43,7 @@ public class PageController {
         return "/carrinho";
     }
 
-    @GetMapping("/admin")
-    public String admin(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
-        if (usuario != null) {
-            model.addAttribute("usuario", usuario);
-            model.addAttribute("isAdmin", "ADMINISTRADOR".equals(usuario.getCargo().toString()));
-        }
-        return "/admin";
-    }
+
 
     @GetMapping("/produtos")
     public String produtos(
@@ -70,7 +62,7 @@ public class PageController {
         } else if (busca != null && !busca.isEmpty()) {
             model.addAttribute("produtos", produtoService.buscar(busca));
         } else {
-            model.addAttribute("produtos", produtoService.listarTodos());
+            model.addAttribute("produtos", produtoService.listarAtivo());
         }
 
         return "/produtos";
