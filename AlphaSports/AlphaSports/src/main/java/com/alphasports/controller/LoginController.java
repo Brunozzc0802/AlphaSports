@@ -17,19 +17,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping
 public class LoginController {
 
     @Autowired
     private UsuarioService usuarioService;
-
 
     @GetMapping("/login")
     public String telaPaginaLogin(Model model) {
         if (!model.containsAttribute("loginRequest")) {
             model.addAttribute("loginRequest", new LoginRequest());
         }
-        return "login"; // Busca em src/main/resources/templates/login.html
+        return "login";
     }
 
     @GetMapping("/cadastro")
@@ -37,9 +35,8 @@ public class LoginController {
         if (!model.containsAttribute("registroRequest")) {
             model.addAttribute("registroRequest", new RegistroRequest());
         }
-        return "cadastro"; // Busca em src/main/resources/templates/cadastro.html
+        return "cadastro";
     }
-
 
     @PostMapping("/api/auth/registro")
     public String registrar(@Valid @ModelAttribute RegistroRequest request,
@@ -75,7 +72,6 @@ public class LoginController {
         }
     }
 
-
     @PostMapping("/api/auth/login")
     public String login(@Valid @ModelAttribute LoginRequest request,
                         BindingResult bindingResult,
@@ -89,7 +85,6 @@ public class LoginController {
         }
 
         try {
-
             Usuario usuario = usuarioService.autenticar(request);
 
             session.setAttribute("usuarioLogado", usuario);
@@ -105,7 +100,6 @@ public class LoginController {
             return "redirect:/login";
         }
     }
-
 
     @GetMapping("/logout")
     public String logout(HttpSession session, RedirectAttributes redirectAttributes) {

@@ -24,30 +24,15 @@ public class SecurityConfig {
                                 "/login",
                                 "/cadastro",
                                 "/logout",
+                                "/api/auth/**",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**",
-                                "/fonts/**"
+                                "/images/**"
                         ).permitAll()
-                        .requestMatchers(
-                                "/api/auth/login",
-                                "/api/auth/registro",
-                                "/api/auth/logout",
-                                "/api/auth/verificar"
-                        ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/perfil/**").authenticated()
-                        .requestMatchers("/carrinho/**").authenticated()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll() // 🔥 IMPORTANTE
                 )
                 .formLogin(form -> form.disable())
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                );
+                .logout(logout -> logout.disable());
 
         return http.build();
     }

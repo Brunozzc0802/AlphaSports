@@ -280,7 +280,6 @@
 <script>
     async function atualizarHeader() {
         try {
-            // ✅ Usar a porta correta do Spring Boot (8080, não 2022)
             const response = await fetch('/api/auth/verificar', {
                 credentials: 'include'
             });
@@ -294,21 +293,16 @@
                 const primeiroNome = data.nome.split(' ')[0];
                 userName.textContent = `Olá, ${primeiroNome}`;
                 mobileUserLink.textContent = `Olá, ${primeiroNome}`;
-
-                // Remove o link direto para login.html e adiciona a lógica de cargo
                 userLink.href = "javascript:void(0)";
 
                 userLink.onclick = (event) => {
                     event.preventDefault();
-                    // Verifica o cargo que vem do seu backend
                     if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
                         window.location.href = '/admin';
                     } else {
                         window.location.href = '/perfil';
                     }
                 };
-
-                // Aplica a mesma lógica para o menu mobile
                 mobileUserLink.onclick = userLink.onclick;
                 mobileUserLink.href = "javascript:void(0)";
             }
@@ -377,7 +371,6 @@
         event.preventDefault();
 
         try {
-            // ✅ Usar a porta correta do Spring Boot (8080, não 2022)
             const response = await fetch('/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include'

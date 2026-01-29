@@ -21,7 +21,6 @@
                 <p>Cadastre-se e ganhe até 50% na primeira compra</p>
             </div>
 
-            <!-- Mensagens de erro/sucesso -->
             <div th:if="${erro}" class="alert alert-danger" role="alert">
                 <span th:text="${erro}"></span>
             </div>
@@ -132,7 +131,6 @@
 
         let isValid = true;
 
-        // Validação: Nome
         if (!nome.value || nome.value.length < 3) {
             const errorEl = nome.nextElementSibling;
             if (errorEl && errorEl.classList.contains('error-message')) {
@@ -145,7 +143,6 @@
             nome.classList.remove('error');
         }
 
-        // Validação: Email
         if (!email.value || !email.value.includes('@')) {
             const errorEl = email.nextElementSibling;
             if (errorEl && errorEl.classList.contains('error-message')) {
@@ -158,7 +155,6 @@
             email.classList.remove('error');
         }
 
-        // Validação: Senha
         if (!senha.value || senha.value.length < 6) {
             const errorEl = senha.nextElementSibling;
             if (errorEl && errorEl.classList.contains('error-message')) {
@@ -171,7 +167,6 @@
             senha.classList.remove('error');
         }
 
-        // Validação: Confirmação de Senha
         if (senha.value !== senhaConfirmacao.value) {
             const errorEl = senhaConfirmacao.nextElementSibling;
             if (errorEl && errorEl.classList.contains('error-message')) {
@@ -184,7 +179,6 @@
             senhaConfirmacao.classList.remove('error');
         }
 
-        // Validação: Termos
         if (!terms.checked) {
             alert('Você deve aceitar os termos de uso');
             isValid = false;
@@ -195,12 +189,10 @@
             return false;
         }
 
-        // Desabilitar botão durante o envio
         registerButton.disabled = true;
         registerButton.textContent = 'Cadastrando...';
     });
 
-    // Máscara para CPF
     document.getElementById('cpf').addEventListener('input', function(e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length > 11) {
@@ -218,7 +210,6 @@
         e.target.value = value;
     });
 
-    // Máscara para Telefone
     document.getElementById('telefone').addEventListener('input', function(e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length > 11) {
@@ -233,7 +224,6 @@
         e.target.value = value;
     });
 
-    // Mostrar mensagem de erro se houver
     document.addEventListener('DOMContentLoaded', function() {
         const alerts = document.querySelectorAll('.alert-danger');
         if (alerts.length > 0) {

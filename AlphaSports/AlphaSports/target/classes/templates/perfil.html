@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meu Perfil - AlphaSports</title>
-  <link rel="stylesheet" href="../static/css/styles.css">
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,8 +13,8 @@
 
 <header class="header">
   <div class="container header-content">
-    <a href="index.html" class="logo">
-      <img src="/images/Logo.png" alt="AlphaSports">
+    <a th:href="@{/}" class="logo">
+      <img th:src="@{/images/Logo.png}" alt="AlphaSports">
     </a>
 
     <div class="search-bar">
@@ -26,13 +26,13 @@
 
     <nav class="header-nav">
       <div class="nav-link user-dropdown-container" id="userInfo">
-        <a href="login.html" class="nav-link user-link" id="userLink">
+        <a th:href="@{/perfil}" class="nav-link user-link" id="userLink">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           <span id="userName">Entrar</span>
         </a>
 
       </div>
-      <a href="carrinho.html" class="nav-link cart-link">
+      <a th:href="@{/carrinho}" class="nav-link cart-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
         <span>Carrinho</span>
         <span class="cart-count" id="cartCount">0</span>
@@ -50,18 +50,17 @@
     </button>
   </div>
 
-  <!-- Categories Nav -->
   <nav class="categories-nav">
     <div class="container">
       <ul class="categories-list">
-        <li><a href="produtos.html?categoria=todos">Todos</a></li>
-        <li><a href="produtos.html?categoria=calcados">Calçados</a></li>
-        <li><a href="produtos.html?categoria=roupas">Roupas</a></li>
-        <li><a href="produtos.html?categoria=equipamentos">Equipamentos</a></li>
-        <li><a href="produtos.html?categoria=futebol">Futebol</a></li>
-        <li><a href="produtos.html?categoria=corrida">Corrida</a></li>
-        <li><a href="produtos.html?categoria=fitness">Fitness</a></li>
-        <li><a href="produtos.html" class="promo-link">Promoções</a></li>
+        <li><a th:href="@{/produtos(categoria=todos)}">Todos</a></li>
+        <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
+        <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
+        <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
+        <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
+        <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
+        <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
+        <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
       </ul>
     </div>
   </nav>
@@ -69,25 +68,21 @@
 
 
 <div class="perfil-wrapper">
-  <!-- Menu Lateral -->
   <aside class="perfil-menu">
     <h3>Minha Conta</h3>
     <ul>
       <li class="active">Configurações</li>
       <li>Meus pedidos</li>
-      <li><a href="carrinho.html">Meu Carrinho</a></li>
+      <li><a th:href="@{/carrinho}">Meu Carrinho</a></li>
       <li>Atendimento</li>
     </ul>
   </aside>
 
-  <!-- Conteúdo Principal -->
   <section class="perfil-content">
     <h1>Meu cadastro</h1>
     <p class="subtitle">Acesse ou altere dados cadastrais de sua conta AlphaSports.</p>
 
-    <!-- Cards de Informações (visível por padrão) -->
     <div id="cardsInfo">
-      <!-- Dados de Acesso -->
       <div class="card">
         <h2>Dados de acesso</h2>
         <div class="info-grid">
@@ -121,7 +116,6 @@
         </div>
       </div>
 
-      <!-- Dados Pessoais -->
       <div class="card">
         <h2>Dados pessoais</h2>
         <div class="info-grid">
@@ -140,7 +134,6 @@
       </div>
     </div>
 
-    <!-- Formulário de Edição (oculto por padrão) -->
     <div id="formEdicao" class="form-edicao" style="display: none;">
       <h2>Editar informações</h2>
       <form onsubmit="salvarAlteracoes(event)">
@@ -173,7 +166,7 @@
 
   async function atualizarHeader() {
     try {
-      const response = await fetch('http://localhost:2022/api/auth/verificar', {
+      const response = await fetch('/api/auth/verificar', {
         credentials: 'include'
       });
 
@@ -181,25 +174,21 @@
         const data = await response.json();
         const primeiroNome = data.nome.split(' ')[0];
 
-        // 1. Atualizar o texto do Desktop (verifica se existe antes)
         const userName = document.getElementById('userName');
         if (userName) userName.textContent = `Olá, ${primeiroNome}`;
 
-        // 2. Atualizar o link do Desktop
         const userLink = document.getElementById('userLink');
         if (userLink) {
-          userLink.href = 'perfil.html';
+          userLink.href = '/perfil';
 
-          // FORMA INFALÍVEL: Remove qualquer evento de clique anterior clonando o botão
           const novoLink = userLink.cloneNode(true);
           userLink.parentNode.replaceChild(novoLink, userLink);
         }
 
-        // 3. Atualizar o Mobile (SÓ se o elemento existir no HTML)
         const mobileUserLink = document.getElementById('mobileUserLink');
         if (mobileUserLink) {
           mobileUserLink.textContent = `Olá, ${primeiroNome}`;
-          mobileUserLink.href = 'perfil.html';
+          mobileUserLink.href = '/perfil';
         }
       }
     } catch (error) {
@@ -207,44 +196,42 @@
     }
   }
 
-    function toggleMenuUsuario() {
+  function toggleMenuUsuario() {
     const dropdown = document.getElementById('userDropdown');
     if (dropdown) {
-    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-  }
+      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
   }
 
-    // Função de logout
-    async function fazerLogout(event) {
+  async function fazerLogout(event) {
     event.preventDefault();
 
     try {
-    const response = await fetch('http://localhost:2022/api/auth/logout', {
-    method: 'POST',
-    credentials: 'include'
-  });
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
 
-    if (response.ok) {
-    localStorage.removeItem('alphasports_user');
-    if (typeof showToast === 'function') {
-    showToast('Logout realizado com sucesso!', 'success');
-  }
-    setTimeout(() => {
-    window.location.href = 'login.html';
-  }, 1000);
-  }
-  } catch (error) {
-    console.error('Erro ao fazer logout:', error);
-  }
+      if (response.ok) {
+        localStorage.removeItem('alphasports_user');
+        if (typeof showToast === 'function') {
+          showToast('Logout realizado com sucesso!', 'success');
+        }
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
   }
 
-    atualizarHeader();
+  atualizarHeader();
 
-  // Carrega os dados do usuário ao abrir a página
   function carregarDadosUsuario() {
     console.log('Tentando carregar dados do usuário...');
 
-    fetch('http://localhost:2022/api/usuario/perfil', {credentials: 'include'})
+    fetch('/api/usuario/perfil', {credentials: 'include'})
             .then(r => {
               console.log('Status da resposta:', r.status);
               if (!r.ok) {
@@ -255,13 +242,11 @@
             .then(usuario => {
               console.log('Dados recebidos:', usuario);
 
-              // Exibe os dados nos cards
               document.getElementById('displayNome').textContent = usuario.nome || '-';
               document.getElementById('displayEmail').textContent = usuario.email || '-';
               document.getElementById('displayTelefone').textContent = usuario.telefone || '-';
               document.getElementById('displayCpf').textContent = usuario.cpf ? mascaraCPF(usuario.cpf) : '-';
 
-              // Preenche os campos do formulário (exceto senha)
               document.getElementById('editNome').value = usuario.nome || '';
               document.getElementById('editEmail').value = usuario.email || '';
               document.getElementById('editTelefone').value = usuario.telefone || '';
@@ -274,7 +259,6 @@
             });
   }
 
-  // Máscara para o CPF (ex: 13*******48)
   function mascaraCPF(cpf) {
     if (!cpf || cpf.length < 11) return cpf;
     const inicio = cpf.substring(0, 2);
@@ -282,26 +266,22 @@
     return `${inicio}*******${fim}`;
   }
 
-  // Abre o formulário de edição
   function abrirEdicao(campo) {
     document.getElementById('cardsInfo').style.display = 'none';
     document.getElementById('formEdicao').style.display = 'block';
 
-    // Se clicar em "Editar" de um campo específico, foca nele
     if (campo === 'nome') document.getElementById('editNome').focus();
     if (campo === 'email') document.getElementById('editEmail').focus();
     if (campo === 'telefone') document.getElementById('editTelefone').focus();
     if (campo === 'senha') document.getElementById('editSenha').focus();
   }
 
-  // Cancela a edição e volta para os cards
   function cancelarEdicao() {
     document.getElementById('formEdicao').style.display = 'none';
     document.getElementById('cardsInfo').style.display = 'block';
-    document.getElementById('editSenha').value = ''; // Limpa o campo de senha
+    document.getElementById('editSenha').value = '';
   }
 
-  // Salva as alterações
   function salvarAlteracoes(event) {
     event.preventDefault();
 
@@ -311,7 +291,6 @@
       telefone: document.getElementById('editTelefone').value
     };
 
-    // Adiciona a senha apenas se foi preenchida
     const novaSenha = document.getElementById('editSenha').value;
     if (novaSenha.trim() !== '') {
       dados.senha = novaSenha;
@@ -327,7 +306,7 @@
               if (response.ok) {
                 alert('Dados atualizados com sucesso!');
                 cancelarEdicao();
-                carregarDadosUsuario(); // Recarrega os dados atualizados
+                carregarDadosUsuario();
               } else {
                 alert('Erro ao atualizar dados. Tente novamente.');
               }
@@ -338,7 +317,6 @@
             });
   }
 
-  // Carrega os dados quando a página abrir
   window.addEventListener('DOMContentLoaded', carregarDadosUsuario);
 </script>
 

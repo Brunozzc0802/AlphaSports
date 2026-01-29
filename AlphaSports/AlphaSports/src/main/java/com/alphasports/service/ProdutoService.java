@@ -4,90 +4,76 @@ import com.alphasports.model.Produto;
 import com.alphasports.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Service
+@Transactional
 public class ProdutoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    private static final String UPLOAD_DIR = "uploads/produtos/";
-
     public List<Produto> listarTodos() {
         return produtoRepository.findAll();
     }
 
-    public List<Produto> listarPorCategoria(String categoria) {
+    public List<Produto> buscarPorCategoria(String categoria) {
         return produtoRepository.findByCategoria(categoria);
     }
 
-    public List<Produto> buscarPorNome(String nome) {
-        return produtoRepository.findByNomeContainingIgnoreCase(nome);
+    public List<Produto> buscar(String termo) {
+        return produtoRepository.findByNomeContainingIgnoreCase(termo);
     }
 
     public Produto buscarPorId(Long id) {
-        return produtoRepository.findById(id).orElse(null);
+        if (id == null || id <= 0) {
+            throw new RuntimeException("ID inválido");
+        }
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
-    public List<Produto> listarAtivos() { return produtoRepository.findByAtivo(true);}
-
     public Produto salvar(Produto produto) {
+        if (produto.getNome() == null || produto.getNome().isBlank()) {
+            throw new RuntimeException("Nome do produto é obrigatório");
+        }
+        if (produto.getPreco() == null || produto.getPreco().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Preço deve ser maior que zero");
+        }
         return produtoRepository.save(produto);
     }
 
-    public Produto atualizar(Produto produto) {
-        if (produtoRepository.existsById(produto.getId())) {
-            return produtoRepository.save(produto);
-        }
-        return null;
-    }
-
-    public boolean desativar(Long id) {
-        return produtoRepository.findById(id).map(produto -> {
-            produto.setAtivo(false);
-            produtoRepository.save(produto);
-            return true;
-        }).orElse(false);
-    }
-
-    public String salvarImagem(Long produtoId, MultipartFile file) throws Exception {
-        Produto produto = buscarPorId(produtoId);
-        if (produto == null) {
-            throw new Exception("Produto não encontrado");
-        }
-
-        // Criar diretório se não existir
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        // Gerar nome único para o arquivo
-        String nomeOriginal = file.getOriginalFilename();
-        String extensao = nomeOriginal.substring(nomeOriginal.lastIndexOf("."));
-        String nomeArquivo = UUID.randomUUID().toString() + extensao;
-
-        // Salvar arquivo
-        Path caminho = Paths.get(UPLOAD_DIR + nomeArquivo);
-        Files.write(caminho, file.getBytes());
-
-        // Atualizar produto com URL da imagem
-        String urlImagem = "/uploads/produtos/" + nomeArquivo;
-        produto.setImagem(urlImagem);
+    public void desativar(Long id) {
+        Produto produto = buscarPorId(id);
+        produto.setAtivo(false);
         produtoRepository.save(produto);
-
-        return urlImagem;
     }
 
-    public List<Produto> listarPorMarca(String marca) {
+    public void ativar(Long id) {
+        Produto produto = buscarPorId(id);
+        produto.setAtivo(true);
+        produtoRepository.save(produto);
+    }
+
+    public void deletar(Long id) {
+        if (!produtoRepository.existsById(id)) {
+            throw new RuntimeException("Produto não encontrado");
+        }
+        produtoRepository.deleteById(id);
+    }
+
+    public List<Produto> buscarPorMarca(String marca) {
         return produtoRepository.findByMarca(marca);
+    }
+
+    public List<Produto> listarAtivos() {
+        return produtoRepository.findByAtivo(true);
+    }
+
+    public List<Produto> listarInativos() {
+        return produtoRepository.findByAtivo(false);
     }
 }
