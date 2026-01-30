@@ -13,4 +13,5 @@ public class LoginResponse {
     private String email;
     private String cpf;
     private Cargo cargo;
+    private boolean ativo;
 }

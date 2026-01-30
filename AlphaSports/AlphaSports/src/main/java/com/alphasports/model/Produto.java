@@ -51,8 +51,6 @@ public class Produto {
         this.desconto = 0;
         this.ativo = true;
     }
-
-    // Getters e Setters
     public Long getId() {
         return id;
     }

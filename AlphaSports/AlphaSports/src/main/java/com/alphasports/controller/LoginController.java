@@ -120,7 +120,8 @@ public class LoginController {
                     usuarioLogado.getNome(),
                     usuarioLogado.getEmail(),
                     usuarioLogado.getCpf(),
-                    usuarioLogado.getCargo()
+                    usuarioLogado.getCargo(),
+                    usuarioLogado.getAtivo()
             ));
         }
 
@@ -135,7 +136,8 @@ public class LoginController {
                         usuario.getNome(),
                         usuario.getEmail(),
                         usuario.getCpf(),
-                        usuario.getCargo()
+                        usuario.getCargo(),
+                        usuario.getAtivo()
                 ));
             } catch (RuntimeException e) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida");

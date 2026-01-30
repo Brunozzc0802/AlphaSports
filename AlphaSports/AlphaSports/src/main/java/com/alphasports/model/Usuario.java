@@ -44,5 +44,8 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private Cargo cargo;
 
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo = true;
+
 
 }

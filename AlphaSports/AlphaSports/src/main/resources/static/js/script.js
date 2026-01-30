@@ -1,38 +1,17 @@
-// Cart Management
-let cart = JSON.parse(localStorage.getItem("alphasports_cart")) || []
-let products = [] // Agora será carregado do banco de dados
 
-// Carregar produtos do banco de dados
+let cart = JSON.parse(localStorage.getItem("alphasports_cart")) || []
+let products = []
+
 async function carregarProdutos() {
   try {
-    const params = new URLSearchParams(window.location.search)
-    const categoria = params.get("categoria")
-    const busca = params.get("busca")
-
-    let url = "http://localhost:2022/api/produtos"
-    const query = []
-
-    if (categoria && categoria !== "todos") {
-      query.push(`categoria=${categoria}`)
-    }
-
-    if (busca) {
-      query.push(`busca=${encodeURIComponent(busca)}`)
-    }
-
-    if (query.length > 0) {
-      url += "?" + query.join("&")
-    }
-
-    const response = await fetch(url, { credentials: "include" })
-
-    if (!response.ok) throw new Error("Erro ao buscar produtos")
-
-    products = await response.json()
-    return products
+    const response = await fetch('/admin'); // Ou o endpoint que retorna o JSON dos produtos
+    if (!response.ok) return [];
+    // Se o seu controller retornar HTML em vez de JSON,
+    // essa lógica precisará ser ajustada.
+    return await response.json();
   } catch (error) {
-    console.error(error)
-    return []
+    console.error("Erro ao buscar produtos:", error);
+    return [];
   }
 }
 

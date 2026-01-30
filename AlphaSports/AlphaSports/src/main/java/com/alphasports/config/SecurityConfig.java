@@ -29,7 +29,7 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**"
                         ).permitAll()
-                        .anyRequest().permitAll() // 🔥 IMPORTANTE
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form.disable())
                 .logout(logout -> logout.disable());

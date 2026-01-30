@@ -9,20 +9,17 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-
 <header class="header">
     <div class="container header-content">
         <a th:href="@{/}" class="logo">
             <img th:src="@{/images/Logo.png}" alt="AlphaSports">
         </a>
-
         <div class="search-bar">
             <input type="text" placeholder="Buscar produtos..." id="searchInput">
             <button class="search-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
             </button>
         </div>
-
         <nav class="header-nav">
             <div class="nav-link user-dropdown-container" id="userInfo">
                 <a th:href="@{/login}" class="nav-link user-link" id="userLink">
@@ -35,18 +32,15 @@
                 <span>Carrinho</span>
                 <span class="cart-count" id="cartCount">0</span>
             </a>
-
             <a href="#" onclick="fazerLogout(event)"  class="nav-link cart-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 Sair
             </a>
         </nav>
-
         <button class="mobile-menu-btn" id="mobileMenuBtn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
         </button>
     </div>
-
     <nav class="categories-nav">
         <div class="container">
             <ul class="categories-list">
@@ -62,7 +56,6 @@
         </div>
     </nav>
 </header>
-
 <div class="perfil-wrapper container">
     <aside class="perfil-menu">
         <h3 id="adminTitle">Admin</h3>
@@ -75,7 +68,6 @@
             <li data-tab="estoque">Estoque</li>
         </ul>
     </aside>
-
     <main class="perfil-content">
         <div class="admin-header-flex">
             <h1>Produtos</h1>
@@ -91,7 +83,6 @@
                 </button>
             </div>
         </div>
-
         <div class="card">
             <table class="admin-table">
                 <thead>
@@ -128,20 +119,16 @@
                 </tbody>
             </table>
         </div>
-
     </main>
-
     <div class="modal-overlay" id="modalProduto">
         <div class="modal">
             <div class="modal-header">
                 <h2>Adicionar Novo Produto</h2>
                 <button class="modal-close" id="fecharModal">&times;</button>
             </div>
-
             <form class="modal-form">
                 <label>Nome do Produto <span class="required"> * </span> </label>
                 <input type="text" class="required-field" placeholder="Ex: Camiseta Nike">
-
                 <div class="form-row">
                     <div>
                         <label>Marca <span class="required">*</span> </label>
@@ -149,7 +136,6 @@
                             <option>Selecione uma marca</option>
                         </select>
                     </div>
-
                     <div>
                         <label>Categoria <span class="required">*</span> </label>
                         <select class="required-field">
@@ -157,7 +143,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div>
                         <label>Preço (R$)<span class="required">*</span> </label>
@@ -168,26 +153,20 @@
                         <input type="number" min="0" value="0">
                     </div>
                 </div>
-
                 <label>Descrição </label>
                 <textarea placeholder="Descreva o produto..."></textarea>
-
                 <label>URL da Imagem</label>
                 <input type="text" id="imageUrlInput" placeholder="https://exemplo.com/imagem.jpg">
-
                 <label>Ou envie uma imagem</label>
                 <div class="upload-box">
                     <input type="file" id="imageFileInput" accept="image/png, image/jpeg">
                     <span>Selecionar imagem (PNG ou JPG)</span>
                 </div>
-
                 <div class="image-preview" id="imagePreview">
                     <span>Prévia da imagem</span>
                 </div>
-
                 <label>Tamanhos<span class="required">*</span> </label>
                 <input type="text" class="required-field" placeholder="P, M, G, GG">
-
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" id="cancelarModal">Cancelar</button>
                     <button type="submit" class="btn-primary">Adicionar Produto</button>
@@ -195,35 +174,28 @@
             </form>
         </div>
     </div>
-
     <script>
         const modal = document.getElementById('modalProduto');
         const btnAdicionar = document.getElementById('btnAdicionar');
         const fecharModal = document.getElementById('fecharModal');
         const cancelarModal = document.getElementById('cancelarModal');
-
         btnAdicionar.addEventListener('click', () => {
             modal.style.display = 'flex';
         });
-
         fecharModal.addEventListener('click', () => {
             modal.style.display = 'none';
         });
-
         cancelarModal.addEventListener('click', () => {
             modal.style.display = 'none';
         });
-
         window.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
             }
         });
-
         const imageFileInput = document.getElementById('imageFileInput');
         const imageUrlInput = document.getElementById('imageUrlInput');
         const imagePreview = document.getElementById('imagePreview');
-
         imageFileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -235,26 +207,22 @@
                 reader.readAsDataURL(file);
             }
         });
-
         imageUrlInput.addEventListener('input', (e) => {
             const url = e.target.value;
             if (url.startsWith('http')) {
                 imagePreview.innerHTML = `<img src="${url}">`;
             }
         });
-
         function resetPreview() {
             imagePreview.innerHTML = `<span>Prévia da imagem</span>`;
             imageFileInput.value = '';
             imageUrlInput.value = '';
         }
-
         async function atualizarHeader() {
             try {
                 const response = await fetch(`/api/auth/verificar`, {
                     credentials: 'include'
                 });
-
                 if (response.ok) {
                     const data = await response.json();
 
@@ -262,16 +230,12 @@
                         window.location.href = '/';
                         return;
                     }
-
                     const userName = document.getElementById('userName');
                     const adminTitle = document.getElementById('adminTitle');
                     const userLink = document.getElementById('userLink');
-
                     const primeiroNome = data.nome ? data.nome.split(' ')[0] : "Admin";
-
                     if (userName) userName.textContent = `Olá, ${primeiroNome}`;
                     if (adminTitle) adminTitle.textContent = `Admin: ${primeiroNome}`;
-
                     userLink.onclick = (event) => {
                         event.preventDefault();
                         if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
@@ -287,16 +251,13 @@
                 console.error('Erro ao verificar autenticação:', error);
             }
         }
-
         async function fazerLogout(event) {
             event.preventDefault();
-
             try {
                 const response = await fetch('/api/auth/logout', {
                     method: 'POST',
                     credentials: 'include'
                 });
-
                 if (response.ok) {
                     localStorage.removeItem('alphasports_user');
                     if (typeof showToast === 'function') {
@@ -310,9 +271,7 @@
                 console.error('Erro ao fazer logout:', error);
             }
         }
-
         atualizarHeader();
-
         async function excluirProduto(id) {
             if (!confirm('Deseja excluir este produto?')) return;
             try {
@@ -325,10 +284,8 @@
                 console.error('Erro ao excluir:', error);
             }
         }
-
         document.addEventListener('DOMContentLoaded', () => {
             atualizarHeader();
-
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -340,19 +297,13 @@
                 });
             }
         });
-
         const form = document.querySelector('.modal-form');
-
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-
             let valido = true;
-
             const camposObrigatorios = form.querySelectorAll('.required-field');
-
             camposObrigatorios.forEach(campo => {
                 campo.classList.remove('input-error');
-
                 if (
                     campo.value === '' ||
                     campo.value === null ||
@@ -362,7 +313,6 @@
                     valido = false;
                 }
             });
-
             if (
                 imageFileInput.files.length === 0 &&
                 imageUrlInput.value.trim() === ''
@@ -370,17 +320,12 @@
                 alert('Informe uma imagem (URL ou upload)');
                 valido = false;
             }
-
             if (!valido) {
                 alert('Preencha todos os campos obrigatórios (*)');
                 return;
             }
-
             alert('Formulário válido ✔');
         });
-
-
     </script>
-
 </body>
 </html>

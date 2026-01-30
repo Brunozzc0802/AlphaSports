@@ -34,16 +34,13 @@ public class UsuarioService {
             throw new RuntimeException("Este CPF já está cadastrado");
         }
 
-        if (usuarioRepository.existsByTelefone(request.getTelefone())) {
-            throw new RuntimeException("Este telefone já está cadastrado");
-        }
-
         Usuario usuario = new Usuario();
         usuario.setNome(request.getNome());
         usuario.setEmail(request.getEmail().toLowerCase().trim());
         usuario.setCpf(request.getCpf());
         usuario.setTelefone(request.getTelefone());
         usuario.setSenha(passwordEncoder.encode(request.getSenha()));
+        usuario.setAtivo(true);
         usuario.setCargo(Cargo.CLIENTE);
 
         return usuarioRepository.save(usuario);
@@ -53,21 +50,24 @@ public class UsuarioService {
         if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new RuntimeException("Email é obrigatório");
         }
+
         if (request.getSenha() == null || request.getSenha().isBlank()) {
             throw new RuntimeException("Senha é obrigatória");
         }
-
         String emailNormalizado = request.getEmail().toLowerCase().trim();
-
         Usuario usuario = usuarioRepository.findByEmail(emailNormalizado)
                 .orElseThrow(() -> new RuntimeException("Email ou senha incorretos"));
 
-        boolean senhaCorreta = passwordEncoder.matches(request.getSenha(), usuario.getSenha());
+        System.out.println("DEBUG: Usuário " + usuario.getEmail() + " está ATIVO no banco? " + usuario.getAtivo());
 
+        if (!usuario.getAtivo()) {
+            throw new RuntimeException("Sua conta está desativada. Entre em contato com o suporte.");
+        }
+
+        boolean senhaCorreta = passwordEncoder.matches(request.getSenha(), usuario.getSenha());
         if (!senhaCorreta) {
             throw new RuntimeException("Email ou senha incorretos");
         }
-
         return usuario;
     }
 
