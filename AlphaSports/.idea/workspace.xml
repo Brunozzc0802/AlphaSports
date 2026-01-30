@@ -5,19 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5c6024e5-733e-4d15-a097-2e45ef0dfea3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/usuarios.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/ProdutoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/ProdutoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/css/admin.css" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/css/admin.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/css/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/perfil.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/perfil.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/ProdutoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/ProdutoController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/static/css/admin.css" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/static/css/admin.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/templates/admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/perfil.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/templates/perfil.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +19,7 @@
       <list>
         <option value="Enum" />
         <option value="Class" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -49,6 +40,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -76,7 +68,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.DemoApplication (1)">
     <configuration name="DemoApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="demo" />
@@ -111,7 +103,7 @@
       <workItem from="1768495960174" duration="2507000" />
       <workItem from="1768499146904" duration="6451000" />
       <workItem from="1769727065731" duration="9591000" />
-      <workItem from="1769793853235" duration="4420000" />
+      <workItem from="1769793853235" duration="6722000" />
     </task>
     <servers />
   </component>
