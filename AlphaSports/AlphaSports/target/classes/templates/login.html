@@ -21,9 +21,16 @@
                 <p>Entre na sua conta para continuar</p>
             </div>
 
-            <!-- Mensagens de erro/sucesso -->
-            <div th:if="${erro}" class="alert alert-danger" role="alert">
-                <span th:text="${erro}"></span>
+            <div th:if="${erro}" class="auth-alert" id="errorAlert">
+                <div class="auth-alert-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <div class="auth-alert-content">
+                    <span th:text="${erro}">E-mail ou senha incorretos</span>
+                </div>
+                <button type="button" class="auth-alert-close" onclick="this.parentElement.style.display='none'">
+                    &times;
+                </button>
             </div>
 
             <form th:action="@{/api/auth/login}" th:object="${loginRequest}" method="post" id="loginForm" novalidate>

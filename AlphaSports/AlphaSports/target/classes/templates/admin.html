@@ -63,6 +63,7 @@
             <li data-tab="usuarios">Usuários</li>
             <li class="active" data-tab="produtos">Produtos</li>
             <li data-tab="clientes">Clientes</li>
+            <li data-tab="clientes">Funcionarios</li>
             <li data-tab="marca">Marca</li>
             <li data-tab="categoria">Categoria</li>
             <li data-tab="estoque">Estoque</li>
@@ -108,7 +109,7 @@
                         <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
                             th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
                         <td class="actions-cell">
-                            <a th:href="@{/admin/editar/{id}(id=${p.id})}" class="btn-action edit"><i class="fas fa-pencil-alt"></i></a>
+                            <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${p.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
                             <a th:href="@{/admin/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Desativar?')"><i class="fas fa-trash-alt"></i></a>
                         </td>
                     </tr>
@@ -130,11 +131,11 @@
                     </thead>
                     <tbody>
                     <tr th:each="p : ${ListaInativos}">
-                        <td th:text="${p.nome}"></td>
+                        <td style="font-weight: 600;" th:text="${p.nome}"></td>
                         <td th:text="${p.marca}"></td>
                         <td><span class="badge-categoria" th:text="${p.categoria}">Categoria</span></td>
                         <td style="font-weight: 600; color: #10b981;">
-                            R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
+                            R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span></td>
                         <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
                             th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
                         <td class="actions-cell">
@@ -151,38 +152,45 @@
     <div class="modal-overlay" id="modalProduto">
         <div class="modal">
             <div class="modal-header">
-                <h2>Adicionar Novo Produto</h2>
+                <h2 id="modalTitle">Adicionar Novo Produto</h2>
                 <button class="modal-close" id="fecharModal">&times;</button>
             </div>
-            <form class="modal-form">
+            <form class="modal-form" id="formProduto">
+                <input type="hidden" id="produtoId">
                 <label>Nome do Produto <span class="required"> * </span> </label>
-                <input type="text" class="required-field" placeholder="Ex: Camiseta Nike">
+                <input type="text" id="nomeProd" class="required-field" placeholder="Ex: Camiseta Nike">
                 <div class="form-row">
                     <div>
                         <label>Marca <span class="required">*</span> </label>
-                        <select class="required-field">
-                            <option>Selecione uma marca</option>
+                        <select id="marcaProd" class="required-field">
+                            <option value="">Selecione uma marca</option>
+                            <option value="Nike">Nike</option>
+                            <option value="Adidas">Adidas</option>
+                            <option value="Puma">Puma</option>
                         </select>
                     </div>
                     <div>
                         <label>Categoria <span class="required">*</span> </label>
-                        <select class="required-field">
-                            <option>Selecione uma categoria</option>
+                        <select id="categoriaProd" class="required-field">
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Calçados">Calçados</option>
+                            <option value="Roupas">Roupas</option>
+                            <option value="Equipamentos">Equipamentos</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div>
                         <label>Preço (R$)<span class="required">*</span> </label>
-                        <input type="number" class="required-field" min="0" step="0.01">
+                        <input type="number" id="precoProd" class="required-field" min="0" step="0.01">
                     </div>
                     <div>
                         <label>Desconto (%)</label>
-                        <input type="number" min="0" value="0">
+                        <input type="number" id="descontoProd" min="0" value="0">
                     </div>
                 </div>
                 <label>Descrição </label>
-                <textarea placeholder="Descreva o produto..."></textarea>
+                <textarea id="descricaoProd" placeholder="Descreva o produto..."></textarea>
                 <label>URL da Imagem</label>
                 <input type="text" id="imageUrlInput" placeholder="https://exemplo.com/imagem.jpg">
                 <label>Ou envie uma imagem</label>
@@ -194,10 +202,10 @@
                     <span>Prévia da imagem</span>
                 </div>
                 <label>Tamanhos<span class="required">*</span> </label>
-                <input type="text" class="required-field" placeholder="P, M, G, GG">
+                <input type="text" id="tamanhosProd" class="required-field" placeholder="P, M, G, GG">
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" id="cancelarModal">Cancelar</button>
-                    <button type="submit" class="btn-primary">Adicionar Produto</button>
+                    <button type="submit" class="btn-primary" id="btnSalvar">Adicionar Produto</button>
                 </div>
             </form>
         </div>
@@ -207,9 +215,49 @@
         const btnAdicionar = document.getElementById('btnAdicionar');
         const fecharModal = document.getElementById('fecharModal');
         const cancelarModal = document.getElementById('cancelarModal');
+        const formProduto = document.getElementById('formProduto');
+        const modalTitle = document.getElementById('modalTitle');
+        const btnSalvar = document.getElementById('btnSalvar');
+
         btnAdicionar.addEventListener('click', () => {
+            formProduto.reset();
+            document.getElementById('produtoId').value = '';
+            modalTitle.textContent = "Adicionar Novo Produto";
+            btnSalvar.textContent = "Adicionar Produto";
+            resetPreview();
             modal.style.display = 'flex';
         });
+        async function abrirModalEdicao(id) {
+            console.log("Iniciando edição do ID:", id);
+            try {
+                const response = await fetch(`/admin/api/detalhes/${id}`);
+                if (!response.ok) throw new Error(`Erro: ${response.status}`);
+                const p = await response.json();
+                console.log("Dados recebidos:", p);
+                formProduto.reset();
+                document.getElementById('produtoId').value = p.id;
+                document.getElementById('nomeProd').value = p.nome || '';
+                document.getElementById('precoProd').value = p.preco || '';
+                document.getElementById('descontoProd').value = p.desconto || 0;
+                document.getElementById('descricaoProd').value = p.descricao || '';
+                document.getElementById('tamanhosProd').value = p.tamanhos || '';
+                document.getElementById('marcaProd').value = p.marca || '';
+                document.getElementById('categoriaProd').value = p.categoria || '';
+                resetPreview();
+                if (p.imagem) {
+                    const urlCompleta = p.imagem.startsWith('http') ? p.imagem : '/images/' + p.imagem;
+                    document.getElementById('imageUrlInput').value = p.imagem;
+                    document.getElementById('imagePreview').innerHTML = `
+                <img src="${urlCompleta}"
+                     style="max-width:100%; max-height:200px; border-radius: 8px; display: block; margin: auto;">`;
+                }
+                modalTitle.textContent = "Editar Produto";
+                btnSalvar.textContent = "Salvar Alterações";
+                modal.style.display = 'flex';
+            } catch (error) {
+                console.error("Erro ao carregar modal:", error);
+            }
+        }
         fecharModal.addEventListener('click', () => {
             modal.style.display = 'none';
         });
@@ -221,13 +269,11 @@
                 modal.style.display = 'none';
             }
         });
-
         document.addEventListener("DOMContentLoaded", function() {
             const btnAtivo = document.getElementById("btnAtivo");
             const btnInativo = document.getElementById("btnInativo");
             const containerAtivos = document.getElementById("containerAtivos");
             const containerInativos = document.getElementById("containerInativos");
-
             if(btnAtivo && btnInativo) {
                 btnInativo.addEventListener("click", function() {
                     btnInativo.classList.add("active");
@@ -235,7 +281,6 @@
                     containerInativos.style.display = "block";
                     containerAtivos.style.display = "none";
                 });
-
                 btnAtivo.addEventListener("click", function() {
                     btnAtivo.classList.add("active");
                     btnInativo.classList.remove("active");
@@ -244,7 +289,6 @@
                 });
             }
         });
-
         const imageFileInput = document.getElementById('imageFileInput');
         const imageUrlInput = document.getElementById('imageUrlInput');
         const imagePreview = document.getElementById('imagePreview');
@@ -277,7 +321,6 @@
                 });
                 if (response.ok) {
                     const data = await response.json();
-
                     if (data.cargo !== 'ADMINISTRADOR' && data.role !== 'ADMIN') {
                         window.location.href = '/';
                         return;
@@ -349,11 +392,10 @@
                 });
             }
         });
-        const form = document.querySelector('.modal-form');
-        form.addEventListener('submit', (e) => {
+        formProduto.addEventListener('submit', (e) => {
             e.preventDefault();
             let valido = true;
-            const camposObrigatorios = form.querySelectorAll('.required-field');
+            const camposObrigatorios = formProduto.querySelectorAll('.required-field');
             camposObrigatorios.forEach(campo => {
                 campo.classList.remove('input-error');
                 if (
@@ -376,7 +418,8 @@
                 alert('Preencha todos os campos obrigatórios (*)');
                 return;
             }
-            alert('Formulário válido ✔');
+            const id = document.getElementById('produtoId').value;
+            alert(id ? 'Salvando alterações do produto ID: ' + id : 'Adicionando novo produto...');
         });
     </script>
 </body>

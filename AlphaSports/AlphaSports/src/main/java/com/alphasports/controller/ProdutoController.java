@@ -42,6 +42,16 @@ public class ProdutoController {
     @GetMapping("/desativar/{id}")
     public String desativarProduto(@PathVariable Long id) {
         produtoService.desativar(id);
-        return "redirect:/admin/produtos";
+        return "redirect:/admin";
+    }
+    @GetMapping("/dados/{id}")
+    @ResponseBody
+    public Produto obterDadosProduto(@PathVariable Long id) {
+        return produtoService.buscarPorId(id);
+    }
+    @GetMapping("/api/detalhes/{id}")
+    @ResponseBody
+    public Produto obterDetalhesParaEdicao(@PathVariable Long id) {
+        return produtoService.buscarPorId(id);
     }
 }

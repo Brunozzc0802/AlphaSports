@@ -317,6 +317,17 @@
             });
   }
 
+  document.addEventListener('DOMContentLoaded', function() {
+    const errorAlert = document.getElementById('errorAlert');
+    if (errorAlert) {
+      setTimeout(() => {
+        errorAlert.style.opacity = '0';
+        errorAlert.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => errorAlert.style.display = 'none', 500);
+      }, 8000);
+    }
+  });
+
   window.addEventListener('DOMContentLoaded', carregarDadosUsuario);
 </script>
 
