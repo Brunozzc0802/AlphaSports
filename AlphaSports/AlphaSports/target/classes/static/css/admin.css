@@ -370,6 +370,23 @@ body {
     font-weight: 600;
 }
 
+.inativo {
+    width: fit-content;
+    min-width: 70px;
+    height: 30px;
+    padding: 0 6px;
+    background-color: rgba(252, 177, 177, 0.58);
+    color: rgb(196, 33, 33);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
 .tab-container {
     display: inline-flex;
     background-color: #e7e7e7;
@@ -390,7 +407,7 @@ body {
     font-weight: 500;
     background: transparent;
     color: var(--gray-500);
-    transition: all 0.2s ease;
+    transition: all 0.4s ease;
 }
 
 /* Estado ativo */
@@ -399,5 +416,6 @@ body {
     color: var(--gray-900);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
 
 

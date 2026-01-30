@@ -5,33 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5c6024e5-733e-4d15-a097-2e45ef0dfea3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/dto/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/dto/LoginRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/dto/LoginResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/dto/LoginResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/model/Produto.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/model/Produto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/model/Usuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/model/Usuario.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/repository/UsuarioRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/repository/UsuarioRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/service/UsuarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/service/UsuarioService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/css/admin.css" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/static/css/admin.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/cadastro.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/cadastro.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/carrinho.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/carrinho.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/LoginController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/dto/LoginRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/dto/LoginRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/dto/LoginResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/dto/LoginResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/model/Produto.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/model/Produto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/model/Usuario.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/model/Usuario.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/repository/UsuarioRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/repository/UsuarioRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/service/UsuarioService.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/service/UsuarioService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/static/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/static/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/static/css/admin.css" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/static/css/admin.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/templates/admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/cadastro.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/templates/cadastro.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/carrinho.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/templates/carrinho.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/templates/login.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +102,7 @@
       <updated>1768495958126</updated>
       <workItem from="1768495960174" duration="2507000" />
       <workItem from="1768499146904" duration="6451000" />
-      <workItem from="1769727065731" duration="6510000" />
+      <workItem from="1769727065731" duration="9591000" />
     </task>
     <servers />
   </component>

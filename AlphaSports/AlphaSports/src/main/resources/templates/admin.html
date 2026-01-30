@@ -83,41 +83,69 @@
                 </button>
             </div>
         </div>
+
         <div class="card">
-            <table class="admin-table">
-                <thead>
-                <tr>
-                    <th>NOME</th>
-                    <th>MARCA</th>
-                    <th>CATEGORIA</th>
-                    <th>PREÇO</th>
-                    <th>Status</th>
-                    <th style="text-align: right;">AÇÕES</th>
-                </tr>
-                </thead>
-                <tbody id="adminTableBody">
-                <tr th:each="p : ${ListaAtivos}">
-                    <td style="font-weight: 600;" th:text="${p.nome}">Nome</td>
-                    <td th:text="${p.marca}">Marca</td>
-                    <td><span class="badge-categoria" th:text="${p.categoria}">Categoria</span></td>
-                    <td style="font-weight: 600; color: #10b981;">
-                        R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
-                    </td>
-                    <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
-                        th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
-                    <td class="actions-cell">
-                        <a th:href="@{/admin/produtos/editar/{id}(id=${p.id})}" class="btn-action edit">
-                            <i class="fas fa-pencil-alt"></i>
-                        </a>
-                        <a th:href="@{/admin/produtos/desativar/{id}(id=${p.id})}"
-                           class="btn-action delete"
-                           onclick="return confirm('Deseja desativar este produto?')">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div id="containerAtivos">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>NOME</th>
+                        <th>MARCA</th>
+                        <th>CATEGORIA</th>
+                        <th>PREÇO</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">AÇÕES</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${ListaAtivos}">
+                        <td style="font-weight: 600;" th:text="${p.nome}"></td>
+                        <td th:text="${p.marca}"></td>
+                        <td><span class="badge-categoria" th:text="${p.categoria}"></span></td>
+                        <td style="font-weight: 600; color: #10b981;">
+                            R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
+                        </td>
+                        <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
+                            th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
+                        <td class="actions-cell">
+                            <a th:href="@{/admin/editar/{id}(id=${p.id})}" class="btn-action edit"><i class="fas fa-pencil-alt"></i></a>
+                            <a th:href="@{/admin/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Desativar?')"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="containerInativos" style="display: none;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>NOME</th>
+                        <th>MARCA</th>
+                        <th>CATEGORIA</th>
+                        <th>PREÇO</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">AÇÕES</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${ListaInativos}">
+                        <td th:text="${p.nome}"></td>
+                        <td th:text="${p.marca}"></td>
+                        <td><span class="badge-categoria" th:text="${p.categoria}">Categoria</span></td>
+                        <td style="font-weight: 600; color: #10b981;">
+                            R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
+                        <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
+                            th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
+                        <td class="actions-cell">
+                            <a th:href="@{/admin/ativar/{id}(id=${p.id})}" class="btn-action edit">
+                                <i class="fas fa-undo"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
     <div class="modal-overlay" id="modalProduto">
@@ -193,6 +221,30 @@
                 modal.style.display = 'none';
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const btnAtivo = document.getElementById("btnAtivo");
+            const btnInativo = document.getElementById("btnInativo");
+            const containerAtivos = document.getElementById("containerAtivos");
+            const containerInativos = document.getElementById("containerInativos");
+
+            if(btnAtivo && btnInativo) {
+                btnInativo.addEventListener("click", function() {
+                    btnInativo.classList.add("active");
+                    btnAtivo.classList.remove("active");
+                    containerInativos.style.display = "block";
+                    containerAtivos.style.display = "none";
+                });
+
+                btnAtivo.addEventListener("click", function() {
+                    btnAtivo.classList.add("active");
+                    btnInativo.classList.remove("active");
+                    containerAtivos.style.display = "block";
+                    containerInativos.style.display = "none";
+                });
+            }
+        });
+
         const imageFileInput = document.getElementById('imageFileInput');
         const imageUrlInput = document.getElementById('imageUrlInput');
         const imagePreview = document.getElementById('imagePreview');
