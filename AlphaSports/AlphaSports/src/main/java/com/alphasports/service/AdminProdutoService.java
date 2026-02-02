@@ -1,7 +1,7 @@
 package com.alphasports.service;
 
 import com.alphasports.model.Produto;
-import com.alphasports.repository.AdminRepository;
+import com.alphasports.repository.AdminProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +11,10 @@ import java.util.List;
 
 @Service
 @Transactional
-public class AdminService {
+public class AdminProdutoService {
 
     @Autowired
-    private AdminRepository AdminRepository;
+    private AdminProdutoRepository AdminRepository;
 
     public List<Produto> listarAtivo() {
         return AdminRepository.findByAtivoTrueOrderById();

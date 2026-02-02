@@ -3,7 +3,6 @@ package com.alphasports.service;
 import com.alphasports.dto.LoginRequest;
 import com.alphasports.dto.RegistroRequest;
 import com.alphasports.dto.UsuarioPerfilUpdateRequest;
-import com.alphasports.model.Produto;
 import com.alphasports.model.Usuario;
 import com.alphasports.model.Cargo;
 import com.alphasports.repository.UsuarioRepository;
@@ -21,14 +20,6 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-        public List<Usuario> listarAtivo() {
-            return usuarioRepository.findByAtivoTrueOrderById();
-        }
-
-    public List<Usuario> listarInativo()
-    {
-        return usuarioRepository.findByAtivoFalseOrderById();
-    }
     @Autowired
     private PasswordEncoder passwordEncoder;
 

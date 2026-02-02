@@ -1,6 +1,5 @@
 package com.alphasports.repository;
 
-import com.alphasports.model.Produto;
 import com.alphasports.model.Usuario;
 import com.alphasports.model.Cargo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +15,4 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsByCpf(String cpf);
     boolean existsByTelefone(String telefone);
     List<Usuario> findByCargo(Cargo cargo);
-    List<Usuario> findByAtivoTrueOrderById();
-    List<Usuario> findByAtivoFalseOrderById( );
-
 }

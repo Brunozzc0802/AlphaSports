@@ -4,28 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5c6024e5-733e-4d15-a097-2e45ef0dfea3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/adminUsuarios.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/PageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/PageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/ProdutoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/UsuarioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/controller/UsuarioController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/repository/ProdutoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/repository/AdminRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/repository/UsuarioRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/repository/UsuarioRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/service/ProdutoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/service/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/service/UsuarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/java/com/alphasports/service/UsuarioService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/adminProduto.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/src/main/resources/templates/usuarios.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/PageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/PageController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/ProdutoController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/UsuarioController.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/controller/UsuarioController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/repository/ProdutoRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/repository/UsuarioRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/repository/UsuarioRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/service/ProdutoService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/service/UsuarioService.class" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaSports/target/classes/com/alphasports/service/UsuarioService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/admin.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaSports/target/classes/templates/usuarios.html" beforeDir="false" />
-    </list>
+    <list default="true" id="5c6024e5-733e-4d15-a097-2e45ef0dfea3" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -123,6 +102,7 @@
       <workItem from="1769727065731" duration="9591000" />
       <workItem from="1769793853235" duration="6722000" />
       <workItem from="1770051886349" duration="3115000" />
+      <workItem from="1770063441352" duration="25000" />
     </task>
     <servers />
   </component>
