@@ -1,7 +1,7 @@
 package com.alphasports.service;
 
 import com.alphasports.model.Produto;
-import com.alphasports.repository.ProdutoRepository;
+import com.alphasports.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,32 +11,32 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ProdutoService {
+public class AdminService {
 
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private AdminRepository AdminRepository;
 
     public List<Produto> listarAtivo() {
-        return produtoRepository.findByAtivoTrueOrderById();
+        return AdminRepository.findByAtivoTrueOrderById();
     }
 
     public List<Produto> listarInativo() {
-        return produtoRepository.findByAtivoFalseOrderById();
+        return AdminRepository.findByAtivoFalseOrderById();
     }
 
     public List<Produto> buscarPorCategoria(String categoria) {
-        return produtoRepository.findByCategoria(categoria);
+        return AdminRepository.findByCategoria(categoria);
     }
 
     public List<Produto> buscar(String termo) {
-        return produtoRepository.findByNomeContainingIgnoreCase(termo);
+        return AdminRepository.findByNomeContainingIgnoreCase(termo);
     }
 
     public Produto buscarPorId(Long id) {
         if (id == null || id <= 0) {
             throw new RuntimeException("ID inválido");
         }
-        return produtoRepository.findById(id)
+        return AdminRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
@@ -47,29 +47,29 @@ public class ProdutoService {
         if (produto.getPreco() == null || produto.getPreco().compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Preço deve ser maior que zero");
         }
-        return produtoRepository.save(produto);
+        return AdminRepository.save(produto);
     }
 
     public void desativar(Long id) {
         Produto produto = buscarPorId(id);
         produto.setAtivo(false);
-        produtoRepository.save(produto);
+        AdminRepository.save(produto);
     }
 
     public void ativar(Long id) {
         Produto produto = buscarPorId(id);
         produto.setAtivo(true);
-        produtoRepository.save(produto);
+        AdminRepository.save(produto);
     }
 
     public void deletar(Long id) {
-        if (!produtoRepository.existsById(id)) {
+        if (!AdminRepository.existsById(id)) {
             throw new RuntimeException("Produto não encontrado");
         }
-        produtoRepository.deleteById(id);
+        AdminRepository.deleteById(id);
     }
 
     public List<Produto> buscarPorMarca(String marca) {
-        return produtoRepository.findByMarca(marca);
+        return AdminRepository.findByMarca(marca);
     }
 }

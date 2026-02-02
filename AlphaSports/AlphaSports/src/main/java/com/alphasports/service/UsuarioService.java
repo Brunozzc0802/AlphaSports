@@ -3,6 +3,7 @@ package com.alphasports.service;
 import com.alphasports.dto.LoginRequest;
 import com.alphasports.dto.RegistroRequest;
 import com.alphasports.dto.UsuarioPerfilUpdateRequest;
+import com.alphasports.model.Produto;
 import com.alphasports.model.Usuario;
 import com.alphasports.model.Cargo;
 import com.alphasports.repository.UsuarioRepository;
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class UsuarioService {
@@ -18,11 +21,18 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+        public List<Usuario> listarAtivo() {
+            return usuarioRepository.findByAtivoTrueOrderById();
+        }
+
+    public List<Usuario> listarInativo()
+    {
+        return usuarioRepository.findByAtivoFalseOrderById();
+    }
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public Usuario registrar(RegistroRequest request) {
-        // Validações de campos vazios
         validarRegistroRequest(request);
 
 
@@ -79,14 +89,6 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
-    public Usuario buscarPorEmail(String email) {
-        if (email == null || email.isBlank()) {
-            throw new RuntimeException("Email é obrigatório");
-        }
-        return usuarioRepository.findByEmail(email.toLowerCase().trim())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-    }
-
     public Usuario atualizarPerfil(Long id, UsuarioPerfilUpdateRequest request) {
         Usuario usuario = buscarPorId(id);
 
@@ -130,17 +132,5 @@ public class UsuarioService {
         if (request.getSenha().length() < 6) {
             throw new RuntimeException("Senha deve ter no mínimo 6 caracteres");
         }
-    }
-
-    public boolean emailJaExiste(String email) {
-        return usuarioRepository.existsByEmail(email.toLowerCase().trim());
-    }
-
-    public boolean cpfJaExiste(String cpf) {
-        return usuarioRepository.existsByCpf(cpf);
-    }
-
-    public boolean telefoneJaExiste(String telefone) {
-        return usuarioRepository.existsByTelefone(telefone);
     }
 }

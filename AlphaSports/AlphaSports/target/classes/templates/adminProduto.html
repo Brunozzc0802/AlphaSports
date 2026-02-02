@@ -60,8 +60,12 @@
     <aside class="perfil-menu">
         <h3 id="adminTitle">Admin</h3>
         <ul id="adminSidebar">
-            <li data-tab="usuarios">Usuários</li>
-            <li class="active" data-tab="produtos">Produtos</li>
+            <li data-tab="usuarios">
+                <a th:href="@{/admin/usuarios}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Usuários</a>
+            </li>
+            <li class="active" data-tab="produtos">
+                <a th:href="@{/admin}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Produtos</a>
+            </li>
             <li data-tab="clientes">Clientes</li>
             <li data-tab="clientes">Funcionarios</li>
             <li data-tab="marca">Marca</li>

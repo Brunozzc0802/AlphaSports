@@ -1,7 +1,7 @@
 package com.alphasports.controller;
 
 
-import com.alphasports.service.ProdutoService;
+import com.alphasports.service.AdminService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,7 @@ import com.alphasports.model.Usuario;
 public class PageController {
 
     @Autowired
-    private ProdutoService produtoService;
+    private AdminService produtoService;
 
     @GetMapping("/")
     public String index(HttpSession session, Model model) {

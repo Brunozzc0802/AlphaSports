@@ -54,7 +54,6 @@ public class UsuarioController {
 
             Usuario usuarioAtualizado = service.atualizarPerfil(u.getId(), r);
 
-            // Atualizar o usuário na sessão com os dados novos
             session.setAttribute("usuarioLogado", usuarioAtualizado);
 
             return ResponseEntity.ok("Perfil atualizado com sucesso");

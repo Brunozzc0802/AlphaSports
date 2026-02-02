@@ -1,8 +1,10 @@
 package com.alphasports.controller;
 
 import com.alphasports.model.Produto;
+import com.alphasports.model.Usuario;
+import com.alphasports.service.AdminService;
+import com.alphasports.service.UsuarioService;
 import org.springframework.ui.Model;
-import com.alphasports.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +13,22 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
-public class ProdutoController {
+public class AdminController {
+
     @Autowired
-    private ProdutoService produtoService;
+    private UsuarioService usuarioService;
+
+    @GetMapping("/usuarios")
+    public String listarUsuarios(Model model) {
+        List<Usuario> ativos = usuarioService.listarAtivo();
+        List<Usuario> Inativos = usuarioService.listarInativo();
+        model.addAttribute("ListaAtivos", ativos);
+        model.addAttribute("ListaInativos", Inativos);
+        return "adminUsuarios";
+    }
+
+    @Autowired
+    private AdminService produtoService;
     @GetMapping
     public String listarProdutos(Model model) {
         List<Produto> ativos = produtoService.listarAtivo();
@@ -21,7 +36,7 @@ public class ProdutoController {
 
         model.addAttribute("ListaAtivos", ativos);
         model.addAttribute("ListaInativos", Inativos);
-        return "admin";
+        return "adminProduto";
     }
     @GetMapping("/novo")
     public String novoProduto(Model model) {
