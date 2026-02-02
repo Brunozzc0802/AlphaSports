@@ -73,10 +73,14 @@
             <li data-tab="estoque">Estoque</li>
         </ul>
     </aside>
+
     <main class="perfil-content">
         <div class="admin-header-flex">
             <h1>Produtos</h1>
-
+            <div th:if="${mensagemSucesso}" id="successAlert" class="custom-alert">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${mensagemSucesso}"></span>
+            </div>
             <div class="admin-header-actions">
                 <div class="tab-container">
                     <button class="tab-button active" id="btnAtivo">Produtos Ativos</button>

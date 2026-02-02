@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -41,10 +42,19 @@ public class AdminProdutoController {
         return "admin/produto-form";
     }
     @GetMapping("/desativar/{id}")
-    public String desativarProduto(@PathVariable Long id) {
+    public String desativarProduto(@PathVariable Long id, RedirectAttributes attributes) {
         produtoService.desativar(id);
+        attributes.addFlashAttribute("mensagemSucesso", "Produto deletado com sucesso!");
         return "redirect:/admin";
     }
+
+    @GetMapping("/ativar/{id}")
+    public String ativarProduto(@PathVariable Long id, RedirectAttributes attributes) {
+        produtoService.ativar(id);
+        attributes.addFlashAttribute("mensagemSucesso", "Produto restaurado com sucesso!");
+        return "redirect:/admin";
+    }
+
     @GetMapping("/dados/{id}")
     @ResponseBody
     public Produto obterDadosProduto(@PathVariable Long id) {
