@@ -62,13 +62,6 @@ public class AdminProdutoService {
         AdminRepository.save(produto);
     }
 
-    public void deletar(Long id) {
-        if (!AdminRepository.existsById(id)) {
-            throw new RuntimeException("Produto não encontrado");
-        }
-        AdminRepository.deleteById(id);
-    }
-
     public List<Produto> buscarPorMarca(String marca) {
         return AdminRepository.findByMarca(marca);
     }

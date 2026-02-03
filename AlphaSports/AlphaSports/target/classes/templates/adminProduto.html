@@ -32,7 +32,7 @@
                 <span>Carrinho</span>
                 <span class="cart-count" id="cartCount">0</span>
             </a>
-            <a href="#" onclick="fazerLogout(event)"  class="nav-link cart-link">
+            <a href="#" onclick="fazerLogout(event)" class="nav-link cart-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 Sair
             </a>
@@ -73,7 +73,6 @@
             <li data-tab="estoque">Estoque</li>
         </ul>
     </aside>
-
     <main class="perfil-content">
         <div class="admin-header-flex">
             <h1>Produtos</h1>
@@ -86,13 +85,11 @@
                     <button class="tab-button active" id="btnAtivo">Produtos Ativos</button>
                     <button class="tab-button" id="btnInativo">Produtos Inativos</button>
                 </div>
-
                 <button class="btn-primary" id="btnAdicionar">
                     <i class="fas fa-plus"></i> Adicionar
                 </button>
             </div>
         </div>
-
         <div class="card">
             <div id="containerAtivos">
                 <table class="admin-table">
@@ -118,13 +115,12 @@
                             th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
                         <td class="actions-cell">
                             <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${p.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
-                            <a th:href="@{/admin/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Desativar?')"><i class="fas fa-trash-alt"></i></a>
+                            <a th:href="@{/admin/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-
             <div id="containerInativos" style="display: none;">
                 <table class="admin-table">
                     <thead>
@@ -219,6 +215,20 @@
         </div>
     </div>
     <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const alert = document.getElementById('successAlert');
+
+            if (alert) {
+                setTimeout(() => {
+                    alert.classList.add('alert-slide-up');
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 600);
+                }, 3000);
+            }
+        });
+
         const modal = document.getElementById('modalProduto');
         const btnAdicionar = document.getElementById('btnAdicionar');
         const fecharModal = document.getElementById('fecharModal');
@@ -256,8 +266,8 @@
                     const urlCompleta = p.imagem.startsWith('http') ? p.imagem : '/images/' + p.imagem;
                     document.getElementById('imageUrlInput').value = p.imagem;
                     document.getElementById('imagePreview').innerHTML = `
-                <img src="${urlCompleta}"
-                     style="max-width:100%; max-height:200px; border-radius: 8px; display: block; margin: auto;">`;
+<img src="${urlCompleta}"
+style="max-width:100%; max-height:200px; border-radius: 8px; display: block; margin: auto;">`;
                 }
                 modalTitle.textContent = "Editar Produto";
                 btnSalvar.textContent = "Salvar Alterações";
@@ -375,18 +385,6 @@
             }
         }
         atualizarHeader();
-        async function excluirProduto(id) {
-            if (!confirm('Deseja excluir este produto?')) return;
-            try {
-                const response = await fetch(`/api/produtos/${id}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-                if (response.ok) carregarProdutos();
-            } catch (error) {
-                console.error('Erro ao excluir:', error);
-            }
-        }
         document.addEventListener('DOMContentLoaded', () => {
             atualizarHeader();
             const searchInput = document.getElementById('searchInput');

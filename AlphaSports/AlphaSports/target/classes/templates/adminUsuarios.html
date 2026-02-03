@@ -76,7 +76,10 @@
   <main class="perfil-content">
     <div class="admin-header-flex">
       <h1>Usuários</h1>
-
+      <div th:if="${mensagemSucesso}" id="successAlert" class="custom-alert">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${mensagemSucesso}"></span>
+      </div>
       <div class="admin-header-actions">
         <div class="tab-container">
           <button class="tab-button active" id="btnAtivo">Usuários Ativos</button>
@@ -111,10 +114,11 @@
               <span th:text="${p.cargo}"></span>
             </td>
             <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
-                th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
+                th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status
+            </td>
             <td class="actions-cell">
               <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${p.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
-              <a th:href="@{/admin/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Desativar?')"><i class="fas fa-trash-alt"></i></a>
+              <a th:href="@{/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
             </td>
           </tr>
           </tbody>
@@ -134,7 +138,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="p : ${Listainativos}">
+          <tr th:each="p : ${ListaInativos}">
             <td style="font-weight: 700;" th:text="${p.nome}"></td>
             <td th:text="${p.telefone}"></td>
             <td><span class="badge-categoria" th:text="${p.cpf}"></span></td>
@@ -142,10 +146,12 @@
               <span th:text="${p.cargo}"></span>
             </td>
             <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
-                th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
+                th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status
+            </td>
             <td class="actions-cell">
-              <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${p.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
-              <a th:href="@{/admin/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Desativar?')"><i class="fas fa-trash-alt"></i></a>
+              <a th:href="@{/admin/ativar/{id}(id=${p.id})}" class="btn-action edit">
+                <i class="fas fa-undo"></i>
+              </a>
             </td>
           </tr>
           </tbody>
@@ -215,6 +221,19 @@
     </div>
   </div>
   <script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const alert = document.getElementById('successAlert');
+      if (alert) {
+        setTimeout(() => {
+          alert.classList.add('alert-slide-up');
+          setTimeout(() => {
+            alert.remove();
+          }, 600);
+        }, 3000);
+      }
+    });
+
     const modal = document.getElementById('modalProduto');
     const btnAdicionar = document.getElementById('btnAdicionar');
     const fecharModal = document.getElementById('fecharModal');

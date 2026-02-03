@@ -33,7 +33,7 @@ public class AdminProdutoController {
     @PostMapping("/salvar")
     public String salvarProduto(@ModelAttribute Produto produto) {
         produtoService.salvar(produto);
-        return "redirect:/admin/produtos";
+        return "redirect:/admin";
     }
     @GetMapping("/editar/{id}")
     public String editarProduto(@PathVariable Long id, Model model) {
