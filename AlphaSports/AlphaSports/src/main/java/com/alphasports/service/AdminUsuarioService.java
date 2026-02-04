@@ -1,6 +1,5 @@
 package com.alphasports.service;
 
-import com.alphasports.model.Produto;
 import com.alphasports.model.Usuario;
 import com.alphasports.repository.AdminUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

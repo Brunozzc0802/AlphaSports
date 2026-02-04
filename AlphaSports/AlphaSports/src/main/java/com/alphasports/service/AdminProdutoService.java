@@ -61,8 +61,4 @@ public class AdminProdutoService {
         produto.setAtivo(true);
         AdminRepository.save(produto);
     }
-
-    public List<Produto> buscarPorMarca(String marca) {
-        return AdminRepository.findByMarca(marca);
-    }
 }

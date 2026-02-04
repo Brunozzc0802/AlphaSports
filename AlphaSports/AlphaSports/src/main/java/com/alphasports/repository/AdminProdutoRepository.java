@@ -13,8 +13,6 @@ public interface AdminProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByNomeContainingIgnoreCase(String nome);
 
-    List<Produto> findByMarca(String marca);
-
     List<Produto> findByAtivoTrueOrderById();
     List<Produto> findByAtivoFalseOrderById( );
 
