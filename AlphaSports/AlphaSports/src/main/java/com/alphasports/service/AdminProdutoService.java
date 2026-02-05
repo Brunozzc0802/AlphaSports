@@ -1,6 +1,8 @@
 package com.alphasports.service;
 
+import com.alphasports.model.Marca;
 import com.alphasports.model.Produto;
+import com.alphasports.repository.AdminMarcaRepository;
 import com.alphasports.repository.AdminProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,4 +63,5 @@ public class AdminProdutoService {
         produto.setAtivo(true);
         AdminRepository.save(produto);
     }
+
 }

@@ -67,7 +67,7 @@
                 <a th:href="@{/admin}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Produtos</a>
             </li>
             <li data-tab="clientes">Clientes</li>
-            <li data-tab="clientes">Funcionarios</li>
+            <li data-tab="funcionarios">Funcionarios</li>
             <li data-tab="marcas">
                 <a th:href="@{/adminMarca}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Marcas</a>
             </li>
@@ -108,7 +108,7 @@
                     <tbody>
                     <tr th:each="p : ${ListaAtivos}">
                         <td style="font-weight: 600;" th:text="${p.nome}"></td>
-                        <td th:text="${p.marca}"></td>
+                        <td th:text="${p.marca.nome}"></td>
                         <td><span class="badge-categoria" th:text="${p.categoria}"></span></td>
                         <td style="font-weight: 600; color: #10b981;">
                             R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
@@ -138,7 +138,7 @@
                     <tbody>
                     <tr th:each="p : ${ListaInativos}">
                         <td style="font-weight: 600;" th:text="${p.nome}"></td>
-                        <td th:text="${p.marca}"></td>
+                        <td th:text="${p.marca.nome}"></td>
                         <td><span class="badge-categoria" th:text="${p.categoria}">Categoria</span></td>
                         <td style="font-weight: 600; color: #10b981;">
                             R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span></td>
@@ -161,23 +161,24 @@
                 <h2 id="modalTitle">Adicionar Novo Produto</h2>
                 <button class="modal-close" id="fecharModal">&times;</button>
             </div>
-            <form class="modal-form" id="formProduto">
+            <form class="modal-form" id="formProduto" th:action="@{/admin/salvar}" method="post" enctype="multipart/form-data">
                 <input type="hidden" id="produtoId" name="id">
                 <label>Nome do Produto <span class="required"> * </span> </label>
-                <input type="text" id="nomeProd" class="required-field" placeholder="Ex: Camiseta Nike">
+                <input type="text" id="nomeProd" name="nome" class="required-field" placeholder="Ex: Camiseta Nike">
                 <div class="form-row">
                     <div>
                         <label>Marca <span class="required">*</span> </label>
-                        <select id="marcaProd" class="required-field">
+                        <select id="marcaProd" name="marcaId" class="required-field">
                             <option value="">Selecione uma marca</option>
-                            <option value="Nike">Nike</option>
-                            <option value="Adidas">Adidas</option>
-                            <option value="Puma">Puma</option>
+                            <option th:each="m : ${marcas}"
+                                    th:value="${m.id}"
+                                    th:text="${m.nome}">
+                            </option>
                         </select>
                     </div>
                     <div>
                         <label>Categoria <span class="required">*</span> </label>
-                        <select id="categoriaProd" class="required-field">
+                        <select id="categoriaProd" name="categoria" class="required-field">
                             <option value="">Selecione uma categoria</option>
                             <option value="Calçados">Calçados</option>
                             <option value="Roupas">Roupas</option>
@@ -188,27 +189,27 @@
                 <div class="form-row">
                     <div>
                         <label>Preço (R$)<span class="required">*</span> </label>
-                        <input type="number" id="precoProd" class="required-field" min="0" step="0.01">
+                        <input type="number" id="precoProd" name="preco" class="required-field" min="0" step="0.01">
                     </div>
                     <div>
                         <label>Desconto (%)</label>
-                        <input type="number" id="descontoProd" min="0" value="0">
+                        <input type="number" id="descontoProd" name="desconto" min="0" value="0">
                     </div>
                 </div>
                 <label>Descrição </label>
-                <textarea id="descricaoProd" placeholder="Descreva o produto..."></textarea>
+                <textarea id="descricaoProd" name="descricao" placeholder="Descreva o produto..."></textarea>
                 <label>URL da Imagem</label>
-                <input type="text" id="imageUrlInput" placeholder="https://exemplo.com/imagem.jpg">
+                <input type="text" id="imageUrlInput" name="imagem" placeholder="https://exemplo.com/imagem.jpg">
                 <label>Ou envie uma imagem</label>
                 <div class="upload-box">
-                    <input type="file" id="imageFileInput" accept="image/png, image/jpeg">
+                    <input type="file" id="imageFileInput" name="imagemFile" accept="image/png, image/jpeg">
                     <span>Selecionar imagem (PNG ou JPG)</span>
                 </div>
                 <div class="image-preview" id="imagePreview">
                     <span>Prévia da imagem</span>
                 </div>
                 <label>Tamanhos<span class="required">*</span> </label>
-                <input type="text" id="tamanhosProd" class="required-field" placeholder="P, M, G, GG">
+                <input type="text" id="tamanhosProd" name="tamanhos" class="required-field" placeholder="P, M, G, GG">
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" id="cancelarModal">Cancelar</button>
                     <button type="submit" class="btn-primary" id="btnSalvar">Adicionar Produto</button>
@@ -261,7 +262,7 @@
                 document.getElementById('descontoProd').value = p.desconto || 0;
                 document.getElementById('descricaoProd').value = p.descricao || '';
                 document.getElementById('tamanhosProd').value = p.tamanhos || '';
-                document.getElementById('marcaProd').value = p.marca || '';
+                document.getElementById('marcaProd').value = p.marca?.id || '';
                 document.getElementById('categoriaProd').value = p.categoria || '';
                 resetPreview();
                 if (p.imagem) {
@@ -398,53 +399,6 @@ style="max-width:100%; max-height:200px; border-radius: 8px; display: block; mar
                         row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
                     });
                 });
-            }
-        });
-        formProduto.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            let valido = true;
-            const camposObrigatorios = formProduto.querySelectorAll('.required-field');
-
-            camposObrigatorios.forEach(campo => {
-                campo.classList.remove('input-error');
-                if (!campo.value.trim()) {
-                    campo.classList.add('input-error');
-                    valido = false;
-                }
-            });
-
-            if (!valido) {
-                alert('Preencha todos os campos obrigatórios (*)');
-                return;
-            }
-
-            const formData = new FormData();
-
-            formData.append('id', document.getElementById('produtoId').value);
-            formData.append('nome', document.getElementById('nomeProd').value);
-            formData.append('marca', document.getElementById('marcaProd').value);
-            formData.append('categoria', document.getElementById('categoriaProd').value);
-            formData.append('preco', document.getElementById('precoProd').value);
-            formData.append('desconto', document.getElementById('descontoProd').value);
-            formData.append('descricao', document.getElementById('descricaoProd').value);
-            formData.append('tamanhos', document.getElementById('tamanhosProd').value);
-            formData.append('imagem', imageUrlInput.value);
-
-            try {
-                const response = await fetch('/admin/salvar', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    window.location.href = '/admin';
-                } else {
-                    alert('Erro ao salvar produto');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Erro inesperado');
             }
         });
     </script>

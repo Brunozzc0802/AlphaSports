@@ -9,4 +9,5 @@ import java.util.List;
 public interface AdminMarcaRepository  extends JpaRepository<Marca, Long> {
         List<Marca> findByAtivoTrueOrderById();
         List<Marca> findByAtivoFalseOrderById( );
+
 }

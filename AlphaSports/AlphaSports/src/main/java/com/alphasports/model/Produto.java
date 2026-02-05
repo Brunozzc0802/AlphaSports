@@ -1,5 +1,6 @@
 package com.alphasports.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Data // Adicionei para remover os Getters e Setters manuais e limpar o código
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -21,9 +22,9 @@ public class Produto {
     @Column(nullable = false)
     private String nome;
 
-    // ALTERAÇÃO AQUI: Em vez de String, usamos a entidade Marca
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "marca_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "marca_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Marca marca;
 
     @Column(nullable = false)

@@ -141,14 +141,14 @@
           </thead>
           <tbody>
           <tr th:each="p : ${ListaInativos}">
-            <td style="font-weight: 700;" th:text="${p.nome}"></td>
-            <td th:text="${p.telefone}"></td>
-            <td><span class="badge-categoria" th:text="${p.cpf}"></span></td>
+            <td style="font-weight: 700;" th:text="${u.nome}"></td>
+            <td th:text="${u.telefone}"></td>
+            <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
             <td style="color: #000000;">
-              <span th:text="${p.cargo}"></span>
+              <span th:text="${u.cargo}"></span>
             </td>
-            <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
-                th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status
+            <td th:class="${u.ativo} ? 'ativo' : 'inativo'"
+                th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
             </td>
             <td class="actions-cell">
               <a th:href="@{/admin/ativar/{id}(id=${p.id})}" class="btn-action edit">
