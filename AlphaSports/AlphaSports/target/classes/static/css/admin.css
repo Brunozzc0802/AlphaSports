@@ -356,7 +356,7 @@ body {
 .ativo{
 
     width: fit-content;
-    min-width: 70px;
+    min-width: 30px;
     height: 30px;
     padding: 0 6px;
     background-color: rgba(0, 255, 9, 0.2);
@@ -365,9 +365,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 15px;
+    margin: 40px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .inativo {

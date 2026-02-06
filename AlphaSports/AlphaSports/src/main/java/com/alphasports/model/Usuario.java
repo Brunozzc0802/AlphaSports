@@ -29,7 +29,6 @@ public class Usuario {
     private String email;
 
     @Column(nullable = false, unique = true, length = 14)
-    @CPF(message = "CPF inválido")
     @NotBlank(message = "CPF é obrigatório")
     private String cpf;
 

@@ -71,7 +71,6 @@
       <li data-tab="marcas">
         <a th:href="@{/adminMarca}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Marcas</a>
       </li>
-      <li data-tab="categoria">Categoria</li>
       <li data-tab="estoque">Estoque</li>
     </ul>
   </aside>
@@ -108,19 +107,19 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="p : ${ListaAtivos}">
-            <td style="font-weight: 700;" th:text="${p.nome}"></td>
-            <td th:text="${p.telefone}"></td>
-            <td><span class="badge-categoria" th:text="${p.cpf}"></span></td>
+          <tr th:each="u : ${ListaAtivos}">
+            <td style="font-weight: 700;" th:text="${u.nome}"></td>
+            <td th:text="${u.telefone}"></td>
+            <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
             <td style="color: #000000;">
-              <span th:text="${p.cargo}"></span>
+              <span th:text="${u.cargo}"></span>
             </td>
-            <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
-                th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status
+            <td th:class="${u.ativo} ? 'ativo' : 'inativo'"
+                th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
             </td>
             <td class="actions-cell">
-              <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${p.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
-              <a th:href="@{/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
+              <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${u.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
+              <a th:href="@{/desativar/{id}(id=${u.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
             </td>
           </tr>
           </tbody>
@@ -140,7 +139,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="p : ${ListaInativos}">
+          <tr th:each="u : ${ListaInativos}">
             <td style="font-weight: 700;" th:text="${u.nome}"></td>
             <td th:text="${u.telefone}"></td>
             <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
@@ -151,7 +150,7 @@
                 th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
             </td>
             <td class="actions-cell">
-              <a th:href="@{/admin/ativar/{id}(id=${p.id})}" class="btn-action edit">
+              <a th:href="@{/admin/ativar/{id}(id=${u.id})}" class="btn-action edit">
                 <i class="fas fa-undo"></i>
               </a>
             </td>
