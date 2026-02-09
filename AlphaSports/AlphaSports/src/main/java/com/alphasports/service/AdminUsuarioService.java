@@ -1,5 +1,6 @@
 package com.alphasports.service;
 
+import com.alphasports.model.Produto;
 import com.alphasports.model.Usuario;
 import com.alphasports.repository.AdminUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,12 @@ public class AdminUsuarioService {
     public void desativar(Long id) {
         Usuario usuario = buscarPorId(id);
         usuario.setAtivo(false);
+        usuarioRepository.save(usuario);
+    }
+
+    public void ativar(Long id) {
+        Usuario usuario = buscarPorId(id);
+        usuario.setAtivo(true);
         usuarioRepository.save(usuario);
     }
 

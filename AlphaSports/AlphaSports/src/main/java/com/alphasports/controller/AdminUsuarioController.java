@@ -26,12 +26,21 @@ public class AdminUsuarioController {
         return "adminUsuarios";
     }
 
-    @GetMapping("/desativar/{id}")
+    @GetMapping("/desativarUsuario/{id}")
     public String desativarUsuario(@PathVariable Long id, RedirectAttributes attributes) {
         AdminusuarioService.desativar(id);
         attributes.addFlashAttribute("mensagemSucesso", "Usuário deletado com sucesso!");
         return "redirect:/adminUsuarios";
     }
+
+    @GetMapping("/ativarUsuario/{id}")
+    public String ativarUsuario(@PathVariable Long id, RedirectAttributes attributes) {
+        AdminusuarioService.ativar(id);
+        attributes.addFlashAttribute("mensagemSucesso", "Usuário restaurado com sucesso!");
+        return "redirect:/adminUsuarios";
+    }
+
+
 
 
 }

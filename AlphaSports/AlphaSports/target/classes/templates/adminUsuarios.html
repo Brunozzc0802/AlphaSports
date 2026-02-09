@@ -119,7 +119,7 @@
             </td>
             <td class="actions-cell">
               <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${u.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
-              <a th:href="@{/desativar/{id}(id=${u.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
+              <a th:href="@{/desativarUsuario/{id}(id=${u.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
             </td>
           </tr>
           </tbody>
@@ -150,7 +150,7 @@
                 th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
             </td>
             <td class="actions-cell">
-              <a th:href="@{/admin/ativar/{id}(id=${u.id})}" class="btn-action edit">
+              <a th:href="@{/ativarUsuario/{id}(id=${u.id})}" class="btn-action edit">
                 <i class="fas fa-undo"></i>
               </a>
             </td>
