@@ -160,290 +160,172 @@
       </div>
     </div>
   </main>
-  <div class="modal-overlay" id="modalProduto">
+  <div class="modal-overlay" id="modalUsuario">
     <div class="modal">
       <div class="modal-header">
-        <h2 id="modalTitle">Adicionar Novo Produto</h2>
+        <h2 id="modalTitle">Adicionar Novo Usuário</h2>
         <button class="modal-close" id="fecharModal">&times;</button>
       </div>
-      <form class="modal-form" id="formProduto">
-        <input type="hidden" id="produtoId">
-        <label>Nome do Produto <span class="required"> * </span> </label>
-        <input type="text" id="nomeProd" class="required-field" placeholder="Ex: Camiseta Nike">
+
+      <form class="modal-form" id="formUsuario" th:action="@{/admin/usuarios/salvar}" method="post">
+        <input type="hidden" id="usuarioId" name="id">
+
+        <label for="nomeUsu">Nome Completo <span class="required">*</span></label>
+        <input type="text" id="nomeUsu" name="nome" class="required-field" placeholder="Ex: João Silva">
+
+        <label for="emailUsu">E-mail <span class="required">*</span></label>
+        <input type="email" id="emailUsu" name="email" class="required-field" placeholder="joao@gmail.com">
+
         <div class="form-row">
           <div>
-            <label>Marca <span class="required">*</span> </label>
-            <select id="marcaProd" class="required-field">
-              <option value="">Selecione uma marca</option>
-              <option value="Nike">Nike</option>
-              <option value="Adidas">Adidas</option>
-              <option value="Puma">Puma</option>
-            </select>
+            <label for="cpfUsu">CPF <span class="required">*</span></label>
+            <input type="text" id="cpfUsu" name="cpf" class="required-field" placeholder="000.000.000-00">
           </div>
           <div>
-            <label>Categoria <span class="required">*</span> </label>
-            <select id="categoriaProd" class="required-field">
-              <option value="">Selecione uma categoria</option>
-              <option value="Calçados">Calçados</option>
-              <option value="Roupas">Roupas</option>
-              <option value="Equipamentos">Equipamentos</option>
-            </select>
+            <label for="telUsu">Telefone <span class="required">*</span></label>
+            <input type="text" id="telUsu" name="telefone" class="required-field" placeholder="(11) 99999-9999">
           </div>
         </div>
+
         <div class="form-row">
           <div>
-            <label>Preço (R$)<span class="required">*</span> </label>
-            <input type="number" id="precoProd" class="required-field" min="0" step="0.01">
+            <label for="senhaUsu">Senha <span class="required" id="asteriscoSenha">*</span></label>
+            <input type="password" id="senhaUsu" name="senha" class="required-field" placeholder="Mínimo 6 caracteres">
           </div>
           <div>
-            <label>Desconto (%)</label>
-            <input type="number" id="descontoProd" min="0" value="0">
+            <label for="cargoUsu">Cargo <span class="required">*</span></label>
+            <select id="cargoUsu" name="cargo" class="required-field">
+              <option value="">Selecione um cargo</option>
+              <option value="ADMINISTRADOR">Administrador</option>
+              <option value="ESTOQUISTA">Estoquista</option>
+            </select>
           </div>
         </div>
-        <label>Descrição </label>
-        <textarea id="descricaoProd" placeholder="Descreva o produto..."></textarea>
-        <label>URL da Imagem</label>
-        <input type="text" id="imageUrlInput" placeholder="https://exemplo.com/imagem.jpg">
-        <label>Ou envie uma imagem</label>
-        <div class="upload-box">
-          <input type="file" id="imageFileInput" accept="image/png, image/jpeg">
-          <span>Selecionar imagem (PNG ou JPG)</span>
-        </div>
-        <div class="image-preview" id="imagePreview">
-          <span>Prévia da imagem</span>
-        </div>
-        <label>Tamanhos<span class="required">*</span> </label>
-        <input type="text" id="tamanhosProd" class="required-field" placeholder="P, M, G, GG">
+
         <div class="modal-actions">
           <button type="button" class="btn-secondary" id="cancelarModal">Cancelar</button>
-          <button type="submit" class="btn-primary" id="btnSalvar">Adicionar Produto</button>
+          <button type="submit" class="btn-primary" id="btnSalvar">Adicionar Usuário</button>
         </div>
       </form>
     </div>
   </div>
+
   <script>
-
-    document.addEventListener("DOMContentLoaded", function() {
-      const alert = document.getElementById('successAlert');
-      if (alert) {
-        setTimeout(() => {
-          alert.classList.add('alert-slide-up');
-          setTimeout(() => {
-            alert.remove();
-          }, 600);
-        }, 3000);
-      }
-    });
-
-    const modal = document.getElementById('modalProduto');
+    // 1. Elementos do Modal e Formulário
+    const modal = document.getElementById('modalUsuario');
     const btnAdicionar = document.getElementById('btnAdicionar');
     const fecharModal = document.getElementById('fecharModal');
     const cancelarModal = document.getElementById('cancelarModal');
-    const formProduto = document.getElementById('formProduto');
+    const formUsuario = document.getElementById('formUsuario');
     const modalTitle = document.getElementById('modalTitle');
     const btnSalvar = document.getElementById('btnSalvar');
 
+    // 2. Função para abrir o Modal de Adicionar
     btnAdicionar.addEventListener('click', () => {
-      formProduto.reset();
-      document.getElementById('produtoId').value = '';
-      modalTitle.textContent = "Adicionar Novo Produto";
-      btnSalvar.textContent = "Adicionar Produto";
-      resetPreview();
-      modal.style.display = 'flex';
+      formUsuario.reset(); // Limpa todos os campos
+      document.getElementById('usuarioId').value = ''; // Garante que o ID está vazio
+
+      modalTitle.textContent = "Adicionar Novo Usuário";
+      btnSalvar.textContent = "Adicionar Usuário";
+
+      // Na criação, a senha é obrigatória
+      document.getElementById('senhaUsu').classList.add('required-field');
+      document.getElementById('asteriscoSenha').style.display = 'inline';
+
+      modal.style.display = 'flex'; // Abre o modal
     });
+
+    // 3. Função para abrir o Modal de Edição (chamada pelo botão na tabela)
     async function abrirModalEdicao(id) {
-      console.log("Iniciando edição do ID:", id);
       try {
-        const response = await fetch(`/admin/api/detalhes/${id}`);
-        if (!response.ok) throw new Error(`Erro: ${response.status}`);
-        const p = await response.json();
-        console.log("Dados recebidos:", p);
-        formProduto.reset();
-        document.getElementById('produtoId').value = p.id;
-        document.getElementById('nomeProd').value = p.nome || '';
-        document.getElementById('precoProd').value = p.preco || '';
-        document.getElementById('descontoProd').value = p.desconto || 0;
-        document.getElementById('descricaoProd').value = p.descricao || '';
-        document.getElementById('tamanhosProd').value = p.tamanhos || '';
-        document.getElementById('marcaProd').value = p.marca || '';
-        document.getElementById('categoriaProd').value = p.categoria || '';
-        resetPreview();
-        if (p.imagem) {
-          const urlCompleta = p.imagem.startsWith('http') ? p.imagem : '/images/' + p.imagem;
-          document.getElementById('imageUrlInput').value = p.imagem;
-          document.getElementById('imagePreview').innerHTML = `
-                <img src="${urlCompleta}"
-                     style="max-width:100%; max-height:200px; border-radius: 8px; display: block; margin: auto;">`;
-        }
-        modalTitle.textContent = "Editar Produto";
+        // Faz a chamada para a tua API (ajusta o URL se necessário)
+        const response = await fetch(`/admin/api/usuarios/detalhes/${id}`);
+        if (!response.ok) throw new Error(`Erro ao buscar utilizador: ${response.status}`);
+
+        const u = await response.json();
+
+        // Preenche os campos do formulário com os dados recebidos
+        formUsuario.reset();
+        document.getElementById('usuarioId').value = u.id;
+        document.getElementById('nomeUsu').value = u.nome || '';
+        document.getElementById('emailUsu').value = u.email || '';
+        document.getElementById('cpfUsu').value = u.cpf || '';
+        document.getElementById('telUsu').value = u.telefone || '';
+        document.getElementById('cargoUsu').value = u.cargo || '';
+
+        // Na edição, a senha não é obrigatória (só se quiser mudar)
+        modalTitle.textContent = "Editar Usuário";
         btnSalvar.textContent = "Salvar Alterações";
+        document.getElementById('senhaUsu').classList.remove('required-field');
+        document.getElementById('asteriscoSenha').style.display = 'none';
+
         modal.style.display = 'flex';
       } catch (error) {
-        console.error("Erro ao carregar modal:", error);
+        console.error("Erro:", error);
+        alert("Não foi possível carregar os dados do utilizador.");
       }
     }
-    fecharModal.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-    cancelarModal.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
+
+    // 4. Funções para fechar o Modal
+    const fechar = () => { modal.style.display = 'none'; };
+
+    fecharModal.addEventListener('click', fechar);
+    cancelarModal.addEventListener('click', fechar);
+
+    // Fecha se clicar fora da caixa branca
     window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
-      }
+      if (e.target === modal) fechar();
     });
-    document.addEventListener("DOMContentLoaded", function() {
-      const btnAtivo = document.getElementById("btnAtivo");
-      const btnInativo = document.getElementById("btnInativo");
-      const containerAtivos = document.getElementById("containerAtivos");
-      const containerInativos = document.getElementById("containerInativos");
-      if(btnAtivo && btnInativo) {
-        btnInativo.addEventListener("click", function() {
-          btnInativo.classList.add("active");
-          btnAtivo.classList.remove("active");
-          containerInativos.style.display = "block";
-          containerAtivos.style.display = "none";
-        });
-        btnAtivo.addEventListener("click", function() {
-          btnAtivo.classList.add("active");
-          btnInativo.classList.remove("active");
-          containerAtivos.style.display = "block";
-          containerInativos.style.display = "none";
-        });
-      }
-    });
-    const imageFileInput = document.getElementById('imageFileInput');
-    const imageUrlInput = document.getElementById('imageUrlInput');
-    const imagePreview = document.getElementById('imagePreview');
-    imageFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          imagePreview.innerHTML = `<img src="${event.target.result}">`;
-          imageUrlInput.value = '';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-    imageUrlInput.addEventListener('input', (e) => {
-      const url = e.target.value;
-      if (url.startsWith('http')) {
-        imagePreview.innerHTML = `<img src="${url}">`;
-      }
-    });
-    function resetPreview() {
-      imagePreview.innerHTML = `<span>Prévia da imagem</span>`;
-      imageFileInput.value = '';
-      imageUrlInput.value = '';
-    }
-    async function atualizarHeader() {
-      try {
-        const response = await fetch(`/api/auth/verificar`, {
-          credentials: 'include'
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.cargo !== 'ADMINISTRADOR' && data.role !== 'ADMIN') {
-            window.location.href = '/';
-            return;
-          }
-          const userName = document.getElementById('userName');
-          const adminTitle = document.getElementById('adminTitle');
-          const userLink = document.getElementById('userLink');
-          const primeiroNome = data.nome ? data.nome.split(' ')[0] : "Admin";
-          if (userName) userName.textContent = `Olá, ${primeiroNome}`;
-          if (adminTitle) adminTitle.textContent = `Admin: ${primeiroNome}`;
-          userLink.onclick = (event) => {
-            event.preventDefault();
-            if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
-              window.location.href = '/admin';
-            } else {
-              window.location.href = '/perfil';
-            }
-          }
-        } else {
-          window.location.href = '/login';
-        }
-      } catch (error) {
-        console.error('Erro ao verificar autenticação:', error);
-      }
-    }
-    async function fazerLogout(event) {
-      event.preventDefault();
-      try {
-        const response = await fetch('/api/auth/logout', {
-          method: 'POST',
-          credentials: 'include'
-        });
-        if (response.ok) {
-          localStorage.removeItem('alphasports_user');
-          if (typeof showToast === 'function') {
-            showToast('Logout realizado com sucesso!', 'success');
-          }
-          setTimeout(() => {
-            window.location.href = '/login';
-          }, 1000);
-        }
-      } catch (error) {
-        console.error('Erro ao fazer logout:', error);
-      }
-    }
-    atualizarHeader();
-    async function excluirProduto(id) {
-      if (!confirm('Deseja excluir este produto?')) return;
-      try {
-        const response = await fetch(`/api/produtos/${id}`, {
-          method: 'DELETE',
-          credentials: 'include'
-        });
-        if (response.ok) carregarProdutos();
-      } catch (error) {
-        console.error('Erro ao excluir:', error);
-      }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      atualizarHeader();
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const term = e.target.value.toLowerCase();
-          const rows = document.querySelectorAll("#adminTableBody tr");
-          rows.forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
-          });
-        });
-      }
-    });
-    formProduto.addEventListener('submit', (e) => {
-      e.preventDefault();
+
+    // 5. Validação antes de enviar (Submit)
+    formUsuario.addEventListener('submit', (e) => {
       let valido = true;
-      const camposObrigatorios = formProduto.querySelectorAll('.required-field');
+      const camposObrigatorios = formUsuario.querySelectorAll('.required-field');
+
       camposObrigatorios.forEach(campo => {
         campo.classList.remove('input-error');
-        if (
-                campo.value === '' ||
-                campo.value === null ||
-                campo.value.trim() === ''
-        ) {
+        if (!campo.value.trim()) {
           campo.classList.add('input-error');
           valido = false;
         }
       });
-      if (
-              imageFileInput.files.length === 0 &&
-              imageUrlInput.value.trim() === ''
-      ) {
-        alert('Informe uma imagem (URL ou upload)');
-        valido = false;
-      }
+
       if (!valido) {
-        alert('Preencha todos os campos obrigatórios (*)');
-        return;
+        e.preventDefault(); // Impede o envio do formulário
+        alert('Por favor, preencha todos os campos obrigatórios (*)');
       }
-      const id = document.getElementById('produtoId').value;
-      alert(id ? 'Salvando alterações do produto ID: ' + id : 'Adicionando novo produto...');
+    });
+
+    // 6. Lógica das Tabs (Ativos/Inativos)
+    const btnAtivo = document.getElementById("btnAtivo");
+    const btnInativo = document.getElementById("btnInativo");
+    const containerAtivos = document.getElementById("containerAtivos");
+    const containerInativos = document.getElementById("containerInativos");
+
+    if(btnAtivo && btnInativo) {
+      btnInativo.addEventListener("click", () => {
+        btnInativo.classList.add("active");
+        btnAtivo.classList.remove("active");
+        containerInativos.style.display = "block";
+        containerAtivos.style.display = "none";
+      });
+
+      btnAtivo.addEventListener("click", () => {
+        btnAtivo.classList.add("active");
+        btnInativo.classList.remove("active");
+        containerAtivos.style.display = "block";
+        containerInativos.style.display = "none";
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const alertBox = document.getElementById('successAlert');
+      if (alertBox) {
+        setTimeout(() => {
+          alertBox.classList.add('alert-slide-up');
+          setTimeout(() => alertBox.remove(), 600);
+        }, 3000);
+      }
     });
   </script>
 </body>
