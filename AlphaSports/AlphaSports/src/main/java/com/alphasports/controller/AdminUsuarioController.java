@@ -5,8 +5,7 @@ import com.alphasports.service.AdminUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -37,6 +36,19 @@ public class AdminUsuarioController {
     public String ativarUsuario(@PathVariable Long id, RedirectAttributes attributes) {
         AdminusuarioService.ativar(id);
         attributes.addFlashAttribute("mensagemSucesso", "Usuário restaurado com sucesso!");
+        return "redirect:/adminUsuarios";
+    }
+
+    @GetMapping("/admin/api/usuarios/detalhes/{id}")
+    @ResponseBody
+    public Usuario obterDetalhesUsuario(@PathVariable Long id) {
+        return AdminusuarioService.buscarPorId(id);
+    }
+
+    @PostMapping("/admin/usuarios/salvar")
+    public String salvarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes attributes) {
+        AdminusuarioService.salvar(usuario);
+        attributes.addFlashAttribute("mensagemSucesso", "Operação realizada com sucesso!");
         return "redirect:/adminUsuarios";
     }
 

@@ -42,44 +42,22 @@ public class AdminProdutoController {
     }
 
     @PostMapping("/salvar")
-    public String salvarProduto(
-            @RequestParam(required = false) Long id,
-            @RequestParam String nome,
-            @RequestParam Long marcaId,
-            @RequestParam String categoria,
-            @RequestParam BigDecimal preco,
-            @RequestParam(required = false, defaultValue = "0") Integer desconto,
-            @RequestParam(required = false) String descricao,
-            @RequestParam String tamanhos,
-            @RequestParam(required = false) String imagem,
-            @RequestParam(required = false) MultipartFile imagemFile,
-            RedirectAttributes redirectAttributes
-    ) {
-        boolean editando = (id != null);
-        Produto produto = new Produto();
-        produto.setId(id);
-        produto.setNome(nome);
-        Marca marca = adminMarcaService.buscarPorId(marcaId);
-        produto.setMarca(marca);
-        produto.setCategoria(categoria);
-        produto.setPreco(preco);
-        produto.setDesconto(desconto);
-        produto.setDescricao(descricao);
-        produto.setTamanhos(tamanhos);
-        if (imagemFile != null && !imagemFile.isEmpty()) {
-            produto.setImagem(imagemFile.getOriginalFilename());
-        } else {
-            produto.setImagem(imagem);
-        }
-        produtoService.salvar(produto);
-        if (editando) {
-            redirectAttributes.addFlashAttribute(
-                    "mensagemSucesso", "Produto atualizado com sucesso!"
-            );
-        } else {
-            redirectAttributes.addFlashAttribute(
-                    "mensagemSucesso", "Produto cadastrado com sucesso!"
-            );
+    public String salvarProduto(@ModelAttribute Produto produto,
+                                @RequestParam("marcaId") Long marcaId,
+                                @RequestParam(value = "imagemFile", required = false) MultipartFile imagemFile,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            Marca marca = adminMarcaService.buscarPorId(marcaId);
+            produto.setMarca(marca);
+            if (imagemFile != null && !imagemFile.isEmpty()) {
+                produto.setImagem(imagemFile.getOriginalFilename());
+            }
+            boolean isNovo = (produto.getId() == null);
+            produtoService.salvar(produto);
+            redirectAttributes.addFlashAttribute("mensagemSucesso",
+                    isNovo ? "Produto cadastrado com sucesso!" : "Produto atualizado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao salvar produto: " + e.getMessage());
         }
         return "redirect:/admin";
     }
@@ -88,10 +66,8 @@ public class AdminProdutoController {
     @GetMapping("/editar/{id}")
     public String editarProduto(@PathVariable Long id, Model model) {
         Produto produto = produtoService.buscarPorId(id);
-
         model.addAttribute("produto", produto);
         model.addAttribute("marcas", adminMarcaService.listarAtivo());
-
         return "admin/produto-form";
     }
 
