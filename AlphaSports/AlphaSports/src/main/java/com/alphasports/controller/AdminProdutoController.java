@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/produtos")
 public class AdminProdutoController {
 
     @Autowired
@@ -38,7 +38,7 @@ public class AdminProdutoController {
     @GetMapping("/novo")
     public String novoProduto(Model model) {
         model.addAttribute("produto", new Produto());
-        return "admin/produto-form";
+        return "adminProduto";
     }
 
     @PostMapping("/salvar")
@@ -59,30 +59,29 @@ public class AdminProdutoController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao salvar produto: " + e.getMessage());
         }
-        return "redirect:/admin";
+        return "redirect:/admin/produtos";
     }
-
 
     @GetMapping("/editar/{id}")
     public String editarProduto(@PathVariable Long id, Model model) {
         Produto produto = produtoService.buscarPorId(id);
         model.addAttribute("produto", produto);
         model.addAttribute("marcas", adminMarcaService.listarAtivo());
-        return "admin/produto-form";
+        return "adminProduto";
     }
 
     @GetMapping("/desativar/{id}")
     public String desativarProduto(@PathVariable Long id, RedirectAttributes attributes) {
         produtoService.desativar(id);
         attributes.addFlashAttribute("mensagemSucesso", "Produto deletado com sucesso!");
-        return "redirect:/admin";
+        return "redirect:/admin/produtos";
     }
 
     @GetMapping("/ativar/{id}")
     public String ativarProduto(@PathVariable Long id, RedirectAttributes attributes) {
         produtoService.ativar(id);
         attributes.addFlashAttribute("mensagemSucesso", "Produto restaurado com sucesso!");
-        return "redirect:/admin";
+        return "redirect:/admin/produtos";
     }
 
     @GetMapping("/dados/{id}")

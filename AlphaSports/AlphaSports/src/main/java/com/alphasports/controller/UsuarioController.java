@@ -3,6 +3,7 @@ package com.alphasports.controller;
 import com.alphasports.dto.UsuarioPerfilResponse;
 import com.alphasports.dto.UsuarioPerfilUpdateRequest;
 import com.alphasports.model.Usuario;
+import com.alphasports.model.Cargo;
 import com.alphasports.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,11 @@ public class UsuarioController {
         this.service = service;
     }
 
+    private boolean usuarioAdminOuGerente(Usuario u) {
+        return u.getCargo() == Cargo.ADMINISTRADOR ||
+                u.getCargo() == Cargo.GERENTE;
+    }
+
     @GetMapping("/perfil")
     public ResponseEntity<?> perfil(HttpSession session) {
         try {
@@ -26,6 +32,10 @@ public class UsuarioController {
 
             if (u == null) {
                 return ResponseEntity.status(401).body("Usuário não está logado");
+            }
+
+            if (!usuarioAdminOuGerente(u)) {
+                return ResponseEntity.status(403).body("Acesso permitido apenas para administradores");
             }
 
             UsuarioPerfilResponse response = new UsuarioPerfilResponse(
@@ -44,12 +54,17 @@ public class UsuarioController {
     }
 
     @PutMapping("/perfil")
-    public ResponseEntity<?> atualizar(@RequestBody UsuarioPerfilUpdateRequest r, HttpSession session) {
+    public ResponseEntity<?> atualizar(@RequestBody UsuarioPerfilUpdateRequest r,
+                                       HttpSession session) {
         try {
             Usuario u = (Usuario) session.getAttribute("usuarioLogado");
 
             if (u == null) {
                 return ResponseEntity.status(401).body("Usuário não está logado");
+            }
+
+            if (!usuarioAdminOuGerente(u)) {
+                return ResponseEntity.status(403).body("Acesso permitido apenas para administradores");
             }
 
             Usuario usuarioAtualizado = service.atualizarPerfil(u.getId(), r);

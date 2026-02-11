@@ -1,6 +1,7 @@
 package com.alphasports.controller;
 
 
+import com.alphasports.model.Cliente;
 import com.alphasports.service.AdminProdutoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,17 @@ public class PageController {
 
     @GetMapping("/")
     public String index(HttpSession session, Model model) {
+        // Tenta pegar o Admin/Usuário
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        // Tenta pegar o Cliente
+        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
+
         if (usuario != null) {
             model.addAttribute("usuario", usuario);
+            model.addAttribute("nomeExibicao", usuario.getNome());
+        } else if (cliente != null) {
+            model.addAttribute("cliente", cliente);
+            model.addAttribute("nomeExibicao", cliente.getNome());
         }
         return "index";
     }
@@ -28,8 +37,14 @@ public class PageController {
     @GetMapping("/perfil")
     public String perfil(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+
+        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
+
         if (usuario != null) {
             model.addAttribute("usuario", usuario);
+        } else if (cliente != null) {
+            model.addAttribute("cliente", cliente);
+            model.addAttribute("nomeExibicao", cliente.getNome());
         }
         return "/perfil";
     }
@@ -37,14 +52,15 @@ public class PageController {
     @GetMapping("/carrinho")
     public String carrinho(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
         if (usuario != null) {
             model.addAttribute("usuario", usuario);
+        } else if (cliente != null) {
+            model.addAttribute("cliente", cliente);
+            model.addAttribute("nomeExibicao", cliente.getNome());
         }
         return "/carrinho";
     }
-
-
-
     @GetMapping("/produtos")
     public String produtos(
             @RequestParam(required = false) String categoria,
@@ -53,8 +69,11 @@ public class PageController {
             Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
         if (usuario != null) {
             model.addAttribute("usuario", usuario);
+        } else if (cliente != null) {
+            model.addAttribute("nomeExibicao", cliente.getNome());
         }
 
         if (categoria != null && !categoria.isEmpty()) {

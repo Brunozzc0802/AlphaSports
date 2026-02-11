@@ -24,7 +24,7 @@
             <div class="nav-link user-dropdown-container" id="userInfo">
                 <a th:href="@{/login}" class="nav-link user-link" id="userLink">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span id="userName">Entrar</span>
+                    <span id="userName" th:text="${nomeExibicao != null ? nomeExibicao : 'Entrar'}">Entrar</span>
                 </a>
             </div>
             <a th:href="@{/carrinho}" class="nav-link cart-link">
@@ -334,38 +334,7 @@ style="max-width:100%; max-height:200px; border-radius: 8px; display: block; mar
             imageFileInput.value = '';
             imageUrlInput.value = '';
         }
-        async function atualizarHeader() {
-            try {
-                const response = await fetch(`/api/auth/verificar`, {
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.cargo !== 'ADMINISTRADOR' && data.role !== 'ADMIN') {
-                        window.location.href = '/';
-                        return;
-                    }
-                    const userName = document.getElementById('userName');
-                    const adminTitle = document.getElementById('adminTitle');
-                    const userLink = document.getElementById('userLink');
-                    const primeiroNome = data.nome ? data.nome.split(' ')[0] : "Admin";
-                    if (userName) userName.textContent = `Olá, ${primeiroNome}`;
-                    if (adminTitle) adminTitle.textContent = `Admin: ${primeiroNome}`;
-                    userLink.onclick = (event) => {
-                        event.preventDefault();
-                        if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
-                            window.location.href = '/admin';
-                        } else {
-                            window.location.href = '/perfil';
-                        }
-                    }
-                } else {
-                    window.location.href = '/login';
-                }
-            } catch (error) {
-                console.error('Erro ao verificar autenticação:', error);
-            }
-        }
+
         async function fazerLogout(event) {
             event.preventDefault();
             try {
@@ -386,9 +355,8 @@ style="max-width:100%; max-height:200px; border-radius: 8px; display: block; mar
                 console.error('Erro ao fazer logout:', error);
             }
         }
-        atualizarHeader();
+
         document.addEventListener('DOMContentLoaded', () => {
-            atualizarHeader();
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {

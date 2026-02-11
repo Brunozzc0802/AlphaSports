@@ -34,9 +34,12 @@
 
         <nav class="header-nav">
             <div class="nav-link user-dropdown-container" id="userInfo">
-                <a th:href="@{/login}" class="nav-link user-link" id="userLink">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span id="userName">Entrar</span>
+                <a th:href="${nomeExibicao != null} ? @{/adminUsuarios} : @{/auth/login}" class="nav-link user-link" id="userLink">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span id="userName" th:text="${nomeExibicao != null ? nomeExibicao : 'Entrar'}">Entrar</span>
                 </a>
             </div>
             <a th:href="@{/carrinho}" class="nav-link cart-link">
@@ -181,7 +184,7 @@
             <div class="promo-content">
                 <h2>Cadastre-se e ganhe até 50% OFF</h2>
                 <p>Na sua primeira compra</p>
-                <a th:href="@{/cadastro}" class="btn btn-white">Cadastrar Agora</a>
+                <a th:href="@{auth/registro}" class="btn btn-white">Cadastrar Agora</a>
             </div>
         </div>
     </div>
@@ -278,39 +281,6 @@
 <script th:src="@{/js/script.js}"></script>
 
 <script>
-    async function atualizarHeader() {
-        try {
-            const response = await fetch('/api/auth/verificar', {
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                const userName = document.getElementById('userName');
-                const userLink = document.getElementById('userLink');
-                const mobileUserLink = document.getElementById('mobileUserLink');
-
-                const primeiroNome = data.nome.split(' ')[0];
-                userName.textContent = `Olá, ${primeiroNome}`;
-                mobileUserLink.textContent = `Olá, ${primeiroNome}`;
-                userLink.href = "javascript:void(0)";
-
-                userLink.onclick = (event) => {
-                    event.preventDefault();
-                    if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
-                        window.location.href = '/admin';
-                    } else {
-                        window.location.href = '/perfil';
-                    }
-                };
-                mobileUserLink.onclick = userLink.onclick;
-                mobileUserLink.href = "javascript:void(0)";
-            }
-        } catch (error) {
-            console.error('Erro ao verificar autenticação:', error);
-        }
-    }
-
     const slides = document.querySelectorAll('.banner-slide');
     const dots = document.querySelectorAll('.dot');
     const nextBtn = document.getElementById('nextSlide');
@@ -371,7 +341,7 @@
         event.preventDefault();
 
         try {
-            const response = await fetch('/api/auth/logout', {
+            const response = await fetch('/auth/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -389,8 +359,6 @@
             console.error('Erro ao fazer logout:', error);
         }
     }
-
-    atualizarHeader();
 </script>
 </body>
 </html>

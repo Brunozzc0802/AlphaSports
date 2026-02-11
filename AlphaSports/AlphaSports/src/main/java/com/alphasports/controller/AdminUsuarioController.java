@@ -2,6 +2,7 @@ package com.alphasports.controller;
 
 import com.alphasports.model.Usuario;
 import com.alphasports.service.AdminUsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +18,14 @@ public class AdminUsuarioController {
     private AdminUsuarioService AdminusuarioService;
 
     @GetMapping("/adminUsuarios")
-    public String listarUsuarios(Model model) {
+    public String listarUsuarios(HttpSession session, Model model) {
         List<Usuario> ativos = AdminusuarioService.listarAtivo();
         List<Usuario> Inativos = AdminusuarioService.listarInativo();
+
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado != null) {
+            model.addAttribute("nomeExibicao", usuarioLogado.getNome());
+        }
         model.addAttribute("ListaAtivos", ativos);
         model.addAttribute("ListaInativos", Inativos);
         return "adminUsuarios";
@@ -51,8 +57,4 @@ public class AdminUsuarioController {
         attributes.addFlashAttribute("mensagemSucesso", "Operação realizada com sucesso!");
         return "redirect:/adminUsuarios";
     }
-
-
-
-
 }

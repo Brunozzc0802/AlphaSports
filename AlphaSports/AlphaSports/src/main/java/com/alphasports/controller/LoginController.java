@@ -1,166 +1,85 @@
 package com.alphasports.controller;
 
 import com.alphasports.dto.LoginRequest;
-import com.alphasports.dto.LoginResponse;
 import com.alphasports.dto.RegistroRequest;
 import com.alphasports.model.Usuario;
+import com.alphasports.model.Cliente;
 import com.alphasports.service.UsuarioService;
+import com.alphasports.service.ClienteService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.ui.Model;
 
 @Controller
+@RequestMapping("/auth")
 public class LoginController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+    private final ClienteService clienteService;
+
+    public LoginController(UsuarioService usuarioService,
+                           ClienteService clienteService) {
+        this.usuarioService = usuarioService;
+        this.clienteService = clienteService;
+    }
 
     @GetMapping("/login")
-    public String telaPaginaLogin(Model model) {
-        if (!model.containsAttribute("loginRequest")) {
-            model.addAttribute("loginRequest", new LoginRequest());
-        }
+    public String exibirLogin(Model model) {
+        model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
 
     @GetMapping("/cadastro")
-    public String telaPaginaCadastro(Model model) {
-        if (!model.containsAttribute("registroRequest")) {
-            model.addAttribute("registroRequest", new RegistroRequest());
-        }
+    public String exibirCadastro(Model model) {
+        model.addAttribute("registroRequest", new RegistroRequest());
         return "cadastro";
     }
 
-    @PostMapping("/api/auth/registro")
-    public String registrar(@Valid @ModelAttribute RegistroRequest request,
-                            BindingResult bindingResult,
-                            RedirectAttributes redirectAttributes,
-                            HttpSession session) {
+    @PostMapping("/registro")
+    public String registrar(@ModelAttribute RegistroRequest request) {
 
-        if (!request.senhasCompatveis()) {
-            bindingResult.rejectValue("senhaConfirmacao", "error.senhaConfirmacao",
-                    "As senhas não coincidem");
-        }
+        clienteService.cadastrar(request);
 
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registroRequest", bindingResult);
-            redirectAttributes.addFlashAttribute("registroRequest", request);
-            return "redirect:/cadastro";
-        }
-
-        try {
-            Usuario usuario = usuarioService.registrar(request);
-
-            session.setAttribute("usuarioLogado", usuario);
-            session.setAttribute("usuarioId", usuario.getId());
-            session.setAttribute("email", usuario.getEmail());
-            session.setAttribute("cargo", usuario.getCargo().toString());
-
-            redirectAttributes.addFlashAttribute("sucesso", "Cadastro realizado com sucesso! Bem-vindo!");
-            return "redirect:/";
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("erro", e.getMessage());
-            redirectAttributes.addFlashAttribute("registroRequest", request);
-            return "redirect:/cadastro";
-        }
+        return "redirect:/auth/login?sucesso=true";
     }
 
-    @PostMapping("/api/auth/login")
-    public String login(@Valid @ModelAttribute LoginRequest request,
-                        BindingResult bindingResult,
-                        RedirectAttributes redirectAttributes,
-                        HttpSession session) {
+    @PostMapping("/login")
+    public String autenticar(@ModelAttribute LoginRequest request,
+                             HttpServletRequest httpRequest) {
 
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginRequest", bindingResult);
-            redirectAttributes.addFlashAttribute("loginRequest", request);
-            return "redirect:/login";
+        HttpSession oldSession = httpRequest.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
         }
-
+        HttpSession session = httpRequest.getSession(true);
         try {
             Usuario usuario = usuarioService.autenticar(request);
-
             session.setAttribute("usuarioLogado", usuario);
-            session.setAttribute("usuarioId", usuario.getId());
-            session.setAttribute("email", usuario.getEmail());
-            session.setAttribute("cargo", usuario.getCargo().toString());
-
-            redirectAttributes.addFlashAttribute("sucesso", "Login realizado com sucesso!");
-            return "redirect:/";
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("erro", e.getMessage());
-            redirectAttributes.addFlashAttribute("loginRequest", request);
-            return "redirect:/login";
+            session.setMaxInactiveInterval(60 * 30);
+            return "redirect:/adminUsuarios";
+        } catch (RuntimeException ignored) {
         }
+        try {
+            Cliente cliente = clienteService.autenticar(request);
+            session.setAttribute("clienteLogado", cliente);
+            session.setMaxInactiveInterval(60 * 30);
+            return "redirect:/";
+        } catch (RuntimeException ignored) {
+        }
+        return "redirect:/auth/login?erro=true";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
-        session.invalidate();
-        redirectAttributes.addFlashAttribute("sucesso", "Logout realizado com sucesso");
-        return "redirect:/login";
-    }
+    public String logout(HttpServletRequest request) {
 
-    @GetMapping("/api/auth/verificar")
-    @ResponseBody
-    public ResponseEntity<?> verificarSessao(HttpSession session) {
-        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        HttpSession session = request.getSession(false);
 
-        if (usuarioLogado != null) {
-            return ResponseEntity.ok(new LoginResponse(
-                    "Sessão ativa",
-                    usuarioLogado.getId(),
-                    usuarioLogado.getNome(),
-                    usuarioLogado.getEmail(),
-                    usuarioLogado.getCpf(),
-                    usuarioLogado.getCargo(),
-                    usuarioLogado.getAtivo()
-            ));
+        if (session != null) {
+            session.invalidate();
         }
 
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
-        if (usuarioId != null) {
-            try {
-                Usuario usuario = usuarioService.buscarPorId(usuarioId);
-                session.setAttribute("usuarioLogado", usuario);
-                return ResponseEntity.ok(new LoginResponse(
-                        "Sessão ativa",
-                        usuario.getId(),
-                        usuario.getNome(),
-                        usuario.getEmail(),
-                        usuario.getCpf(),
-                        usuario.getCargo(),
-                        usuario.getAtivo()
-                ));
-            } catch (RuntimeException e) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida");
-            }
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Não autenticado");
-    }
-
-    @PostMapping("/api/auth/logout")
-    @ResponseBody
-    public ResponseEntity<?> logoutAPI(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.ok("Logout realizado com sucesso");
-    }
-
-    @GetMapping("/api/auth/verificar-admin")
-    @ResponseBody
-    public ResponseEntity<?> verificarAdmin(HttpSession session) {
-        String cargo = (String) session.getAttribute("cargo");
-        if (cargo != null && cargo.equals("ADMINISTRADOR")) {
-            return ResponseEntity.ok("Usuário é administrador");
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+        return "redirect:/auth/login?logout=true";
     }
 }

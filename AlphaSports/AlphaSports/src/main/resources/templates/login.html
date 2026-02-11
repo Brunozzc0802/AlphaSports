@@ -33,7 +33,7 @@
                 </button>
             </div>
 
-            <form th:action="@{/api/auth/login}" th:object="${loginRequest}" method="post" id="loginForm" novalidate>
+            <form th:action="@{/auth/login}" th:object="${loginRequest}" method="post" id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="email">E-mail</label>
                     <input
@@ -57,7 +57,6 @@
                             required>
                     <span class="error-message" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></span>
                 </div>
-
                 <div class="form-options">
                     <label class="remember-me">
                         <input type="checkbox" name="remember">
@@ -65,19 +64,16 @@
                     </label>
                     <a href="#" class="forgot-password">Esqueceu a senha?</a>
                 </div>
-
                 <button type="submit" class="btn btn-primary auth-btn" id="loginButton">
                     Entrar
                 </button>
             </form>
-
             <div class="auth-footer">
-                Não tem uma conta? <a th:href="@{/cadastro}">Cadastre-se</a>
+                Não tem uma conta? <a th:href="@{/auth/cadastro}">Cadastre-se</a>
             </div>
         </div>
     </div>
 </div>
-
 <script th:src="@{/js/script.js}"></script>
 <script>
     document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -100,7 +96,6 @@
         } else {
             email.classList.remove('error');
         }
-
         if (!senha.value || senha.value.length < 6) {
             const errorEl = senha.nextElementSibling;
             if (errorEl && errorEl.classList.contains('error-message')) {
@@ -112,7 +107,6 @@
         } else {
             senha.classList.remove('error');
         }
-
         if (!isValid) {
             e.preventDefault();
             return false;
