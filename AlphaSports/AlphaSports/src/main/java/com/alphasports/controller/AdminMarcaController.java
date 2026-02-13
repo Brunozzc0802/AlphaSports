@@ -1,7 +1,9 @@
 package com.alphasports.controller;
 
 import com.alphasports.model.Marca;
+import com.alphasports.model.Usuario;
 import com.alphasports.service.AdminMarcaService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +18,20 @@ public class AdminMarcaController {
     private AdminMarcaService AdminMarcaService;
 
     @GetMapping("/adminMarca")
-    public String listarMarcas(Model model) {
+    public String listarMarcas(Model model, HttpSession session) {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+
+        if (usuario != null) {
+            model.addAttribute("nomeExibicao", usuario.getNome());
+        }
+
         List<Marca> ativos = AdminMarcaService.listarAtivo();
-        List<Marca> Inativos = AdminMarcaService.listarInativo();
+        List<Marca> inativos = AdminMarcaService.listarInativo();
+
         model.addAttribute("ListaAtivos", ativos);
-        model.addAttribute("ListaInativos", Inativos);
+        model.addAttribute("ListaInativos", inativos);
+
         return "adminMarca";
     }
 }

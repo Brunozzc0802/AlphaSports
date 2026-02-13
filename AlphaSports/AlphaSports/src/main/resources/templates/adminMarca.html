@@ -22,10 +22,8 @@
         </div>
         <nav class="header-nav">
             <div class="nav-link user-dropdown-container" id="userInfo">
-                <a th:href="@{/login}" class="nav-link user-link" id="userLink">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span id="userName">Entrar</span>
-                </a>
+                <a th:href="${nomeExibicao != null ? '/adminMarca' : '/auth/login'}"> </a>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>                    <span id="userName" th:text="${nomeExibicao != null ? nomeExibicao : 'Entrar'}"></span>
             </div>
             <a th:href="@{/carrinho}" class="nav-link cart-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
@@ -64,7 +62,7 @@
                 <a th:href="@{/adminUsuarios}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Usuários</a>
             </li>
             <li data-tab="produtos">
-                <a th:href="@{/admin}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Produtos</a>
+                <a th:href="@{/adminProdutos}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Produtos</a>
             </li>
             <li data-tab="clientes">Clientes</li>
             <li data-tab="funcionarios">Funcionarios</li>
@@ -213,6 +211,7 @@
             </form>
         </div>
     </div>
+    </div>
     <script>
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -331,38 +330,7 @@ style="max-width:100%; max-height:200px; border-radius: 8px; display: block; mar
             imageFileInput.value = '';
             imageUrlInput.value = '';
         }
-        async function atualizarHeader() {
-            try {
-                const response = await fetch(`/api/auth/verificar`, {
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.cargo !== 'ADMINISTRADOR' && data.role !== 'ADMIN') {
-                        window.location.href = '/';
-                        return;
-                    }
-                    const userName = document.getElementById('userName');
-                    const adminTitle = document.getElementById('adminTitle');
-                    const userLink = document.getElementById('userLink');
-                    const primeiroNome = data.nome ? data.nome.split(' ')[0] : "Admin";
-                    if (userName) userName.textContent = `Olá, ${primeiroNome}`;
-                    if (adminTitle) adminTitle.textContent = `Admin: ${primeiroNome}`;
-                    userLink.onclick = (event) => {
-                        event.preventDefault();
-                        if (data.cargo === 'ADMINISTRADOR' || data.role === 'ADMIN') {
-                            window.location.href = '/admin';
-                        } else {
-                            window.location.href = '/perfil';
-                        }
-                    }
-                } else {
-                    window.location.href = '/login';
-                }
-            } catch (error) {
-                console.error('Erro ao verificar autenticação:', error);
-            }
-        }
+
         async function fazerLogout(event) {
             event.preventDefault();
             try {
@@ -383,9 +351,8 @@ style="max-width:100%; max-height:200px; border-radius: 8px; display: block; mar
                 console.error('Erro ao fazer logout:', error);
             }
         }
-        atualizarHeader();
+
         document.addEventListener('DOMContentLoaded', () => {
-            atualizarHeader();
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {

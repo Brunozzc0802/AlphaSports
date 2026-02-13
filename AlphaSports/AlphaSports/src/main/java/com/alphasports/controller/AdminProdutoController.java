@@ -2,8 +2,10 @@ package com.alphasports.controller;
 
 import com.alphasports.model.Marca;
 import com.alphasports.model.Produto;
+import com.alphasports.model.Usuario;
 import com.alphasports.service.AdminMarcaService;
 import com.alphasports.service.AdminProdutoService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/produtos")
+@RequestMapping("/adminProdutos")
 public class AdminProdutoController {
 
     @Autowired
@@ -24,17 +26,24 @@ public class AdminProdutoController {
     private AdminMarcaService adminMarcaService;
 
     @GetMapping
-    public String listarProdutos(Model model) {
+    public String listarProdutos(Model model, HttpSession session) {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+
+        if (usuario != null) {
+            model.addAttribute("nomeExibicao", usuario.getNome());
+        }
+
         List<Produto> ativos = produtoService.listarAtivo();
-        List<Produto> Inativos = produtoService.listarInativo();
+        List<Produto> inativos = produtoService.listarInativo();
 
         model.addAttribute("ListaAtivos", ativos);
-        model.addAttribute("ListaInativos", Inativos);
-
+        model.addAttribute("ListaInativos", inativos);
         model.addAttribute("marcas", adminMarcaService.listarAtivo());
 
         return "adminProduto";
     }
+
     @GetMapping("/novo")
     public String novoProduto(Model model) {
         model.addAttribute("produto", new Produto());
@@ -59,7 +68,7 @@ public class AdminProdutoController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao salvar produto: " + e.getMessage());
         }
-        return "redirect:/admin/produtos";
+        return "redirect:/adminProdutos";
     }
 
     @GetMapping("/editar/{id}")
@@ -74,14 +83,14 @@ public class AdminProdutoController {
     public String desativarProduto(@PathVariable Long id, RedirectAttributes attributes) {
         produtoService.desativar(id);
         attributes.addFlashAttribute("mensagemSucesso", "Produto deletado com sucesso!");
-        return "redirect:/admin/produtos";
+        return "redirect:/adminProdutos";
     }
 
     @GetMapping("/ativar/{id}")
     public String ativarProduto(@PathVariable Long id, RedirectAttributes attributes) {
         produtoService.ativar(id);
         attributes.addFlashAttribute("mensagemSucesso", "Produto restaurado com sucesso!");
-        return "redirect:/admin/produtos";
+        return "redirect:/adminProdutos";
     }
 
     @GetMapping("/dados/{id}")
