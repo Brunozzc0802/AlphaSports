@@ -6,15 +6,19 @@ import com.alphasports.dto.LoginRequest;
 import com.alphasports.dto.RegistroRequest;
 import com.alphasports.model.Cliente;
 import com.alphasports.repository.ClienteRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ClienteService(ClienteRepository clienteRepository) {
+    public ClienteService(ClienteRepository clienteRepository,
+                          PasswordEncoder passwordEncoder) {
         this.clienteRepository = clienteRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Cliente autenticar(LoginRequest request) {
@@ -22,7 +26,7 @@ public class ClienteService {
         Cliente cliente = clienteRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
-        if (!cliente.getSenha().equals(request.getSenha())) {
+        if (!passwordEncoder.matches(request.getSenha(), cliente.getSenha())) {
             throw new RuntimeException("Senha inválida");
         }
 
@@ -35,10 +39,15 @@ public class ClienteService {
             throw new RuntimeException("Email já cadastrado");
         }
 
+        if (!request.getSenha().equals(request.getSenhaConfirmacao())) {
+            throw new RuntimeException("As senhas não coincidem");
+        }
+
         Cliente cliente = new Cliente();
         cliente.setNome(request.getNome());
         cliente.setEmail(request.getEmail());
-        cliente.setSenha(request.getSenha()); // depois podemos criptografar
+        cliente.setTelefone(request.getTelefone());
+        cliente.setSenha(passwordEncoder.encode(request.getSenha()));
 
         return clienteRepository.save(cliente);
     }
@@ -67,7 +76,7 @@ public class ClienteService {
         cliente.setTelefone(request.getTelefone());
 
         if (request.getSenha() != null && !request.getSenha().isBlank()) {
-            cliente.setSenha(request.getSenha());
+            cliente.setSenha(passwordEncoder.encode(request.getSenha()));
         }
 
         Cliente atualizado = clienteRepository.save(cliente);

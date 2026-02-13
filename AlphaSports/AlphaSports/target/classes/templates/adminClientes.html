@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaSports - Admin Clientes</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="header">
+    <div class="container header-content">
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/images/Logo.png}" alt="AlphaSports">
+        </a>
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar produtos..." id="searchInput">
+            <button class="search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            </button>
+        </div>
+        <nav class="header-nav">
+            <div class="nav-link user-dropdown-container" id="userInfo">
+                <a th:href="${nomeExibicao != null} ? @{/adminUsuarios} : @{/auth/login}" class="nav-link user-link" id="userLink">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span id="userName" th:text="${nomeExibicao != null ? nomeExibicao : 'Entrar'}">Entrar</span>
+                </a>
+            </div>
+            <a th:href="@{/carrinho}" class="nav-link cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                <span>Carrinho</span>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+            <a href="#" onclick="fazerLogout(event)"  class="nav-link cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Sair
+            </a>
+        </nav>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        </button>
+    </div>
+    <nav class="categories-nav">
+        <div class="container">
+            <ul class="categories-list">
+                <li><a th:href="@{/produtos(categoria=todos)}">Todos</a></li>
+                <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
+                <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
+                <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
+                <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
+                <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
+                <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
+                <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="perfil-wrapper container">
+    <aside class="perfil-menu">
+        <h3 id="adminTitle">Admin</h3>
+        <ul id="adminSidebar">
+            <li data-tab="usuarios">
+                <a th:href="@{/admin/usuarios}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Usuários</a>
+            </li>
+            <li  data-tab="produtos">
+                <a th:href="@{/adminProdutos}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Produtos</a>
+            </li>
+            <li class="active" data-tab="clientes">
+                <a th:href="@{/admin/usuarios}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Clientes</a>
+            </li>
+            <li data-tab="clientes">Funcionarios</li>
+            <li data-tab="marcas">
+                <a th:href="@{/adminMarca}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Marcas</a>
+            </li>
+            <li data-tab="estoque">Estoque</li>
+        </ul>
+    </aside>
+    <main class="perfil-content">
+        <div class="admin-header-flex">
+            <h1>Clientes</h1>
+            <div th:if="${mensagemSucesso}" id="successAlert" class="custom-alert">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${mensagemSucesso}"></span>
+            </div>
+            <div class="admin-header-actions">
+                <div class="tab-container">
+                    <button class="tab-button active" id="btnAtivo">Clientes Ativos</button>
+                    <button class="tab-button" id="btnInativo">Clientes Inativos</button>
+                </div>
+
+                <button class="btn-primary" id="btnAdicionar">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div id="containerAtivos">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>NOME</th>
+                        <th>TELEFONE</th>
+                        <th>CPF</th>
+                        <th>CARGO</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">AÇÕES</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${ListaAtivos}">
+                        <td style="font-weight: 700;" th:text="${u.nome}"></td>
+                        <td th:text="${u.telefone}"></td>
+                        <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
+                        <td style="color: #000000;">
+                            <span th:text="${u.cargo}"></span>
+                        </td>
+                        <td th:class="${u.ativo} ? 'ativo' : 'inativo'"
+                            th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
+                        </td>
+                        <td class="actions-cell">
+                            <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${u.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
+                            <a th:href="@{/desativarUsuario/{id}(id=${u.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="containerInativos" style="display: none;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>NOME</th>
+                        <th>TELEFONE</th>
+                        <th>CPF</th>
+                        <th>CARGO</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">AÇÕES</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${ListaInativos}">
+                        <td style="font-weight: 700;" th:text="${u.nome}"></td>
+                        <td th:text="${u.telefone}"></td>
+                        <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
+                        <td style="color: #000000;">
+                            <span th:text="${u.cargo}"></span>
+                        </td>
+                        <td th:class="${u.ativo} ? 'ativo' : 'inativo'"
+                            th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
+                        </td>
+                        <td class="actions-cell">
+                            <a th:href="@{/ativarUsuario/{id}(id=${u.id})}" class="btn-action edit">
+                                <i class="fas fa-undo"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <div class="modal-overlay" id="modalUsuario">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Adicionar Novo Usuário</h2>
+                <button class="modal-close" id="fecharModal">&times;</button>
+            </div>
+
+            <form class="modal-form" id="formUsuario" th:action="@{/admin/usuarios/salvar}" method="post">
+                <input type="hidden" id="usuarioId" name="id">
+
+                <label for="nomeUsu">Nome Completo <span class="required">*</span></label>
+                <input type="text" id="nomeUsu" name="nome" class="required-field" placeholder="Ex: João Silva">
+
+                <label for="emailUsu">E-mail <span class="required">*</span></label>
+                <input type="email" id="emailUsu" name="email" class="required-field" placeholder="joao@gmail.com">
+
+                <div class="form-row">
+                    <div>
+                        <label for="cpfUsu">CPF <span class="required">*</span></label>
+                        <input type="text" id="cpfUsu" name="cpf" class="required-field" placeholder="000.000.000-00">
+                    </div>
+                    <div>
+                        <label for="telUsu">Telefone <span class="required">*</span></label>
+                        <input type="text" id="telUsu" name="telefone" class="required-field" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="senhaUsu">Senha <span class="required" id="asteriscoSenha">*</span></label>
+                        <input type="password" id="senhaUsu" name="senha" class="required-field" placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <div>
+                        <label for="cargoUsu">Cargo <span class="required">*</span></label>
+                        <select id="cargoUsu" name="cargo" class="required-field">
+                            <option value="">Selecione um cargo</option>
+                            <option value="ADMINISTRADOR">Administrador</option>
+                            <option value="ESTOQUISTA">Estoquista</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelarModal">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnSalvar">Adicionar Usuário</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Elementos do Modal e Formulário
+    const modal = document.getElementById('modalUsuario');
+    const btnAdicionar = document.getElementById('btnAdicionar');
+    const fecharModal = document.getElementById('fecharModal');
+    const cancelarModal = document.getElementById('cancelarModal');
+    const formUsuario = document.getElementById('formUsuario');
+    const modalTitle = document.getElementById('modalTitle');
+    const btnSalvar = document.getElementById('btnSalvar');
+
+    // 2. Função para abrir o Modal de Adicionar
+    btnAdicionar.addEventListener('click', () => {
+        formUsuario.reset(); // Limpa todos os campos
+        document.getElementById('usuarioId').value = ''; // Garante que o ID está vazio
+
+        modalTitle.textContent = "Adicionar Novo Usuário";
+        btnSalvar.textContent = "Adicionar Usuário";
+
+        // Na criação, a senha é obrigatória
+        document.getElementById('senhaUsu').classList.add('required-field');
+        document.getElementById('asteriscoSenha').style.display = 'inline';
+
+        modal.style.display = 'flex'; // Abre o modal
+    });
+
+    // 3. Função para abrir o Modal de Edição (chamada pelo botão na tabela)
+    async function abrirModalEdicao(id) {
+        try {
+            // Faz a chamada para a tua API (ajusta o URL se necessário)
+            const response = await fetch(`/admin/api/usuarios/detalhes/${id}`);
+            if (!response.ok) throw new Error(`Erro ao buscar utilizador: ${response.status}`);
+
+            const u = await response.json();
+
+            // Preenche os campos do formulário com os dados recebidos
+            formUsuario.reset();
+            document.getElementById('usuarioId').value = u.id;
+            document.getElementById('nomeUsu').value = u.nome || '';
+            document.getElementById('emailUsu').value = u.email || '';
+            document.getElementById('cpfUsu').value = u.cpf || '';
+            document.getElementById('telUsu').value = u.telefone || '';
+            document.getElementById('cargoUsu').value = u.cargo || '';
+
+            // Na edição, a senha não é obrigatória (só se quiser mudar)
+            modalTitle.textContent = "Editar Usuário";
+            btnSalvar.textContent = "Salvar Alterações";
+            document.getElementById('senhaUsu').classList.remove('required-field');
+            document.getElementById('asteriscoSenha').style.display = 'none';
+
+            modal.style.display = 'flex';
+        } catch (error) {
+            console.error("Erro:", error);
+            alert("Não foi possível carregar os dados do utilizador.");
+        }
+    }
+
+    // 4. Funções para fechar o Modal
+    const fechar = () => { modal.style.display = 'none'; };
+
+    fecharModal.addEventListener('click', fechar);
+    cancelarModal.addEventListener('click', fechar);
+
+    // Fecha se clicar fora da caixa branca
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) fechar();
+    });
+
+    // 5. Validação antes de enviar (Submit)
+    formUsuario.addEventListener('submit', (e) => {
+        let valido = true;
+        const camposObrigatorios = formUsuario.querySelectorAll('.required-field');
+
+        camposObrigatorios.forEach(campo => {
+            campo.classList.remove('input-error');
+            if (!campo.value.trim()) {
+                campo.classList.add('input-error');
+                valido = false;
+            }
+        });
+
+        if (!valido) {
+            e.preventDefault(); // Impede o envio do formulário
+            alert('Por favor, preencha todos os campos obrigatórios (*)');
+        }
+    });
+
+    // 6. Lógica das Tabs (Ativos/Inativos)
+    const btnAtivo = document.getElementById("btnAtivo");
+    const btnInativo = document.getElementById("btnInativo");
+    const containerAtivos = document.getElementById("containerAtivos");
+    const containerInativos = document.getElementById("containerInativos");
+
+    if(btnAtivo && btnInativo) {
+        btnInativo.addEventListener("click", () => {
+            btnInativo.classList.add("active");
+            btnAtivo.classList.remove("active");
+            containerInativos.style.display = "block";
+            containerAtivos.style.display = "none";
+        });
+
+        btnAtivo.addEventListener("click", () => {
+            btnAtivo.classList.add("active");
+            btnInativo.classList.remove("active");
+            containerAtivos.style.display = "block";
+            containerInativos.style.display = "none";
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const alertBox = document.getElementById('successAlert');
+        if (alertBox) {
+            setTimeout(() => {
+                alertBox.classList.add('alert-slide-up');
+                setTimeout(() => alertBox.remove(), 600);
+            }, 3000);
+        }
+    });
+</script>
+</body>
+</html>

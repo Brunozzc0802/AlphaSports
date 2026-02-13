@@ -37,12 +37,16 @@ public class LoginController {
         return "cadastro";
     }
 
-    @PostMapping("/registro")
-    public String registrar(@ModelAttribute RegistroRequest request) {
-
-        clienteService.cadastrar(request);
-
-        return "redirect:/auth/login?sucesso=true";
+    @PostMapping("/registrar")
+    public String registrar(@ModelAttribute RegistroRequest request,
+                            Model model) {
+        try {
+            clienteService.cadastrar(request);
+            return "redirect:/auth/login";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "cadastro";
+        }
     }
 
     @PostMapping("/login")
