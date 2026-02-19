@@ -361,17 +361,15 @@ body {
 .ativo{
 
     width: fit-content;
-    min-width: 30px;
     height: 30px;
-    padding: 0 6px;
     background-color: rgba(0, 255, 9, 0.2);
-    color: #166534; /* Verde escuro para leitura */
+    color: #166534;
     border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 40px;
-    font-size: 14px;
+    font-size: 100px;
     font-weight: 500;
 }
 

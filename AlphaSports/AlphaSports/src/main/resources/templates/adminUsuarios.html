@@ -102,18 +102,14 @@
           <thead>
           <tr>
             <th>NOME</th>
-            <th>TELEFONE</th>
-            <th>CPF</th>
             <th>CARGO</th>
-            <th>Status</th>
+            <th style="padding-left: 50px">Status</th>
             <th style="text-align: right;">AÇÕES</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="u : ${ListaAtivos}">
             <td style="font-weight: 700;" th:text="${u.nome}"></td>
-            <td th:text="${u.telefone}"></td>
-            <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
             <td style="color: #000000;">
               <span th:text="${u.cargo}"></span>
             </td>
@@ -134,18 +130,14 @@
           <thead>
           <tr>
             <th>NOME</th>
-            <th>TELEFONE</th>
-            <th>CPF</th>
             <th>CARGO</th>
-            <th>Status</th>
+            <th style="padding-left: 50px">Status</th>
             <th style="text-align: right;">AÇÕES</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="u : ${ListaInativos}">
             <td style="font-weight: 700;" th:text="${u.nome}"></td>
-            <td th:text="${u.telefone}"></td>
-            <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
             <td style="color: #000000;">
               <span th:text="${u.cargo}"></span>
             </td>
@@ -178,18 +170,6 @@
 
         <label for="emailUsu">E-mail <span class="required">*</span></label>
         <input type="email" id="emailUsu" name="email" class="required-field" placeholder="joao@gmail.com">
-
-        <div class="form-row">
-          <div>
-            <label for="cpfUsu">CPF <span class="required">*</span></label>
-            <input type="text" id="cpfUsu" name="cpf" class="required-field" placeholder="000.000.000-00">
-          </div>
-          <div>
-            <label for="telUsu">Telefone <span class="required">*</span></label>
-            <input type="text" id="telUsu" name="telefone" class="required-field" placeholder="(11) 99999-9999">
-          </div>
-        </div>
-
         <div class="form-row">
           <div>
             <label for="senhaUsu">Senha <span class="required" id="asteriscoSenha">*</span></label>
@@ -215,7 +195,6 @@
 </div>
 
   <script>
-    // 1. Elementos do Modal e Formulário
     const modal = document.getElementById('modalUsuario');
     const btnAdicionar = document.getElementById('btnAdicionar');
     const fecharModal = document.getElementById('fecharModal');
@@ -224,40 +203,29 @@
     const modalTitle = document.getElementById('modalTitle');
     const btnSalvar = document.getElementById('btnSalvar');
 
-    // 2. Função para abrir o Modal de Adicionar
     btnAdicionar.addEventListener('click', () => {
-      formUsuario.reset(); // Limpa todos os campos
-      document.getElementById('usuarioId').value = ''; // Garante que o ID está vazio
-
+      formUsuario.reset();
+      document.getElementById('usuarioId').value = '';
       modalTitle.textContent = "Adicionar Novo Usuário";
       btnSalvar.textContent = "Adicionar Usuário";
-
-      // Na criação, a senha é obrigatória
       document.getElementById('senhaUsu').classList.add('required-field');
       document.getElementById('asteriscoSenha').style.display = 'inline';
 
-      modal.style.display = 'flex'; // Abre o modal
+      modal.style.display = 'flex';
     });
 
-    // 3. Função para abrir o Modal de Edição (chamada pelo botão na tabela)
     async function abrirModalEdicao(id) {
       try {
-        // Faz a chamada para a tua API (ajusta o URL se necessário)
         const response = await fetch(`/admin/api/usuarios/detalhes/${id}`);
         if (!response.ok) throw new Error(`Erro ao buscar utilizador: ${response.status}`);
-
         const u = await response.json();
-
-        // Preenche os campos do formulário com os dados recebidos
         formUsuario.reset();
         document.getElementById('usuarioId').value = u.id;
         document.getElementById('nomeUsu').value = u.nome || '';
         document.getElementById('emailUsu').value = u.email || '';
-        document.getElementById('cpfUsu').value = u.cpf || '';
-        document.getElementById('telUsu').value = u.telefone || '';
         document.getElementById('cargoUsu').value = u.cargo || '';
 
-        // Na edição, a senha não é obrigatória (só se quiser mudar)
+
         modalTitle.textContent = "Editar Usuário";
         btnSalvar.textContent = "Salvar Alterações";
         document.getElementById('senhaUsu').classList.remove('required-field');
@@ -270,18 +238,12 @@
       }
     }
 
-    // 4. Funções para fechar o Modal
     const fechar = () => { modal.style.display = 'none'; };
-
     fecharModal.addEventListener('click', fechar);
     cancelarModal.addEventListener('click', fechar);
-
-    // Fecha se clicar fora da caixa branca
     window.addEventListener('click', (e) => {
       if (e.target === modal) fechar();
     });
-
-    // 5. Validação antes de enviar (Submit)
     formUsuario.addEventListener('submit', (e) => {
       let valido = true;
       const camposObrigatorios = formUsuario.querySelectorAll('.required-field');
@@ -295,12 +257,10 @@
       });
 
       if (!valido) {
-        e.preventDefault(); // Impede o envio do formulário
+        e.preventDefault();
         alert('Por favor, preencha todos os campos obrigatórios (*)');
       }
     });
-
-    // 6. Lógica das Tabs (Ativos/Inativos)
     const btnAtivo = document.getElementById("btnAtivo");
     const btnInativo = document.getElementById("btnInativo");
     const containerAtivos = document.getElementById("containerAtivos");

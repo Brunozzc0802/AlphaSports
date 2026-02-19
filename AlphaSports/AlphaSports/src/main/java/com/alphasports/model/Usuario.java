@@ -28,13 +28,6 @@ public class Usuario {
     @NotBlank(message = "Email é obrigatório")
     private String email;
 
-    @Column(nullable = false, unique = true, length = 14)
-    @NotBlank(message = "CPF é obrigatório")
-    private String cpf;
-
-    @Column(length = 20)
-    private String telefone;
-
     @Column(nullable = false, length = 255)
     @NotBlank(message = "Senha é obrigatória")
     private String senha;

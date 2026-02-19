@@ -45,7 +45,6 @@ public class UsuarioService {
             throw new RuntimeException("Email ou senha incorretos");
         }
 
-        // 🔥 Garante que apenas ADMIN ou GERENTE podem logar aqui
         if (usuario.getCargo() != Cargo.ADMINISTRADOR &&
                 usuario.getCargo() != Cargo.GERENTE) {
 
@@ -80,7 +79,6 @@ public class UsuarioService {
 
         usuario.setNome(request.getNome().trim());
         usuario.setEmail(request.getEmail().toLowerCase().trim());
-        usuario.setTelefone(request.getTelefone());
 
         if (request.getSenha() != null && !request.getSenha().isBlank()) {
             usuario.setSenha(passwordEncoder.encode(request.getSenha()));

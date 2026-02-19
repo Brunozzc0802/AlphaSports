@@ -25,16 +25,4 @@ public class UsuarioPerfilUpdateRequest {
 
  private String senhaConfirmacao;
 
- public boolean senhasValidas() {
-
-  if ((senha == null || senha.isBlank()) && (senhaConfirmacao == null || senhaConfirmacao.isBlank())) {
-   return true;
-  }
-
-  if ((senha == null || senha.isBlank()) || (senhaConfirmacao == null || senhaConfirmacao.isBlank())) {
-   return false;
-  }
-
-  return this.senha.equals(this.senhaConfirmacao);
- }
 }

@@ -1,15 +1,19 @@
 package com.alphasports.controller;
 
-
 import com.alphasports.model.Cliente;
+import com.alphasports.model.Usuario;
 import com.alphasports.service.AdminProdutoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.alphasports.model.Usuario;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Controller
 public class PageController {
@@ -17,18 +21,16 @@ public class PageController {
     @Autowired
     private AdminProdutoService produtoService;
 
+    // --- ROTAS DE PÁGINAS (HTML) ---
+
     @GetMapping("/")
     public String index(HttpSession session, Model model) {
-        // Tenta pegar o Admin/Usuário
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
-        // Tenta pegar o Cliente
         Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
 
         if (usuario != null) {
-            model.addAttribute("usuario", usuario);
             model.addAttribute("nomeExibicao", usuario.getNome());
         } else if (cliente != null) {
-            model.addAttribute("cliente", cliente);
             model.addAttribute("nomeExibicao", cliente.getNome());
         }
         return "index";
@@ -36,31 +38,31 @@ public class PageController {
 
     @GetMapping("/perfil")
     public String perfil(HttpSession session, Model model) {
+        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
 
-        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
-
-        if (usuario != null) {
-            model.addAttribute("usuario", usuario);
-        } else if (cliente != null) {
-            model.addAttribute("cliente", cliente);
-            model.addAttribute("nomeExibicao", cliente.getNome());
+        if (cliente == null && usuario == null) {
+            return "redirect:/auth/login";
         }
-        return "/perfil";
+
+        if (cliente != null) {
+            model.addAttribute("nomeExibicao", cliente.getNome());
+        } else {
+            model.addAttribute("nomeExibicao", usuario.getNome());
+        }
+
+        return "perfil"; // Removido a barra inicial para evitar erros em alguns S.O
     }
 
     @GetMapping("/carrinho")
     public String carrinho(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
         Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
-        if (usuario != null) {
-            model.addAttribute("usuario", usuario);
-        } else if (cliente != null) {
-            model.addAttribute("cliente", cliente);
+        if (cliente != null) {
             model.addAttribute("nomeExibicao", cliente.getNome());
         }
-        return "/carrinho";
+        return "carrinho";
     }
+
     @GetMapping("/produtos")
     public String produtos(
             @RequestParam(required = false) String categoria,
@@ -68,13 +70,8 @@ public class PageController {
             HttpSession session,
             Model model) {
 
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
         Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
-        if (usuario != null) {
-            model.addAttribute("usuario", usuario);
-        } else if (cliente != null) {
-            model.addAttribute("nomeExibicao", cliente.getNome());
-        }
+        if (cliente != null) model.addAttribute("nomeExibicao", cliente.getNome());
 
         if (categoria != null && !categoria.isEmpty()) {
             model.addAttribute("produtos", produtoService.buscarPorCategoria(categoria));
@@ -83,7 +80,17 @@ public class PageController {
         } else {
             model.addAttribute("produtos", produtoService.listarAtivo());
         }
+        return "produtos";
+    }
 
-        return "/produtos";
+    @GetMapping("/api/auth/verificar")
+    @ResponseBody
+    public ResponseEntity<?> verificarAutenticacao(HttpSession session) {
+        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
+        if (cliente != null) {
+            // Retorna um objeto simples com o nome para o header
+            return ResponseEntity.ok(Map.of("nome", cliente.getNome()));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

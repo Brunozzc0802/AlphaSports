@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -39,12 +40,12 @@ public class LoginController {
 
     @PostMapping("/registrar")
     public String registrar(@ModelAttribute RegistroRequest request,
-                            Model model) {
+                            RedirectAttributes attributes) {
         try {
             clienteService.cadastrar(request);
+            attributes.addFlashAttribute("sucesso", "Cadastro realizado com sucesso! Faça login.");
             return "redirect:/auth/login";
         } catch (RuntimeException e) {
-            model.addAttribute("erro", e.getMessage());
             return "cadastro";
         }
     }

@@ -2,10 +2,12 @@ package com.alphasports.controller;
 
 import com.alphasports.dto.UsuarioPerfilResponse;
 import com.alphasports.dto.UsuarioPerfilUpdateRequest;
+import com.alphasports.model.Cliente;
 import com.alphasports.model.Usuario;
 import com.alphasports.model.Cargo;
 import com.alphasports.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,30 +29,20 @@ public class UsuarioController {
 
     @GetMapping("/perfil")
     public ResponseEntity<?> perfil(HttpSession session) {
-        try {
-            Usuario u = (Usuario) session.getAttribute("usuarioLogado");
-
-            if (u == null) {
-                return ResponseEntity.status(401).body("Usuário não está logado");
-            }
-
-            if (!usuarioAdminOuGerente(u)) {
-                return ResponseEntity.status(403).body("Acesso permitido apenas para administradores");
-            }
-
-            UsuarioPerfilResponse response = new UsuarioPerfilResponse(
-                    u.getNome(),
-                    u.getEmail(),
-                    u.getTelefone(),
-                    "***.***.***-" + u.getCpf().substring(u.getCpf().length() - 2)
-            );
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao buscar perfil: " + e.getMessage());
+        // Busca primeiro o usuário (Admin/Funcionario)
+        Usuario u = (Usuario) session.getAttribute("usuarioLogado");
+        if (u != null) {
+            return ResponseEntity.ok(new UsuarioPerfilResponse(u.getNome(), u.getEmail()));
         }
+
+        // Se não for admin, busca o Cliente
+        Cliente c = (Cliente) session.getAttribute("clienteLogado");
+        if (c != null) {
+            return ResponseEntity.ok(c); // Retorna os dados do cliente
+        }
+
+        // Se nenhum dos dois existir, aí sim retorna 401
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão expirada. Faça login novamente.");
     }
 
     @PutMapping("/perfil")

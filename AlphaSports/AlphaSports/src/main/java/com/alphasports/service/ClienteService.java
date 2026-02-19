@@ -46,41 +46,23 @@ public class ClienteService {
         Cliente cliente = new Cliente();
         cliente.setNome(request.getNome());
         cliente.setEmail(request.getEmail());
+        cliente.setCpf(request.getCpf());
         cliente.setTelefone(request.getTelefone());
         cliente.setSenha(passwordEncoder.encode(request.getSenha()));
+        cliente.setAtivo(true);
 
         return clienteRepository.save(cliente);
     }
 
-    public ClientePerfilResponse buscarPerfil(Long id) {
-
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
-        return new ClientePerfilResponse(
-                cliente.getId(),
-                cliente.getNome(),
-                cliente.getEmail(),
-                cliente.getTelefone()
-        );
-    }
-
-    public ClientePerfilResponse atualizarPerfil(Long id,
-                                                 ClientePerfilUpdateRequest request) {
-
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
+    public ClientePerfilResponse atualizarPerfil(Long id, ClientePerfilUpdateRequest request) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         cliente.setNome(request.getNome());
         cliente.setEmail(request.getEmail());
         cliente.setTelefone(request.getTelefone());
-
         if (request.getSenha() != null && !request.getSenha().isBlank()) {
             cliente.setSenha(passwordEncoder.encode(request.getSenha()));
         }
-
         Cliente atualizado = clienteRepository.save(cliente);
-
         return new ClientePerfilResponse(
                 atualizado.getId(),
                 atualizado.getNome(),

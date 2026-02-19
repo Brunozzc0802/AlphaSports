@@ -12,16 +12,12 @@ public class Cliente {
 
     private String nome;
     private String email;
+    private String cpf;
     private String senha;
     private String telefone;
+    private Boolean ativo = true;
 
     public Cliente() {}
-
-    public Cliente(String nome, String email, String senha) {
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-    }
 
     public Long getId() { return id; }
 
@@ -31,10 +27,16 @@ public class Cliente {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
 
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public Boolean getAtivo() { return ativo; }
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
 
 }
