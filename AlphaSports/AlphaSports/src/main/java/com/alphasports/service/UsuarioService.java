@@ -22,38 +22,6 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Usuario autenticar(LoginRequest request) {
-
-        if (request.getEmail() == null || request.getEmail().isBlank()) {
-            throw new RuntimeException("Email é obrigatório");
-        }
-
-        if (request.getSenha() == null || request.getSenha().isBlank()) {
-            throw new RuntimeException("Senha é obrigatória");
-        }
-
-        String emailNormalizado = request.getEmail().toLowerCase().trim();
-
-        Usuario usuario = usuarioRepository.findByEmail(emailNormalizado)
-                .orElseThrow(() -> new RuntimeException("Email ou senha incorretos"));
-
-        if (!usuario.getAtivo()) {
-            throw new RuntimeException("Usuário está desativado");
-        }
-
-        if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
-            throw new RuntimeException("Email ou senha incorretos");
-        }
-
-        if (usuario.getCargo() != Cargo.ADMINISTRADOR &&
-                usuario.getCargo() != Cargo.GERENTE) {
-
-            throw new RuntimeException("Acesso permitido apenas para administradores");
-        }
-
-        return usuario;
-    }
-
     public Usuario buscarPorId(Long id) {
         if (id == null || id <= 0) {
             throw new RuntimeException("ID inválido");

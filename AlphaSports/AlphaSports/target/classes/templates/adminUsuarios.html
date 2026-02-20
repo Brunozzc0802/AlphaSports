@@ -35,10 +35,18 @@
         <span>Carrinho</span>
         <span class="cart-count" id="cartCount">0</span>
       </a>
-      <a href="#" onclick="fazerLogout(event)"  class="nav-link cart-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-        Sair
-      </a>
+
+      <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit" class="nav-link cart-link" style="background:none; border:none; cursor:pointer;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Sair
+        </button>
+      </form>
+
     </nav>
     <button class="mobile-menu-btn" id="mobileMenuBtn">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
@@ -162,6 +170,15 @@
         <button class="modal-close" id="fecharModal">&times;</button>
       </div>
 
+      <div th:if="${sucesso}" class="auth-alert success" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+        <div class="auth-alert-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="auth-alert-content">
+          <span th:text="${sucesso}">Login Realizado com sucesso!</span>
+        </div>
+      </div>
+
       <form class="modal-form" id="formUsuario" th:action="@{/admin/usuarios/salvar}" method="post">
         <input type="hidden" id="usuarioId" name="id">
 
@@ -180,7 +197,7 @@
             <select id="cargoUsu" name="cargo" class="required-field">
               <option value="">Selecione um cargo</option>
               <option value="ADMINISTRADOR">Administrador</option>
-              <option value="ESTOQUISTA">Estoquista</option>
+              <option value="GERENTE">Gerente</option>
             </select>
           </div>
         </div>
@@ -194,103 +211,103 @@
   </div>
 </div>
 
-  <script>
-    const modal = document.getElementById('modalUsuario');
-    const btnAdicionar = document.getElementById('btnAdicionar');
-    const fecharModal = document.getElementById('fecharModal');
-    const cancelarModal = document.getElementById('cancelarModal');
-    const formUsuario = document.getElementById('formUsuario');
-    const modalTitle = document.getElementById('modalTitle');
-    const btnSalvar = document.getElementById('btnSalvar');
+<script>
+  const modal = document.getElementById('modalUsuario');
+  const btnAdicionar = document.getElementById('btnAdicionar');
+  const fecharModal = document.getElementById('fecharModal');
+  const cancelarModal = document.getElementById('cancelarModal');
+  const formUsuario = document.getElementById('formUsuario');
+  const modalTitle = document.getElementById('modalTitle');
+  const btnSalvar = document.getElementById('btnSalvar');
 
-    btnAdicionar.addEventListener('click', () => {
+  btnAdicionar.addEventListener('click', () => {
+    formUsuario.reset();
+    document.getElementById('usuarioId').value = '';
+    modalTitle.textContent = "Adicionar Novo Usuário";
+    btnSalvar.textContent = "Adicionar Usuário";
+    document.getElementById('senhaUsu').classList.add('required-field');
+    document.getElementById('asteriscoSenha').style.display = 'inline';
+
+    modal.style.display = 'flex';
+  });
+
+  async function abrirModalEdicao(id) {
+    try {
+      const response = await fetch(`/admin/api/usuarios/detalhes/${id}`);
+      if (!response.ok) throw new Error(`Erro ao buscar utilizador: ${response.status}`);
+      const u = await response.json();
       formUsuario.reset();
-      document.getElementById('usuarioId').value = '';
-      modalTitle.textContent = "Adicionar Novo Usuário";
-      btnSalvar.textContent = "Adicionar Usuário";
-      document.getElementById('senhaUsu').classList.add('required-field');
-      document.getElementById('asteriscoSenha').style.display = 'inline';
+      document.getElementById('usuarioId').value = u.id;
+      document.getElementById('nomeUsu').value = u.nome || '';
+      document.getElementById('emailUsu').value = u.email || '';
+      document.getElementById('cargoUsu').value = u.cargo || '';
+
+
+      modalTitle.textContent = "Editar Usuário";
+      btnSalvar.textContent = "Salvar Alterações";
+      document.getElementById('senhaUsu').classList.remove('required-field');
+      document.getElementById('asteriscoSenha').style.display = 'none';
 
       modal.style.display = 'flex';
-    });
-
-    async function abrirModalEdicao(id) {
-      try {
-        const response = await fetch(`/admin/api/usuarios/detalhes/${id}`);
-        if (!response.ok) throw new Error(`Erro ao buscar utilizador: ${response.status}`);
-        const u = await response.json();
-        formUsuario.reset();
-        document.getElementById('usuarioId').value = u.id;
-        document.getElementById('nomeUsu').value = u.nome || '';
-        document.getElementById('emailUsu').value = u.email || '';
-        document.getElementById('cargoUsu').value = u.cargo || '';
-
-
-        modalTitle.textContent = "Editar Usuário";
-        btnSalvar.textContent = "Salvar Alterações";
-        document.getElementById('senhaUsu').classList.remove('required-field');
-        document.getElementById('asteriscoSenha').style.display = 'none';
-
-        modal.style.display = 'flex';
-      } catch (error) {
-        console.error("Erro:", error);
-        alert("Não foi possível carregar os dados do utilizador.");
-      }
+    } catch (error) {
+      console.error("Erro:", error);
+      alert("Não foi possível carregar os dados do utilizador.");
     }
+  }
 
-    const fechar = () => { modal.style.display = 'none'; };
-    fecharModal.addEventListener('click', fechar);
-    cancelarModal.addEventListener('click', fechar);
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) fechar();
-    });
-    formUsuario.addEventListener('submit', (e) => {
-      let valido = true;
-      const camposObrigatorios = formUsuario.querySelectorAll('.required-field');
+  const fechar = () => { modal.style.display = 'none'; };
+  fecharModal.addEventListener('click', fechar);
+  cancelarModal.addEventListener('click', fechar);
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) fechar();
+  });
+  formUsuario.addEventListener('submit', (e) => {
+    let valido = true;
+    const camposObrigatorios = formUsuario.querySelectorAll('.required-field');
 
-      camposObrigatorios.forEach(campo => {
-        campo.classList.remove('input-error');
-        if (!campo.value.trim()) {
-          campo.classList.add('input-error');
-          valido = false;
-        }
-      });
-
-      if (!valido) {
-        e.preventDefault();
-        alert('Por favor, preencha todos os campos obrigatórios (*)');
+    camposObrigatorios.forEach(campo => {
+      campo.classList.remove('input-error');
+      if (!campo.value.trim()) {
+        campo.classList.add('input-error');
+        valido = false;
       }
     });
-    const btnAtivo = document.getElementById("btnAtivo");
-    const btnInativo = document.getElementById("btnInativo");
-    const containerAtivos = document.getElementById("containerAtivos");
-    const containerInativos = document.getElementById("containerInativos");
 
-    if(btnAtivo && btnInativo) {
-      btnInativo.addEventListener("click", () => {
-        btnInativo.classList.add("active");
-        btnAtivo.classList.remove("active");
-        containerInativos.style.display = "block";
-        containerAtivos.style.display = "none";
-      });
-
-      btnAtivo.addEventListener("click", () => {
-        btnAtivo.classList.add("active");
-        btnInativo.classList.remove("active");
-        containerAtivos.style.display = "block";
-        containerInativos.style.display = "none";
-      });
+    if (!valido) {
+      e.preventDefault();
+      alert('Por favor, preencha todos os campos obrigatórios (*)');
     }
+  });
+  const btnAtivo = document.getElementById("btnAtivo");
+  const btnInativo = document.getElementById("btnInativo");
+  const containerAtivos = document.getElementById("containerAtivos");
+  const containerInativos = document.getElementById("containerInativos");
 
-    document.addEventListener("DOMContentLoaded", function() {
-      const alertBox = document.getElementById('successAlert');
-      if (alertBox) {
-        setTimeout(() => {
-          alertBox.classList.add('alert-slide-up');
-          setTimeout(() => alertBox.remove(), 600);
-        }, 3000);
-      }
+  if(btnAtivo && btnInativo) {
+    btnInativo.addEventListener("click", () => {
+      btnInativo.classList.add("active");
+      btnAtivo.classList.remove("active");
+      containerInativos.style.display = "block";
+      containerAtivos.style.display = "none";
     });
-  </script>
+
+    btnAtivo.addEventListener("click", () => {
+      btnAtivo.classList.add("active");
+      btnInativo.classList.remove("active");
+      containerAtivos.style.display = "block";
+      containerInativos.style.display = "none";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const alertBox = document.getElementById('successAlert');
+    if (alertBox) {
+      setTimeout(() => {
+        alertBox.classList.add('alert-slide-up');
+        setTimeout(() => alertBox.remove(), 600);
+      }, 3000);
+    }
+  });
+</script>
 </body>
 </html>

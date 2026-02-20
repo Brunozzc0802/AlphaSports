@@ -3,6 +3,7 @@ package com.alphasports.controller;
 import com.alphasports.model.Cliente;
 import com.alphasports.model.Usuario;
 import com.alphasports.service.AdminProdutoService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,6 @@ public class PageController {
 
     @Autowired
     private AdminProdutoService produtoService;
-
-    // --- ROTAS DE PÁGINAS (HTML) ---
 
     @GetMapping("/")
     public String index(HttpSession session, Model model) {

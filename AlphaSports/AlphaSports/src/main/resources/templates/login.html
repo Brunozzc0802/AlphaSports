@@ -21,18 +21,6 @@
                 <p>Entre na sua conta para continuar</p>
             </div>
 
-            <div th:if="${erro}" class="auth-alert" id="errorAlert">
-                <div class="auth-alert-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                </div>
-                <div th:if="${param.erro}" class="auth-alert">
-                    <span>E-mail ou senha incorretos</span>
-                </div>
-                <button type="button" class="auth-alert-close" onclick="this.parentElement.style.display='none'">
-                    &times;
-                </button>
-            </div>
-
             <div th:if="${sucesso}" class="auth-alert success" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
                 <div class="auth-alert-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -42,29 +30,31 @@
                 </div>
             </div>
 
-            <form th:action="@{/auth/login}" th:object="${loginRequest}" method="post" id="loginForm" novalidate>
+            <div th:if="${param.error}" class="auth-alert">
+                <span>E-mail ou senha incorretos</span>
+            </div>
+
+            <div th:if="${param.logout}" class="auth-alert success">
+                <span>Logout realizado com sucesso</span>
+            </div>
+
+            <form th:action="@{/login}" method="post" id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="email">E-mail</label>
-                    <input
-                            type="email"
-                            id="email"
-                            th:field="*{email}"
-                            placeholder="seu@email.com"
-                            th:classappend="${#fields.hasErrors('email')} ? 'error' : ''"
-                            required>
-                    <span class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    <input type="email"
+                           name="username"
+                           id="email"
+                           placeholder="seu@email.com"
+                           required>
                 </div>
 
                 <div class="form-group">
                     <label for="senha">Senha</label>
-                    <input
-                            type="password"
-                            id="senha"
-                            th:field="*{senha}"
-                            placeholder="Sua senha"
-                            th:classappend="${#fields.hasErrors('senha')} ? 'error' : ''"
-                            required>
-                    <span class="error-message" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></span>
+                    <input type="password"
+                           name="password"
+                           id="senha"
+                           placeholder="Sua senha"
+                           required>
                 </div>
                 <div class="form-options">
                     <label class="remember-me">

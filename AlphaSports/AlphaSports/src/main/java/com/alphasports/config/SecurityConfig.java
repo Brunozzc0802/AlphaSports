@@ -14,19 +14,38 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Libera TUDO: estáticos, auth e o painel admin
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/css/**", "/images/**", "/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                // Desativa completamente qualquer mecanismo de login que o Spring ativa sozinho
-                .formLogin(form -> form.disable())
-                .httpBasic(basic -> basic.disable())
-                .logout(logout -> logout.disable());
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/login")
+                        .successHandler((request, response, authentication) -> {
+
+                            var authorities = authentication.getAuthorities();
+                            if (authorities.stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"))) {
+                                response.sendRedirect("/adminUsuarios");
+                            } else {
+                                response.sendRedirect("/");
+                            }
+                        })
+                        .failureUrl("/auth/login?error=true")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                );
 
         return http.build();
     }

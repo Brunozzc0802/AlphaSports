@@ -1,6 +1,6 @@
 package com.alphasports.service;
 
-import com.alphasports.model.Produto;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.alphasports.model.Usuario;
 import com.alphasports.repository.AdminUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 @Service
 public class AdminUsuarioService {
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private AdminUsuarioRepository usuarioRepository;
 
@@ -44,9 +47,22 @@ public class AdminUsuarioService {
     }
 
     public Usuario salvar(Usuario usuario) {
+
         if (usuario.getNome() == null || usuario.getNome().isBlank()) {
             throw new RuntimeException("Nome do Usuário é obrigatório");
         }
+
+        if (usuario.getId() != null) {
+            Usuario existente = buscarPorId(usuario.getId());
+            if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {
+                usuario.setSenha(existente.getSenha());
+            } else {
+                usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            }
+        } else {
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        }
+
         return usuarioRepository.save(usuario);
     }
 

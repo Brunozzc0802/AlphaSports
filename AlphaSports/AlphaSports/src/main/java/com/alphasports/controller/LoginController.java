@@ -49,42 +49,4 @@ public class LoginController {
             return "cadastro";
         }
     }
-
-    @PostMapping("/login")
-    public String autenticar(@ModelAttribute LoginRequest request,
-                             HttpServletRequest httpRequest) {
-
-        HttpSession oldSession = httpRequest.getSession(false);
-        if (oldSession != null) {
-            oldSession.invalidate();
-        }
-        HttpSession session = httpRequest.getSession(true);
-        try {
-            Usuario usuario = usuarioService.autenticar(request);
-            session.setAttribute("usuarioLogado", usuario);
-            session.setMaxInactiveInterval(60 * 30);
-            return "redirect:/adminUsuarios";
-        } catch (RuntimeException ignored) {
-        }
-        try {
-            Cliente cliente = clienteService.autenticar(request);
-            session.setAttribute("clienteLogado", cliente);
-            session.setMaxInactiveInterval(60 * 30);
-            return "redirect:/";
-        } catch (RuntimeException ignored) {
-        }
-        return "redirect:/auth/login?erro=true";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request) {
-
-        HttpSession session = request.getSession(false);
-
-        if (session != null) {
-            session.invalidate();
-        }
-
-        return "redirect:/auth/login?logout=true";
-    }
 }
