@@ -7,6 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <header class="header">
@@ -107,16 +109,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="p : ${ListaAtivos}">
-                        <td style="font-weight: 600;" th:text="${p.nome}"></td>
-                        <td style="max-width: 300px" th:text="${p.descricao}"></td>
-                        <td><span th:text="${p.logo}"></span></td>
-                        <td  th:class="${p.ativo} ? 'ativo' : 'inativo'" th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
+                    <tr th:each="m : ${ListaAtivos}">
+                        <td style="font-weight: 600;" th:text="${m.nome}"></td>
+                        <td style="max-width: 300px" th:text="${m.descricao}"></td>
+                        <td><span th:text="${m.logo}"></span></td>
+                        <td  th:class="${m.ativo} ? 'ativo' : 'inativo'" th:text="${m.ativo} ? 'Ativo' : 'Inativo'">Status</td>
                         <td class="actions-cell">
-                            <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${p.id} + ')'">
+                            <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${m.id} + ')'">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                            <a th:href="@{/admin/marcas/desativar/{id}(id=${p.id})}" class="btn-action delete" onclick="return confirm('Deletar?')">
+                            <a th:href="@{/desativar/{id}(id=${m.id})}" class="btn-action delete" onclick="return confirm('Deletar?')">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </td>
@@ -136,16 +138,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="p : ${ListaInativos}">
-                        <td style="font-weight: 600;" th:text="${p.nome}"></td>
-                        <td th:text="${p.marca}"></td>
-                        <td><span class="badge-categoria" th:text="${p.categoria}">Categoria</span></td>
-                        <td style="font-weight: 600; color: #10b981;">
-                            R$ <span th:text="${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span></td>
-                        <td th:class="${p.ativo} ? 'ativo' : 'inativo'"
-                            th:text="${p.ativo} ? 'Ativo' : 'Inativo'">Status</td>
+                    <tr th:each="m : ${ListaInativos}">
+                        <td style="font-weight: 600;" th:text="${m.nome}"></td>
+                        <td th:text="${m.descricao}"></td>
+                        <td><span th:text="${m.logo}"></span></td>
+                        <td th:class="${m.ativo} ? 'ativo' : 'inativo'" th:text="${m.ativo} ? 'Ativo' : 'Inativo'">Status</td>
                         <td class="actions-cell">
-                            <a th:href="@{/admin/ativar/{id}(id=${p.id})}" class="btn-action edit">
+                            <a th:href="@{/ativar/{id}(id=${m.id})}" class="btn-action edit">
                                 <i class="fas fa-undo"></i>
                             </a>
                         </td>
@@ -161,23 +160,26 @@
                 <h2 id="marcaModalTitle">Adicionar Nova Marca</h2>
                 <button class="modal-close" id="fecharModalMarca">&times;</button>
             </div>
-            <form class="modal-form" id="formMarca" th:action="@{/admin/marcas/salvar}" method="POST">
+            <form class="modal-form" id="formMarca" th:action="@{/salvar}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" id="marcaId" name="id">
 
                 <label>Nome da Marca <span class="required"> * </span></label>
                 <input type="text" id="nomeMarca" name="nome" class="required-field" placeholder="Ex: Nike, Adidas" required>
 
                 <label>Descrição</label>
-                <textarea id="descricaoMarca" name="descricao" placeholder="Descreva a marca..." style="height: 100px;"></textarea>
+                <textarea id="descricaoMarca" name="descricao" placeholder="Descreva a marca..." style="height: 80px;"></textarea>
 
-                <label>URL da Logo <span class="required"> * </span></label>
-                <input type="text" id="logoUrlInput" name="logo" class="required-field" placeholder="https://exemplo.com/logo.png" required>
+                <label>URL da Logo</label>
+                <input type="text" id="logoUrlInput" name="logo" placeholder="https://exemplo.com/logo.png">
 
-                <label>Preview da Logo</label>
-                <div class="logo-preview-container" id="logoPreviewContainer">
-                    <div class="image-preview" id="logoPreview">
-                        <span>Aguardando URL da imagem...</span>
-                    </div>
+                <label>Ou envie um arquivo</label>
+                <div class="upload-box">
+                    <input type="file" id="logoFileInput" name="arquivoImagem" accept="image/png, image/jpeg">
+                    <span>Selecionar imagem (PNG ou JPG)</span>
+                </div>
+
+                <div class="image-preview" id="logoPreview">
+                    <span>Prévia da logo</span>
                 </div>
 
                 <div class="modal-actions">
@@ -189,7 +191,6 @@
     </div>
     </div>
 <script>
-    // 1. Controle de Alerta de Sucesso
     document.addEventListener("DOMContentLoaded", function() {
         const alert = document.getElementById('successAlert');
         if (alert) {
@@ -200,7 +201,6 @@
         }
     });
 
-    // 2. Variáveis Globais do Modal (Agora focadas em Marca)
     const modal = document.getElementById('modalMarca');
     const btnAdicionar = document.getElementById('btnAdicionar');
     const fecharModal = document.getElementById('fecharModalMarca');
@@ -209,11 +209,38 @@
     const modalTitle = document.getElementById('marcaModalTitle');
     const btnSalvar = document.getElementById('btnSalvarMarca');
 
-    // Elementos de Input e Preview
     const logoUrlInput = document.getElementById('logoUrlInput');
+    const logoFileInput = document.getElementById('logoFileInput');
     const logoPreview = document.getElementById('logoPreview');
 
-    // 3. Abrir Modal para Adicionar
+    logoFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                logoPreview.innerHTML = `<img src="${event.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">`;
+                logoUrlInput.value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    logoUrlInput.addEventListener('input', (e) => {
+        const url = e.target.value.trim();
+        if (url.startsWith('http')) {
+            logoPreview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;">`;
+            logoFileInput.value = '';
+        } else {
+            resetPreview();
+        }
+    });
+
+    function resetPreview() {
+        logoPreview.innerHTML = `<span>Prévia da logo</span>`;
+        logoFileInput.value = '';
+        logoUrlInput.value = '';
+    }
+
     btnAdicionar.addEventListener('click', () => {
         formMarca.reset();
         document.getElementById('marcaId').value = '';
@@ -223,10 +250,8 @@
         modal.style.display = 'flex';
     });
 
-    // 4. Abrir Modal para Edição (Busca dados da Marca)
     async function abrirModalEdicao(id) {
         try {
-            // Ajuste o endpoint conforme seu Controller (ex: /admin/marcas/detalhes/)
             const response = await fetch(`/admin/api/marcas/${id}`);
             if (!response.ok) throw new Error(`Erro: ${response.status}`);
             const m = await response.json();
@@ -236,9 +261,8 @@
             document.getElementById('descricaoMarca').value = m.descricao || '';
             document.getElementById('logoUrlInput').value = m.logo || '';
 
-            // Atualiza o Preview
             if (m.logo) {
-                logoPreview.innerHTML = `<img src="${m.logo}" style="max-width:100%; max-height:150px; object-fit:contain;">`;
+                logoPreview.innerHTML = `<img src="${m.logo}" style="max-width:100%; max-height:150px; border-radius:8px;">`;
             } else {
                 resetPreview();
             }
@@ -247,21 +271,14 @@
             btnSalvar.textContent = "Salvar Alterações";
             modal.style.display = 'flex';
         } catch (error) {
-            console.error("Erro ao carregar dados da marca:", error);
-            alert("Erro ao carregar dados para edição.");
+            console.error(error);
         }
     }
 
-    // 5. Fechar Modal
     [fecharModal, cancelarModal].forEach(btn => {
         btn.addEventListener('click', () => { modal.style.display = 'none'; });
     });
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) modal.style.display = 'none';
-    });
-
-    // 6. Lógica de Abas (Ativos / Inativos)
     document.addEventListener("DOMContentLoaded", function() {
         const btnAtivo = document.getElementById("btnAtivo");
         const btnInativo = document.getElementById("btnInativo");
@@ -284,77 +301,13 @@
         }
     });
 
-    // 7. Preview da Logo em Tempo Real
-    logoUrlInput.addEventListener('input', (e) => {
-        const url = e.target.value.trim();
-        if (url.startsWith('http')) {
-            logoPreview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; object-fit:contain;">`;
-        } else {
-            resetPreview();
-        }
-    });
-
-    function resetPreview() {
-        logoPreview.innerHTML = `<span>Aguardando URL da imagem...</span>`;
-    }
-
-    // 8. Envio do Formulário via AJAX
-    formMarca.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        // Validação simples
-        const nome = document.getElementById('nomeMarca').value.trim();
-        const logo = logoUrlInput.value.trim();
-
-        if (!nome || !logo) {
-            alert('Por favor, preencha o Nome e a URL da Logo.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('id', document.getElementById('marcaId').value);
-        formData.append('nome', nome);
-        formData.append('descricao', document.getElementById('descricaoMarca').value);
-        formData.append('logo', logo);
-
-        try {
-            const response = await fetch('/admin/marcas/salvar', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                alert('Erro ao salvar marca. Verifique os dados.');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Erro de conexão com o servidor.');
-        }
-    });
-
-    // 9. Funções de Busca e Logout (Mantidas do original)
     async function fazerLogout(event) {
         event.preventDefault();
         try {
-            const response = await fetch('/api/auth/logout', { method: 'POST' });
-            if (response.ok) window.location.href = '/login';
-        } catch (error) { console.error('Erro ao fazer logout:', error); }
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login';
+        } catch (error) { console.error(error); }
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                const rows = document.querySelectorAll(".admin-table tbody tr");
-                rows.forEach(row => {
-                    row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
-                });
-            });
-        }
-    });
 </script>
 </body>
 </html>
