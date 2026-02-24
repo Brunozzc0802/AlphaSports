@@ -34,7 +34,7 @@
                 <span>E-mail ou senha incorretos</span>
             </div>
 
-            <div th:if="${param.logout}" class="auth-alert success">
+            <div th:if="${param.logout}" id="logoutAlert" class="auth-alert success">
                 <span>Logout realizado com sucesso</span>
             </div>
 
@@ -115,14 +115,32 @@
         loginButton.textContent = 'Entrando...';
     });
     document.addEventListener('DOMContentLoaded', function() {
+        // 1. Lógica de Erro existente
         const errorAlert = document.querySelector('.alert-danger');
         if (errorAlert && errorAlert.textContent.trim().length > 0) {
-            console.log('Mensagem de erro encontrada no DOM:', errorAlert.textContent.trim());
             errorAlert.style.display = 'block';
-        } else if (errorAlert) {
-            console.log('Div de erro encontrada, mas está vazia. O Flash Attribute falhou.');
-            errorAlert.style.display = 'none';
         }
+
+        // 2. Lógica para sumir alertas automaticamente (Logout e Cadastro)
+        // Selecionamos o logout pelo ID e o sucesso pela classe
+        const autoHideAlerts = [
+            document.getElementById('logoutAlert'),
+            document.querySelector('.auth-alert.success')
+        ];
+
+        autoHideAlerts.forEach(alert => {
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.transition = "all 0.5s ease";
+                    alert.style.opacity = "0";
+                    alert.style.transform = "translateY(-10px)"; // Efeito extra de subir ao sumir
+
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                }, 3000); // 5 segundos
+            }
+        });
     });
 </script>
 </body>

@@ -21,6 +21,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**", "/auth/**").permitAll()
+                        .requestMatchers(
+                                "/adminUsuarios",
+                                "/desativarUsuario/**",
+                                "/ativarUsuario/**"
+                        ).hasRole("ADMINISTRADOR")
+                        .requestMatchers("/cliente/**").hasRole("CLIENTE")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -29,10 +35,16 @@ public class SecurityConfig {
                         .successHandler((request, response, authentication) -> {
 
                             var authorities = authentication.getAuthorities();
+
                             if (authorities.stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"))) {
                                 response.sendRedirect("/adminUsuarios");
-                            } else {
+                            }
+                            else if (authorities.stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
+                                response.sendRedirect("/");
+                            }
+                            else {
                                 response.sendRedirect("/");
                             }
                         })

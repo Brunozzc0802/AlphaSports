@@ -22,11 +22,13 @@
         </div>
         <nav class="header-nav">
             <div class="nav-link user-dropdown-container" id="userInfo">
-                <a th:href="${nomeExibicao != null} ? @{/adminProdutos} : @{/auth/login}"
-                   class="nav-link user-link" id="userLink">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span id="userName" th:text="${nomeExibicao != null ? nomeExibicao : 'Entrar'}">Entrar</span>
+                <a th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/adminUsuarios} :(${#authorization.expression('hasRole(''CLIENTE'')')} ? @{/perfil} : @{/auth/login})">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
                 </a>
+                <span id="userName" th:text="${#authentication.principal != 'anonymousUser'} ? ${#authentication.principal.nome} : 'Entrar'"></span>
             </div>
             <a th:href="@{/carrinho}" class="nav-link cart-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>

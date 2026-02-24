@@ -54,7 +54,7 @@ public class AdminUsuarioController {
     @PostMapping("/admin/usuarios/salvar")
     public String salvarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes attributes) {
         AdminusuarioService.salvar(usuario);
-        attributes.addFlashAttribute("mensagemSucesso", "Operação realizada com sucesso!");
+        attributes.addFlashAttribute("mensagemSucesso", "Usuário adicionado com sucesso!");
         return "redirect:/adminUsuarios";
     }
 }

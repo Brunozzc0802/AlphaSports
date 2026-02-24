@@ -368,7 +368,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 40px;
+    margin: 20px;
     font-size: 100px;
     font-weight: 500;
 }
@@ -384,7 +384,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 15px;
+    margin: 20px;
     font-size: 14px;
     font-weight: 600;
 }
@@ -446,6 +446,31 @@ body {
     padding-top: 0;
     padding-bottom: 0;
     transform: translateY(-20px);
+}
+
+/* Estilo específico para o container de preview da marca */
+.logo-preview-container {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#logoPreview {
+    width: 100%;
+    min-height: 150px;
+    background-color: #f8f9fa; /* Fundo leve para destacar logos brancas ou transparentes */
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#logoPreview img {
+    max-width: 90%;
+    max-height: 130px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
 }
 
 
