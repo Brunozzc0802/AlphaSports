@@ -2206,3 +2206,117 @@ padding: 20px 10px;
   75% { transform: translateX(4px); }
 }
 
+/* Estilos específicos para a página de recuperação */
+
+.recovery-body {
+  background-color: var(--gray-100); /* Cor vinda do seu admin.css */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.recovery-card {
+  background: var(--white);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.logo-recovery {
+  max-width: 150px;
+  margin-bottom: 20px;
+}
+
+.recovery-card h2 {
+  font-size: 1.5rem;
+  color: var(--gray-900);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.recovery-card p {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+.form-group-recovery {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.form-group-recovery label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: 0.9rem;
+}
+
+.form-group-recovery input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius); /* 8px do seu admin.css */
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group-recovery input:focus {
+  border-color: var(--primary);
+}
+
+.btn-enviar-recovery {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--primary); /* O vermelho #dc2626 do seu CSS */
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-enviar-recovery:hover {
+  background-color: var(--primary-dark); /* #b91c1c do seu CSS */
+}
+
+.footer-recovery {
+  margin-top: 25px;
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.footer-recovery a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-recovery a:hover {
+  text-decoration: underline;
+}
+.code-input {
+  letter-spacing: 0.5rem;
+  text-align: center;
+  font-size: 1.5rem !important;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+
+.code-input::placeholder {
+  letter-spacing: normal;
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.5;
+}

@@ -473,4 +473,11 @@ body {
     transition: transform 0.3s ease;
 }
 
+.text-truncate {
+    max-width: 250px;           /* Defina o tamanho máximo que desejar */
+    white-space: nowrap;        /* Impede que o texto quebre linha */
+    overflow: hidden;           /* Esconde o que sobrar */
+    text-overflow: ellipsis;    /* Adiciona os "..." no final */
+}
+
 

@@ -112,7 +112,7 @@
                     <tr th:each="m : ${ListaAtivos}">
                         <td style="font-weight: 600;" th:text="${m.nome}"></td>
                         <td style="max-width: 300px" th:text="${m.descricao}"></td>
-                        <td><span th:text="${m.logo}"></span></td>
+                        <td class="text-truncate" ><span th:text="${m.logo}"></span></td>
                         <td  th:class="${m.ativo} ? 'ativo' : 'inativo'" th:text="${m.ativo} ? 'Ativo' : 'Inativo'">Status</td>
                         <td class="actions-cell">
                             <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${m.id} + ')'">
@@ -141,7 +141,7 @@
                     <tr th:each="m : ${ListaInativos}">
                         <td style="font-weight: 600;" th:text="${m.nome}"></td>
                         <td th:text="${m.descricao}"></td>
-                        <td><span th:text="${m.logo}"></span></td>
+                        <td class="text-truncate"> <span th:text="${m.logo}"></span></td>
                         <td th:class="${m.ativo} ? 'ativo' : 'inativo'" th:text="${m.ativo} ? 'Ativo' : 'Inativo'">Status</td>
                         <td class="actions-cell">
                             <a th:href="@{/ativar/{id}(id=${m.id})}" class="btn-action edit">

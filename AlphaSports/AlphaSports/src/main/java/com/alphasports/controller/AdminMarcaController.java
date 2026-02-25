@@ -92,7 +92,7 @@ public class AdminMarcaController {
     public String ativarMarca(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Marca marca = adminMarcaService.buscarPorId(id);
         marca.setAtivo(true);
-        adminMarcaService.salvar(marca);gi
+        adminMarcaService.salvar(marca);
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Marca restaurada com sucesso!");
         return "redirect:/adminMarca";
     }

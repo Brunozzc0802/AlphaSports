@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaSports - Recuperar Senha</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" th:href="@{/css/recuperar-senha.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="recovery-body">
+
+<div class="recovery-card">
+  <img th:src="@{/images/logoRed.png}" alt="AlphaSports" class="logo-recovery">
+
+  <h2>Recuperar Senha</h2>
+  <p>Insira seu e-mail para enviarmos instruções de recuperação</p>
+
+  <div th:if="${mensagemErro}" class="auth-alert">
+    <i class="fas fa-exclamation-circle auth-alert-icon"></i>
+    <span th:text="${mensagemErro}">E-mail não encontrado.</span>
+  </div>
+
+  <div th:if="${mensagemSucesso}" class="auth-alert" style="background-color: #f0fdf4; border-color: #bbf7d0; border-left-color: #22c55e;">
+    <i class="fas fa-check-circle auth-alert-icon" style="color: #22c55e;"></i>
+    <span th:text="${mensagemSucesso}" style="color: #166534;">Enviamos o link!</span>
+  </div>
+
+  <form th:action="@{/esqueceu-senha}" method="POST">
+    <div class="form-group-recovery">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+    </div>
+
+    <button type="submit" class="btn-enviar-recovery">Enviar Instruções</button>
+  </form>
+
+  <div class="footer-recovery">
+    Lembrou a senha? <a th:href="@{/auth/login}">Fazer Login</a>
+  </div>
+</div>
+
+</body>
+</html>

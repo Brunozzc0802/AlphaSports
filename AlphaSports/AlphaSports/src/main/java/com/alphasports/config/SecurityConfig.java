@@ -21,6 +21,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**", "/auth/**").permitAll()
+                        .requestMatchers("/auth/esqueceu-senha").permitAll()
+                        .requestMatchers("/auth/verificar-codigo").permitAll()
                         .requestMatchers(
                                 "/adminUsuarios",
                                 "/desativarUsuario/**",

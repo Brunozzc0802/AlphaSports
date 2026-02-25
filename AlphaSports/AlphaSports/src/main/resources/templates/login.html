@@ -41,35 +41,28 @@
             <form th:action="@{/login}" method="post" id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="email">E-mail</label>
-                    <input type="email"
-                           name="username"
-                           id="email"
-                           placeholder="seu@email.com"
-                           required>
+                    <input type="email" name="username" id="email" placeholder="seu@email.com" required>
                 </div>
 
                 <div class="form-group">
                     <label for="senha">Senha</label>
-                    <input type="password"
-                           name="password"
-                           id="senha"
-                           placeholder="Sua senha"
-                           required>
+                    <input type="password" name="password" id="senha" placeholder="Sua senha" required>
                 </div>
+
                 <div class="form-options">
                     <label class="remember-me">
                         <input type="checkbox" name="remember">
                         <span>Lembrar de mim</span>
                     </label>
-                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                    <a th:href="@{/auth/esqueceu-senha}" class="forgot-password">Esqueceu a senha?</a>
                 </div>
+
                 <button type="submit" class="btn btn-primary auth-btn" id="loginButton">
                     Entrar
                 </button>
-            </form>
-            <div class="auth-footer">
-                Não tem uma conta? <a th:href="@{/auth/cadastro}">Cadastre-se</a>
-            </div>
+            </form> <div class="auth-footer">
+            Não tem uma conta? <a th:href="@{/auth/cadastro}">Cadastre-se</a>
+        </div>
         </div>
     </div>
 </div>

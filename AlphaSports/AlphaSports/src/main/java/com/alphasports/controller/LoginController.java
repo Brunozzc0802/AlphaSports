@@ -49,4 +49,13 @@ public class LoginController {
             return "cadastro";
         }
     }
+    @PostMapping("/esqueceu-senha")
+    public String processarEsqueceuSenha(@RequestParam("email") String email) {
+        return "redirect:/auth/verificar-codigo";
+    }
+    @GetMapping("/verificar-codigo")
+    public String exibirVerificarCodigo() {
+        return "verificar-codigo";
+    }
+
 }

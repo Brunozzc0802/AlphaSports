@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Código - AlphaSports</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logoRed.png}" alt="AlphaSports">
+            </a>
+            <h1>Verificar Código</h1>
+            <p>Insira o código de 6 dígitos enviado para o seu e-mail.</p>
+        </div>
+
+        <div th:if="${error}" class="auth-alert">
+            <span>Código inválido ou expirado.</span>
+        </div>
+
+        <form th:action="@{/auth/verificar-codigo}" method="post">
+            <div class="form-group">
+                <label for="codigo">Código de Verificação</label>
+                <input type="text"
+                       name="codigo"
+                       id="codigo"
+                       placeholder="000000"
+                       maxlength="6"
+                       class="code-input"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-btn">
+                Verificar
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Não recebeu o código? <a th:href="@{/auth/esqueceu-senha}">Reenviar</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
