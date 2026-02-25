@@ -80,18 +80,20 @@ public class AdminMarcaController {
     }
 
     @GetMapping("/desativar/{id}")
-    public String desativarMarca(@PathVariable Long id) {
+    public String desativarMarca(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Marca marca = adminMarcaService.buscarPorId(id);
         marca.setAtivo(false);
         adminMarcaService.salvar(marca);
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Marca deletada com sucesso!");
         return "redirect:/adminMarca";
     }
 
     @GetMapping("/ativar/{id}")
-    public String ativarMarca(@PathVariable Long id) {
+    public String ativarMarca(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Marca marca = adminMarcaService.buscarPorId(id);
         marca.setAtivo(true);
-        adminMarcaService.salvar(marca);
+        adminMarcaService.salvar(marca);gi
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Marca restaurada com sucesso!");
         return "redirect:/adminMarca";
     }
 }
