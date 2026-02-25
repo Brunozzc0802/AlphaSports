@@ -175,8 +175,9 @@
                 <label>Ou envie um arquivo</label>
                 <div class="upload-box">
                     <input type="file" id="logoFileInput" name="arquivoImagem" accept="image/png, image/jpeg">
-                    <span>Selecionar imagem (PNG ou JPG)</span>
+                    <span id="fileInputLabel">Selecionar imagem (PNG ou JPG)</span>
                 </div>
+                <small style="color: #666; margin-bottom: 10px; display: block;">* Deixe vazio para manter a logo atual em caso de edição.</small>
 
                 <div class="image-preview" id="logoPreview">
                     <span>Prévia da logo</span>
@@ -256,13 +257,17 @@
             if (!response.ok) throw new Error(`Erro: ${response.status}`);
             const m = await response.json();
 
+            // Preenche os campos do formulário
             document.getElementById('marcaId').value = m.id;
             document.getElementById('nomeMarca').value = m.nome || '';
             document.getElementById('descricaoMarca').value = m.descricao || '';
             document.getElementById('logoUrlInput').value = m.logo || '';
 
+            // Gerencia a prévia da imagem
             if (m.logo) {
-                logoPreview.innerHTML = `<img src="${m.logo}" style="max-width:100%; max-height:150px; border-radius:8px;">`;
+                // Verifica se a logo é um link externo ou um arquivo local na pasta de imagens
+                const imageSrc = m.logo.startsWith('http') ? m.logo : `/images/${m.logo}`;
+                logoPreview.innerHTML = `<img src="${imageSrc}" style="max-width:100%; max-height:150px; border-radius:8px;">`;
             } else {
                 resetPreview();
             }
@@ -271,7 +276,8 @@
             btnSalvar.textContent = "Salvar Alterações";
             modal.style.display = 'flex';
         } catch (error) {
-            console.error(error);
+            console.error("Erro ao carregar dados da marca:", error);
+            alert("Não foi possível carregar os dados para edição.");
         }
     }
 

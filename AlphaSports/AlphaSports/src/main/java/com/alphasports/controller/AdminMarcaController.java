@@ -36,20 +36,26 @@ public class AdminMarcaController {
     }
 
     @PostMapping("/salvar")
-    public String salvarMarca(
-                               @RequestParam(value = "id", required = false) Long id,
-                               @RequestParam("nome") String nome,
-                               @RequestParam("descricao") String descricao,
-                               @RequestParam(value = "logo", required = false) String logoUrl,
-                               @RequestParam(value = "arquivoImagem", required = false) MultipartFile arquivo,
-                               RedirectAttributes redirectAttributes) { // 3. Adicione RedirectAttributes para mensagens
+    public String salvarMarca(@RequestParam(value = "id", required = false) Long id,
+                              @RequestParam("nome") String nome,
+                              @RequestParam("descricao") String descricao,
+                              @RequestParam(value = "logo", required = false) String logoUrl,
+                              @RequestParam(value = "arquivoImagem", required = false) MultipartFile arquivo,
+                              RedirectAttributes redirectAttributes) {
         try {
-            Marca marca = (id != null && id > 0) ? adminMarcaService.buscarPorId(id) : new Marca();
+            Marca marca;
+            String mensagem;
 
+            if (id != null && id > 0) {
+                marca = adminMarcaService.buscarPorId(id);
+                mensagem = "Marca atualizada com sucesso!";
+            } else {
+                marca = new Marca();
+                marca.setAtivo(true);
+                mensagem = "Marca adicionada com sucesso!";
+            }
             marca.setNome(nome);
             marca.setDescricao(descricao);
-            if (id == null) marca.setAtivo(true);
-
             if (arquivo != null && !arquivo.isEmpty()) {
                 String nomeArquivo = System.currentTimeMillis() + "_" + arquivo.getOriginalFilename();
                 Path caminho = Paths.get("src/main/resources/static/images/" + nomeArquivo);
@@ -59,7 +65,7 @@ public class AdminMarcaController {
                 marca.setLogo(logoUrl);
             }
             adminMarcaService.salvar(marca);
-            redirectAttributes.addFlashAttribute("mensagemSucesso", "Marca adicionada com sucesso!");
+            redirectAttributes.addFlashAttribute("mensagemSucesso", mensagem);
             return "redirect:/adminMarca";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao salvar: " + e.getMessage());
