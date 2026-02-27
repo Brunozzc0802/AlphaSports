@@ -8,8 +8,6 @@ import java.util.List;
 
 @Repository
 public interface AdminUsuarioRepository extends JpaRepository<Usuario, Long> {
-
     List<Usuario> findByAtivoTrueOrderById();
-    List<Usuario> findByAtivoFalseOrderById( );
-
+    List<Usuario> findByAtivoFalseOrderById();
 }

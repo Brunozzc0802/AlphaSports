@@ -35,10 +35,12 @@
                 <span>Carrinho</span>
                 <span class="cart-count" id="cartCount">0</span>
             </a>
-            <a href="#" onclick="fazerLogout(event)"  class="nav-link cart-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Sair
-            </a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="nav-link cart-link" style="background:none; border:none; cursor:pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Sair
+                </button>
+            </form>
         </nav>
         <button class="mobile-menu-btn" id="mobileMenuBtn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
@@ -64,19 +66,20 @@
         <h3 id="adminTitle">Admin</h3>
         <ul id="adminSidebar">
             <li data-tab="usuarios">
-                <a th:href="@{/admin/usuarios}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Usuários</a>
+                <a th:href="@{/adminUsuarios}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Usuários</a>
             </li>
             <li  data-tab="produtos">
                 <a th:href="@{/adminProdutos}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Produtos</a>
             </li>
             <li class="active" data-tab="clientes">
-                <a th:href="@{/admin/usuarios}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Clientes</a>
+                <a th:href="@{/adminClientes}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Clientes</a>
             </li>
             <li data-tab="clientes">Funcionarios</li>
             <li data-tab="marcas">
                 <a th:href="@{/adminMarca}" style="color: inherit; text-decoration: none; display: block; width: 100%;">Marcas</a>
             </li>
             <li data-tab="estoque">Estoque</li>
+            <li data-tab="relatorio">Relatórios</li>
         </ul>
     </aside>
     <main class="perfil-content">
@@ -85,6 +88,10 @@
             <div th:if="${mensagemSucesso}" id="successAlert" class="custom-alert">
                 <i class="fas fa-check-circle"></i>
                 <span th:text="${mensagemSucesso}"></span>
+            </div>
+            <div th:if="${mensagemErro}" class="custom-alert error" style="background-color: #ffeded; color: #e91e63; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${mensagemErro}"></span>
             </div>
             <div class="admin-header-actions">
                 <div class="tab-container">
@@ -106,25 +113,25 @@
                         <th>NOME</th>
                         <th>TELEFONE</th>
                         <th>CPF</th>
-                        <th>CARGO</th>
                         <th>Status</th>
                         <th style="text-align: right;">AÇÕES</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="u : ${ListaAtivos}">
-                        <td style="font-weight: 700;" th:text="${u.nome}"></td>
-                        <td th:text="${u.telefone}"></td>
-                        <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
-                        <td style="color: #000000;">
-                            <span th:text="${u.cargo}"></span>
-                        </td>
-                        <td th:class="${u.ativo} ? 'ativo' : 'inativo'"
-                            th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
+                    <tr th:each="c : ${ListaAtivos}">
+                        <td style="font-weight: 700;" th:text="${c.nome}"></td>
+                        <td th:text="${c.telefone}"></td>
+                        <td><span class="badge-categoria" th:text="${c.cpf}"></span></td>
+                        <td th:class="${c.ativo} ? 'ativo' : 'inativo'"
+                            th:text="${c.ativo} ? 'Ativo' : 'Inativo'">Status
                         </td>
                         <td class="actions-cell">
-                            <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${u.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
-                            <a th:href="@{/desativarUsuario/{id}(id=${u.id})}" class="btn-action delete" onclick="return confirm('Deletar?')"><i class="fas fa-trash-alt"></i></a>
+                            <button type="button" class="btn-action edit" th:onclick="'abrirModalEdicao(' + ${c.id} + ')'"><i class="fas fa-pencil-alt"></i></button>
+                            <a th:href="@{/adminClientes/desativar/{id}(id=${c.id})}"
+                               class="btn-action delete"
+                               onclick="return confirm('Tem certeza que deseja deletar este cliente?')">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -138,24 +145,21 @@
                         <th>NOME</th>
                         <th>TELEFONE</th>
                         <th>CPF</th>
-                        <th>CARGO</th>
                         <th>Status</th>
                         <th style="text-align: right;">AÇÕES</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="u : ${ListaInativos}">
-                        <td style="font-weight: 700;" th:text="${u.nome}"></td>
-                        <td th:text="${u.telefone}"></td>
-                        <td><span class="badge-categoria" th:text="${u.cpf}"></span></td>
-                        <td style="color: #000000;">
-                            <span th:text="${u.cargo}"></span>
-                        </td>
-                        <td th:class="${u.ativo} ? 'ativo' : 'inativo'"
-                            th:text="${u.ativo} ? 'Ativo' : 'Inativo'">Status
+                    <tr th:each="c : ${ListaInativos}">
+                        <td style="font-weight: 700;" th:text="${c.nome}"></td>
+                        <td th:text="${c.telefone}"></td>
+                        <td><span class="badge-categoria" th:text="${c.cpf}"></span></td>
+                        <td th:class="${c.ativo} ? 'ativo' : 'inativo'"
+                            th:text="${c.ativo} ? 'Ativo' : 'Inativo'">Status
                         </td>
                         <td class="actions-cell">
-                            <a th:href="@{/ativarUsuario/{id}(id=${u.id})}" class="btn-action edit">
+                            <a th:href="@{/adminClientes/ativar/{id}(id=${c.id})}"
+                               class="btn-action edit">
                                 <i class="fas fa-undo"></i>
                             </a>
                         </td>
@@ -172,7 +176,7 @@
                 <button class="modal-close" id="fecharModal">&times;</button>
             </div>
 
-            <form class="modal-form" id="formUsuario" th:action="@{/admin/usuarios/salvar}" method="post">
+            <form class="modal-form" id="formUsuario" th:action="@{/adminClientes/salvar}" method="post">
                 <input type="hidden" id="usuarioId" name="id">
 
                 <label for="nomeUsu">Nome Completo <span class="required">*</span></label>
@@ -197,14 +201,6 @@
                         <label for="senhaUsu">Senha <span class="required" id="asteriscoSenha">*</span></label>
                         <input type="password" id="senhaUsu" name="senha" class="required-field" placeholder="Mínimo 6 caracteres">
                     </div>
-                    <div>
-                        <label for="cargoUsu">Cargo <span class="required">*</span></label>
-                        <select id="cargoUsu" name="cargo" class="required-field">
-                            <option value="">Selecione um cargo</option>
-                            <option value="ADMINISTRADOR">Administrador</option>
-                            <option value="ESTOQUISTA">Estoquista</option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="modal-actions">
@@ -217,7 +213,7 @@
 </div>
 
 <script>
-    // 1. Elementos do Modal e Formulário
+    // Elementos do Modal e Formulário
     const modal = document.getElementById('modalUsuario');
     const btnAdicionar = document.getElementById('btnAdicionar');
     const fecharModal = document.getElementById('fecharModal');
@@ -226,64 +222,57 @@
     const modalTitle = document.getElementById('modalTitle');
     const btnSalvar = document.getElementById('btnSalvar');
 
-    // 2. Função para abrir o Modal de Adicionar
+    // Abrir modal para ADICIONAR (igual adminUsuarios.html)
     btnAdicionar.addEventListener('click', () => {
-        formUsuario.reset(); // Limpa todos os campos
-        document.getElementById('usuarioId').value = ''; // Garante que o ID está vazio
-
-        modalTitle.textContent = "Adicionar Novo Usuário";
-        btnSalvar.textContent = "Adicionar Usuário";
-
-        // Na criação, a senha é obrigatória
+        formUsuario.reset();
+        document.getElementById('usuarioId').value = ''; // ID vazio = novo cliente
+        modalTitle.textContent = "Adicionar Novo Cliente";
+        btnSalvar.textContent = "Adicionar Cliente";
         document.getElementById('senhaUsu').classList.add('required-field');
         document.getElementById('asteriscoSenha').style.display = 'inline';
-
-        modal.style.display = 'flex'; // Abre o modal
+        modal.style.display = 'flex';
     });
 
-    // 3. Função para abrir o Modal de Edição (chamada pelo botão na tabela)
+    // Abrir modal para EDITAR (igual adminUsuarios.html - só preenche o campo hidden id)
     async function abrirModalEdicao(id) {
         try {
-            // Faz a chamada para a tua API (ajusta o URL se necessário)
-            const response = await fetch(`/admin/api/usuarios/detalhes/${id}`);
-            if (!response.ok) throw new Error(`Erro ao buscar utilizador: ${response.status}`);
+            const response = await fetch(`/adminClientes/dados/${id}`);
+            if (!response.ok) throw new Error(`Erro ao buscar cliente: ${response.status}`);
+            const cliente = await response.json();
 
-            const u = await response.json();
-
-            // Preenche os campos do formulário com os dados recebidos
             formUsuario.reset();
-            document.getElementById('usuarioId').value = u.id;
-            document.getElementById('nomeUsu').value = u.nome || '';
-            document.getElementById('emailUsu').value = u.email || '';
-            document.getElementById('cpfUsu').value = u.cpf || '';
-            document.getElementById('telUsu').value = u.telefone || '';
-            document.getElementById('cargoUsu').value = u.cargo || '';
 
-            // Na edição, a senha não é obrigatória (só se quiser mudar)
-            modalTitle.textContent = "Editar Usuário";
+            // Apenas preenche o campo hidden com o id — o th:action não muda
+            document.getElementById('usuarioId').value = cliente.id;
+
+            document.getElementById('nomeUsu').value = cliente.nome || '';
+            document.getElementById('emailUsu').value = cliente.email || '';
+            document.getElementById('cpfUsu').value = cliente.cpf || '';
+            document.getElementById('telUsu').value = cliente.telefone || '';
+
+            modalTitle.textContent = "Editar Cliente";
             btnSalvar.textContent = "Salvar Alterações";
+
+            // Senha não obrigatória na edição
             document.getElementById('senhaUsu').classList.remove('required-field');
             document.getElementById('asteriscoSenha').style.display = 'none';
 
             modal.style.display = 'flex';
         } catch (error) {
             console.error("Erro:", error);
-            alert("Não foi possível carregar os dados do utilizador.");
+            alert("Não foi possível carregar os dados do cliente.");
         }
     }
 
-    // 4. Funções para fechar o Modal
+    // Fechar modal
     const fechar = () => { modal.style.display = 'none'; };
-
     fecharModal.addEventListener('click', fechar);
     cancelarModal.addEventListener('click', fechar);
-
-    // Fecha se clicar fora da caixa branca
     window.addEventListener('click', (e) => {
         if (e.target === modal) fechar();
     });
 
-    // 5. Validação antes de enviar (Submit)
+    // Validação do submit (igual adminUsuarios.html)
     formUsuario.addEventListener('submit', (e) => {
         let valido = true;
         const camposObrigatorios = formUsuario.querySelectorAll('.required-field');
@@ -297,18 +286,18 @@
         });
 
         if (!valido) {
-            e.preventDefault(); // Impede o envio do formulário
+            e.preventDefault();
             alert('Por favor, preencha todos os campos obrigatórios (*)');
         }
     });
 
-    // 6. Lógica das Tabs (Ativos/Inativos)
+    // Tabs Ativos/Inativos
     const btnAtivo = document.getElementById("btnAtivo");
     const btnInativo = document.getElementById("btnInativo");
     const containerAtivos = document.getElementById("containerAtivos");
     const containerInativos = document.getElementById("containerInativos");
 
-    if(btnAtivo && btnInativo) {
+    if (btnAtivo && btnInativo) {
         btnInativo.addEventListener("click", () => {
             btnInativo.classList.add("active");
             btnAtivo.classList.remove("active");
@@ -324,7 +313,7 @@
         });
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const alertBox = document.getElementById('successAlert');
         if (alertBox) {
             setTimeout(() => {

@@ -22,27 +22,21 @@ public class ClienteService {
     }
 
     public Cliente autenticar(LoginRequest request) {
-
         Cliente cliente = clienteRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
         if (!passwordEncoder.matches(request.getSenha(), cliente.getSenha())) {
             throw new RuntimeException("Senha inválida");
         }
-
         return cliente;
     }
 
     public Cliente cadastrar(RegistroRequest request) {
-
         if (clienteRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado");
         }
-
         if (!request.getSenha().equals(request.getSenhaConfirmacao())) {
             throw new RuntimeException("As senhas não coincidem");
         }
-
         Cliente cliente = new Cliente();
         cliente.setNome(request.getNome());
         cliente.setEmail(request.getEmail());
@@ -50,7 +44,6 @@ public class ClienteService {
         cliente.setTelefone(request.getTelefone());
         cliente.setSenha(passwordEncoder.encode(request.getSenha()));
         cliente.setAtivo(true);
-
         return clienteRepository.save(cliente);
     }
 
