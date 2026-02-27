@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+        }
+        .header {
+            background-color: #111111; /* Preto profundo */
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 5px solid #E60000; /* Vermelho AlphaSports */
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .header h1 span {
+            color: #E60000; /* Destaque em vermelho */
+        }
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        .token-box {
+            background-color: #E60000; /* Fundo vermelho */
+            color: #ffffff; /* Texto branco */
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(230, 0, 0, 0.3);
+        }
+        .warning {
+            background-color: #fff3f3;
+            border-left: 4px solid #E60000;
+            padding: 15px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #555555;
+        }
+        .footer {
+            background-color: #111111;
+            color: #888888;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Alpha<span>Sports</span></h1>
+    </div>
+
+    <div class="content">
+        <p>Olá,</p>
+        <p>Recebemos uma solicitação para redefinir a senha da sua conta na <strong>AlphaSports</strong>. Use o código de verificação abaixo para concluir o processo:</p>
+
+        <div class="token-box" th:text="${codigo}">
+            000000
+        </div>
+
+        <p><strong>Atenção:</strong> Este código é válido por apenas <strong>15 minutos</strong>.</p>
+
+        <div class="warning">
+            <strong>Não solicitou esta alteração?</strong><br>
+            Se você não tentou redefinir sua senha, pode ignorar este e-mail com segurança. Sua conta continua protegida.
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 AlphaSports. Todos os direitos reservados.<br>
+        Este é um e-mail automático, por favor, não responda.
+    </div>
+</div>
+
+</body>
+</html>

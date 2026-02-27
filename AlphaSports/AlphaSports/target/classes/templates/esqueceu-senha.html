@@ -15,25 +15,19 @@
   <img th:src="@{/images/logoRed.png}" alt="AlphaSports" class="logo-recovery">
 
   <h2>Recuperar Senha</h2>
-  <p>Insira seu e-mail para enviarmos instruções de recuperação</p>
+  <p>Insira seu e-mail cadastrado e enviaremos um código de verificação.</p>
 
   <div th:if="${mensagemErro}" class="auth-alert">
     <i class="fas fa-exclamation-circle auth-alert-icon"></i>
-    <span th:text="${mensagemErro}">E-mail não encontrado.</span>
-  </div>
-
-  <div th:if="${mensagemSucesso}" class="auth-alert" style="background-color: #f0fdf4; border-color: #bbf7d0; border-left-color: #22c55e;">
-    <i class="fas fa-check-circle auth-alert-icon" style="color: #22c55e;"></i>
-    <span th:text="${mensagemSucesso}" style="color: #166534;">Enviamos o link!</span>
+    <span th:text="${mensagemErro}"></span>
   </div>
 
   <form th:action="@{/esqueceu-senha}" method="POST">
     <div class="form-group-recovery">
       <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+      <input type="email" id="email" name="email" placeholder="seu@email.com" required autofocus>
     </div>
-
-    <button type="submit" class="btn-enviar-recovery">Enviar Instruções</button>
+    <button type="submit" class="btn-enviar-recovery">Enviar Código</button>
   </form>
 
   <div class="footer-recovery">

@@ -6,44 +6,46 @@
     <title>Verificar Código - AlphaSports</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/recuperar-senha.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="auth-page">
-<div class="auth-container">
-    <div class="auth-card">
-        <div class="auth-header">
-            <a th:href="@{/}">
-                <img th:src="@{/images/logoRed.png}" alt="AlphaSports">
-            </a>
-            <h1>Verificar Código</h1>
-            <p>Insira o código de 6 dígitos enviado para o seu e-mail.</p>
+<body class="recovery-body">
+
+<div class="recovery-card">
+    <img th:src="@{/images/logoRed.png}" alt="AlphaSports" class="logo-recovery">
+
+    <h2>Verificar Código</h2>
+    <p>Insira o código de 6 dígitos enviado para <strong th:text="${email}"></strong></p>
+
+    <div th:if="${mensagemErro}" class="auth-alert">
+        <i class="fas fa-exclamation-circle auth-alert-icon"></i>
+        <span th:text="${mensagemErro}"></span>
+    </div>
+
+    <form th:action="@{/verificar-codigo}" method="POST">
+        <!-- E-mail passado como hidden para o próximo passo -->
+        <input type="hidden" name="email" th:value="${email}">
+
+        <div class="form-group-recovery">
+            <label for="codigo">Código de Verificação</label>
+            <input type="text"
+                   id="codigo"
+                   name="codigo"
+                   placeholder="000000"
+                   maxlength="6"
+                   required
+                   autofocus
+                   style="letter-spacing: 0.4em; font-size: 1.4rem; text-align: center;">
         </div>
 
-        <div th:if="${error}" class="auth-alert">
-            <span>Código inválido ou expirado.</span>
-        </div>
+        <button type="submit" class="btn-enviar-recovery">Verificar Código</button>
+    </form>
 
-        <form th:action="@{/auth/verificar-codigo}" method="post">
-            <div class="form-group">
-                <label for="codigo">Código de Verificação</label>
-                <input type="text"
-                       name="codigo"
-                       id="codigo"
-                       placeholder="000000"
-                       maxlength="6"
-                       class="code-input"
-                       required>
-            </div>
-
-            <button type="submit" class="btn btn-primary auth-btn">
-                Verificar
-            </button>
-        </form>
-
-        <div class="auth-footer">
-            Não recebeu o código? <a th:href="@{/auth/esqueceu-senha}">Reenviar</a>
-        </div>
+    <div class="footer-recovery">
+        Não recebeu? <a th:href="@{/esqueceu-senha}">Solicitar novo código</a>
     </div>
 </div>
+
 </body>
 </html>
