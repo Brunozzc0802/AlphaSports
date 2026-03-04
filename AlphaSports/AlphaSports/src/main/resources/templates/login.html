@@ -21,6 +21,15 @@
                 <p>Entre na sua conta para continuar</p>
             </div>
 
+            <div th:if="${param.sucessoRedefinicao}" class="auth-alert success" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                <div class="auth-alert-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div class="auth-alert-content">
+                    <span>Senha alterada com sucesso! Entre com sua nova senha.</span>
+                </div>
+            </div>
+
             <div th:if="${sucesso}" class="auth-alert success" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
                 <div class="auth-alert-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -108,14 +117,11 @@
         loginButton.textContent = 'Entrando...';
     });
     document.addEventListener('DOMContentLoaded', function() {
-        // 1. Lógica de Erro existente
         const errorAlert = document.querySelector('.alert-danger');
         if (errorAlert && errorAlert.textContent.trim().length > 0) {
             errorAlert.style.display = 'block';
         }
 
-        // 2. Lógica para sumir alertas automaticamente (Logout e Cadastro)
-        // Selecionamos o logout pelo ID e o sucesso pela classe
         const autoHideAlerts = [
             document.getElementById('logoutAlert'),
             document.querySelector('.auth-alert.success')
@@ -126,12 +132,11 @@
                 setTimeout(() => {
                     alert.style.transition = "all 0.5s ease";
                     alert.style.opacity = "0";
-                    alert.style.transform = "translateY(-10px)"; // Efeito extra de subir ao sumir
-
+                    alert.style.transform = "translateY(-10px)";
                     setTimeout(() => {
                         alert.remove();
                     }, 500);
-                }, 3000); // 5 segundos
+                }, 3000);
             }
         });
     });

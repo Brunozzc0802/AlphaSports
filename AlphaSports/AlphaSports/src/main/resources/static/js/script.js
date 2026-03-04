@@ -4,10 +4,8 @@ let products = []
 
 async function carregarProdutos() {
   try {
-    const response = await fetch('/admin'); // Ou o endpoint que retorna o JSON dos produtos
+    const response = await fetch('/admin');
     if (!response.ok) return [];
-    // Se o seu controller retornar HTML em vez de JSON,
-    // essa lógica precisará ser ajustada.
     return await response.json();
   } catch (error) {
     console.error("Erro ao buscar produtos:", error);

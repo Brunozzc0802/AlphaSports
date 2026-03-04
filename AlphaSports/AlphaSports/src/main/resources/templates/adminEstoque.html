@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaSports - Gestão de Estoque</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .badge-estoque { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .baixo-estoque { background: #ffebee; color: #c62828; }
+        .estoque-ok { background: #e8f5e9; color: #2e7d32; }
+        .actions-cell { display: flex; justify-content: flex-end; gap: 8px; }
+
+        .btn-mov {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: filter 0.15s;
+        }
+        .btn-mov:hover { filter: brightness(0.92); }
+        .btn-mov.entrada { background: #dbeafe; color: #1d4ed8; }
+        .btn-mov.saida   { background: #fee2e2; color: #b91c1c; }
+
+        .qtd-atual-info {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #475569;
+        }
+        .qtd-atual-info strong { color: #1e293b; font-size: 16px; }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            min-width: 280px;
+            max-width: 380px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        #toast .toast-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        #toast.success .toast-icon { background: #dcfce7; color: #16a34a; }
+        #toast.error .toast-icon   { background: #fee2e2; color: #b91c1c; }
+        #toast .toast-body { display: flex; flex-direction: column; gap: 2px; }
+        #toast .toast-title { font-weight: 700; font-size: 14px; color: #1e293b; }
+        #toast .toast-msg   { font-size: 13px; color: #64748b; }
+        #toast .toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 16px;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        #toast .toast-close:hover { color: #475569; }
+        #toast .toast-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            border-radius: 0 0 14px 14px;
+            width: 100%;
+            transform-origin: left;
+        }
+        #toast.success .toast-bar { background: #16a34a; }
+        #toast.error .toast-bar   { background: #b91c1c; }
+        @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+        #toast.show .toast-bar { animation: shrink 3.5s linear forwards; }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="container header-content">
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/images/Logo.png}" alt="AlphaSports">
+        </a>
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar produtos..." id="searchInput">
+            <button class="search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            </button>
+        </div>
+        <nav class="header-nav">
+            <div class="nav-link user-dropdown-container" id="userInfo">
+                <a th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/adminUsuarios} :(${#authorization.expression('hasRole(''CLIENTE'')')} ? @{/perfil} : @{/auth/login})">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                <span id="userName" th:text="${#authentication.principal != 'anonymousUser'} ? ${#authentication.principal.nome} : 'Entrar'"></span>
+            </div>
+            <a th:href="@{/carrinho}" class="nav-link cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                <span>Carrinho</span>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="nav-link cart-link" style="background:none; border:none; cursor:pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Sair
+                </button>
+            </form>
+
+        </nav>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        </button>
+    </div>
+    <nav class="categories-nav">
+        <div class="container">
+            <ul class="categories-list">
+                <li><a th:href="@{/produtos(categoria=todos)}">Todos</a></li>
+                <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
+                <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
+                <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
+                <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
+                <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
+                <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
+                <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="perfil-wrapper container">
+    <aside class="perfil-menu">
+        <h3>Painel Admin</h3>
+        <ul>
+            <li><a th:href="@{/adminUsuarios}"><i class="fas fa-users"></i> Usuários</a></li>
+            <li><a th:href="@{/adminProdutos}"><i class="fas fa-box"></i> Produtos</a></li>
+            <li><a th:href="@{/adminMarca}"><i class="fas fa-tags"></i> Marcas</a></li>
+            <li><a th:href="@{/adminClientes}"><i class="fas fa-user-friends"></i> Clientes</a></li>
+            <li class="active"><a th:href="@{/adminEstoque}"><i class="fas fa-boxes"></i> Estoque</a></li>
+            <li><a th:href="@{/adminRelatorios}"><i class="fas fa-chart-line"></i> Relatórios</a></li>
+        </ul>
+    </aside>
+
+    <main class="perfil-content">
+        <div class="admin-header-flex">
+            <h1>Gestão de Estoque</h1>
+            <button class="btn-primary" id="btnAbrirModalGeral">
+                <i class="fas fa-plus"></i> Nova Movimentação
+            </button>
+        </div>
+
+        <div class="card">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>PRODUTO</th>
+                    <th>TAMANHO</th>
+                    <th>QTD ATUAL</th>
+                    <th style="text-align: right;">AÇÕES</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${listaEstoque}">
+                    <td style="font-weight: 700;" th:text="${p.nomeProduto}"></td>
+                    <td th:text="${p.tamanho}"></td>
+                    <td>
+                        <span th:class="${p.quantidade <= 5} ? 'badge-estoque baixo-estoque' : 'badge-estoque estoque-ok'"
+                              th:text="${p.quantidade}"></span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn-mov entrada btn-movimentacao"
+                                th:data-id="${p.idProduto}"
+                                th:data-tamanho="${p.tamanho}"
+                                th:data-nome="${p.nomeProduto}"
+                                th:data-quantidade="${p.quantidade}"
+                                data-tipo="ENTRADA"
+                                title="Entrada de estoque">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="btn-mov saida btn-movimentacao"
+                                th:data-id="${p.idProduto}"
+                                th:data-tamanho="${p.tamanho}"
+                                th:data-nome="${p.nomeProduto}"
+                                th:data-quantidade="${p.quantidade}"
+                                data-tipo="SAIDA"
+                                title="Baixa de estoque">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<div class="modal-overlay" id="modalEstoque">
+    <div class="modal" style="max-width: 450px;">
+        <div class="modal-header">
+            <h2 id="modalTitle">Movimentar Estoque</h2>
+            <button class="modal-close" id="fecharModal">&times;</button>
+        </div>
+        <form class="modal-form" id="formEstoque">
+            <input type="hidden" id="tipoMovimentacao" value="ENTRADA">
+
+            <div class="qtd-atual-info" id="qtdAtualInfo" style="display:none;">
+                Estoque atual: <strong id="qtdAtualValor">0</strong> unidades
+            </div>
+
+            <label>Produto <span class="required">*</span></label>
+            <select id="selectProduto" name="produtoId" required>
+                <option value="">Selecione um produto</option>
+                <option th:each="prod : ${todosProdutos}"
+                        th:value="${prod.id}"
+                        th:text="${prod.nome}"
+                        th:data-tamanhos="${prod.tamanhos}"></option>
+            </select>
+
+            <label>Tamanho Disponível <span class="required">*</span></label>
+            <select id="selectTamanho" name="tamanho" required>
+                <option value="">Selecione o produto primeiro</option>
+            </select>
+
+            <label>Quantidade <span class="required">*</span></label>
+            <input type="number" id="qtdEstoque" name="quantidade" min="1" required>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="cancelarModal">Cancelar</button>
+                <button type="submit" class="btn-primary" id="btnSalvar">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+    <div class="toast-icon"><i id="toastIcon" class="fas fa-check"></i></div>
+    <div class="toast-body">
+        <span class="toast-title" id="toastTitle"></span>
+        <span class="toast-msg" id="toastMsg"></span>
+    </div>
+    <button class="toast-close" onclick="fecharToast()"><i class="fas fa-times"></i></button>
+    <div class="toast-bar"></div>
+</div>
+
+<script>
+    const modal = document.getElementById('modalEstoque');
+    const selectProduto = document.getElementById('selectProduto');
+    const selectTamanho = document.getElementById('selectTamanho');
+    const tipoMovimentacao = document.getElementById('tipoMovimentacao');
+    const btnSalvar = document.getElementById('btnSalvar');
+    const qtdAtualInfo = document.getElementById('qtdAtualInfo');
+    const qtdAtualValor = document.getElementById('qtdAtualValor');
+
+    let toastTimer = null;
+
+    function mostrarToast(tipo, titulo, mensagem) {
+        const toast = document.getElementById('toast');
+        const icon = document.getElementById('toastIcon');
+
+        toast.className = tipo;
+        document.getElementById('toastTitle').textContent = titulo;
+        document.getElementById('toastMsg').textContent = mensagem;
+        icon.className = tipo === 'success' ? 'fas fa-check' : 'fas fa-exclamation';
+
+        void toast.offsetWidth;
+        toast.classList.add('show');
+
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => fecharToast(), 3500);
+    }
+
+    function fecharToast() {
+        const toast = document.getElementById('toast');
+        toast.classList.remove('show');
+    }
+
+    selectProduto.addEventListener('change', function() {
+        const option = this.options[this.selectedIndex];
+        const tamanhosString = option.getAttribute('data-tamanhos');
+
+        selectTamanho.innerHTML = '<option value="">Selecione o tamanho</option>';
+
+        if (tamanhosString) {
+            tamanhosString.split(',').forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.trim();
+                opt.textContent = t.trim();
+                selectTamanho.appendChild(opt);
+            });
+        }
+    });
+
+    document.querySelectorAll('.btn-movimentacao').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const tamanho = this.getAttribute('data-tamanho');
+            const nome = this.getAttribute('data-nome');
+            const tipo = this.getAttribute('data-tipo');
+            const quantidade = this.getAttribute('data-quantidade');
+
+            tipoMovimentacao.value = tipo;
+            qtdAtualValor.textContent = quantidade;
+            qtdAtualInfo.style.display = 'block';
+
+            if (tipo === 'ENTRADA') {
+                document.getElementById('modalTitle').textContent = "Entrada de Estoque: " + nome;
+                btnSalvar.textContent = "Salvar Entrada";
+                btnSalvar.style.background = '';
+            } else {
+                document.getElementById('modalTitle').textContent = "Baixa de Estoque: " + nome;
+                btnSalvar.textContent = "Confirmar Baixa";
+                btnSalvar.style.background = '#b91c1c';
+            }
+
+            selectProduto.value = id;
+            selectProduto.dispatchEvent(new Event('change'));
+            selectTamanho.value = tamanho;
+            document.getElementById('qtdEstoque').value = '';
+            document.getElementById('qtdEstoque').focus();
+            modal.style.display = 'flex';
+        });
+    });
+
+    document.getElementById('btnAbrirModalGeral').onclick = () => {
+        tipoMovimentacao.value = 'ENTRADA';
+        document.getElementById('modalTitle').textContent = "Nova Movimentação";
+        btnSalvar.textContent = "Salvar Entrada";
+        btnSalvar.style.background = '';
+        qtdAtualInfo.style.display = 'none';
+        document.getElementById('formEstoque').reset();
+        modal.style.display = 'flex';
+    };
+
+    const fechar = () => { modal.style.display = 'none'; };
+    document.getElementById('fecharModal').onclick = fechar;
+    document.getElementById('cancelarModal').onclick = fechar;
+
+    document.getElementById('formEstoque').onsubmit = async (e) => {
+        e.preventDefault();
+
+        btnSalvar.disabled = true;
+        btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+
+        const payload = {
+            produtoId: parseInt(selectProduto.value),
+            tamanho: selectTamanho.value,
+            quantidade: parseInt(document.getElementById('qtdEstoque').value),
+            tipo: tipoMovimentacao.value
+        };
+
+        try {
+            const res = await fetch('/api/estoque/ajustar', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+
+            const textoResposta = await res.text();
+            let dadosResposta;
+            try { dadosResposta = JSON.parse(textoResposta); } catch(e) { dadosResposta = { message: textoResposta }; }
+
+            if (res.ok) {
+                fechar();
+                mostrarToast('success', 'Estoque atualizado!', 'A movimentação foi registrada com sucesso.');
+                setTimeout(() => location.reload(), 3500);
+            } else {
+                fechar();
+                mostrarToast('error', 'Erro ao salvar', dadosResposta.message || 'Erro desconhecido no servidor.');
+                btnSalvar.disabled = false;
+                btnSalvar.textContent = "Salvar";
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            fechar();
+            mostrarToast('error', 'Sem conexão', 'Não foi possível conectar ao servidor.');
+            btnSalvar.disabled = false;
+            btnSalvar.textContent = "Salvar";
+        }
+    };
+</script>
+</body>
+</html>

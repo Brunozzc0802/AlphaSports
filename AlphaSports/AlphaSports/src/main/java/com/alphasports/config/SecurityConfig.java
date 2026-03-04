@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 @Configuration
 public class SecurityConfig {
 
@@ -19,14 +18,22 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                // Desabilitar CSRF para permitir chamadas AJAX de POST
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/images/**", "/auth/**").permitAll()
+                        .requestMatchers("/css/**", "/images/**", "/auth/**", "/js/**").permitAll()
                         .requestMatchers("/esqueceu-senha", "/verificar-codigo", "/nova-senha").permitAll()
+
+                        // Rotas de Admin (Adicionei a do estoque aqui)
                         .requestMatchers(
                                 "/adminUsuarios",
+                                "/adminProdutos",
+                                "/adminEstoque",
+                                "/api/estoque/**", // Libera os endpoints da API de estoque
                                 "/desativarUsuario/**",
                                 "/ativarUsuario/**"
                         ).hasRole("ADMINISTRADOR")
+
                         .requestMatchers("/cliente/**").hasRole("CLIENTE")
                         .anyRequest().authenticated()
                 )
@@ -34,9 +41,7 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/login")
                         .successHandler((request, response, authentication) -> {
-
                             var authorities = authentication.getAuthorities();
-
                             if (authorities.stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"))) {
                                 response.sendRedirect("/adminUsuarios");
