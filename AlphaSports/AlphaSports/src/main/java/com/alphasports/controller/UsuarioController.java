@@ -5,10 +5,12 @@ import com.alphasports.dto.UsuarioPerfilUpdateRequest;
 import com.alphasports.model.Cliente;
 import com.alphasports.model.Usuario;
 import com.alphasports.model.Cargo;
+import com.alphasports.repository.ClienteRepository;
+import com.alphasports.repository.UsuarioRepository;
 import com.alphasports.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,57 +19,64 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService service;
+    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public UsuarioController(UsuarioService service) {
+    public UsuarioController(UsuarioService service,
+                             ClienteRepository clienteRepository,
+                             UsuarioRepository usuarioRepository) {
         this.service = service;
-    }
-
-    private boolean usuarioAdminOuGerente(Usuario u) {
-        return u.getCargo() == Cargo.ADMINISTRADOR ||
-                u.getCargo() == Cargo.GERENTE;
+        this.clienteRepository = clienteRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping("/perfil")
-    public ResponseEntity<?> perfil(HttpSession session) {
-        // Busca primeiro o usuário (Admin/Funcionario)
-        Usuario u = (Usuario) session.getAttribute("usuarioLogado");
-        if (u != null) {
+    public ResponseEntity<?> perfil(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão expirada. Faça login novamente.");
+        }
+
+        String email = authentication.getName();
+
+        var clienteOpt = clienteRepository.findByEmail(email);
+        if (clienteOpt.isPresent()) {
+            return ResponseEntity.ok(clienteOpt.get());
+        }
+
+        var usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isPresent()) {
+            Usuario u = usuarioOpt.get();
             return ResponseEntity.ok(new UsuarioPerfilResponse(u.getNome(), u.getEmail()));
         }
 
-        // Se não for admin, busca o Cliente
-        Cliente c = (Cliente) session.getAttribute("clienteLogado");
-        if (c != null) {
-            return ResponseEntity.ok(c); // Retorna os dados do cliente
-        }
-
-        // Se nenhum dos dois existir, aí sim retorna 401
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão expirada. Faça login novamente.");
     }
 
     @PutMapping("/perfil")
     public ResponseEntity<?> atualizar(@RequestBody UsuarioPerfilUpdateRequest r,
-                                       HttpSession session) {
+                                       Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não está logado");
+        }
+
+        String email = authentication.getName();
+
+        var usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso permitido apenas para administradores");
+        }
+
+        Usuario u = usuarioOpt.get();
+        if (u.getCargo() != Cargo.ADMINISTRADOR && u.getCargo() != Cargo.GERENTE) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso permitido apenas para administradores");
+        }
+
         try {
-            Usuario u = (Usuario) session.getAttribute("usuarioLogado");
-
-            if (u == null) {
-                return ResponseEntity.status(401).body("Usuário não está logado");
-            }
-
-            if (!usuarioAdminOuGerente(u)) {
-                return ResponseEntity.status(403).body("Acesso permitido apenas para administradores");
-            }
-
-            Usuario usuarioAtualizado = service.atualizarPerfil(u.getId(), r);
-
-            session.setAttribute("usuarioLogado", usuarioAtualizado);
-
+            service.atualizarPerfil(u.getId(), r);
             return ResponseEntity.ok("Perfil atualizado com sucesso");
-
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao atualizar perfil: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar perfil: " + e.getMessage());
         }
     }
 }

@@ -2,12 +2,13 @@ package com.alphasports.controller;
 
 import com.alphasports.model.Cliente;
 import com.alphasports.model.Usuario;
+import com.alphasports.repository.ClienteRepository;
+import com.alphasports.repository.UsuarioRepository;
 import com.alphasports.service.AdminProdutoService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,42 +23,48 @@ public class PageController {
     @Autowired
     private AdminProdutoService produtoService;
 
-    @GetMapping("/")
-    public String index(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
-        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
+    @Autowired
+    private ClienteRepository clienteRepository;
 
-        if (usuario != null) {
-            model.addAttribute("nomeExibicao", usuario.getNome());
-        } else if (cliente != null) {
-            model.addAttribute("nomeExibicao", cliente.getNome());
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @GetMapping("/")
+    public String index(Authentication authentication, Model model) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            model.addAttribute("nomeExibicao", authentication.getName());
         }
         return "index";
     }
 
     @GetMapping("/perfil")
-    public String perfil(HttpSession session, Model model) {
-        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
-
-        if (cliente == null && usuario == null) {
+    public String perfil(Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/auth/login";
         }
 
-        if (cliente != null) {
-            model.addAttribute("nomeExibicao", cliente.getNome());
-        } else {
-            model.addAttribute("nomeExibicao", usuario.getNome());
-        }
+        String email = authentication.getName();
 
-        return "perfil"; // Removido a barra inicial para evitar erros em alguns S.O
+        clienteRepository.findByEmail(email).ifPresent(c -> {
+            model.addAttribute("nomeExibicao", c.getNome());
+            model.addAttribute("cliente", c);
+        });
+
+        usuarioRepository.findByEmail(email).ifPresent(u -> {
+            model.addAttribute("nomeExibicao", u.getNome());
+            model.addAttribute("usuario", u);
+        });
+
+        return "perfil";
     }
 
     @GetMapping("/carrinho")
-    public String carrinho(HttpSession session, Model model) {
-        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
-        if (cliente != null) {
-            model.addAttribute("nomeExibicao", cliente.getNome());
+    public String carrinho(Authentication authentication, Model model) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            clienteRepository.findByEmail(email).ifPresent(c ->
+                    model.addAttribute("nomeExibicao", c.getNome())
+            );
         }
         return "carrinho";
     }
@@ -66,11 +73,15 @@ public class PageController {
     public String produtos(
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) String busca,
-            HttpSession session,
+            Authentication authentication,
             Model model) {
 
-        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
-        if (cliente != null) model.addAttribute("nomeExibicao", cliente.getNome());
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            clienteRepository.findByEmail(email).ifPresent(c ->
+                    model.addAttribute("nomeExibicao", c.getNome())
+            );
+        }
 
         if (categoria != null && !categoria.isEmpty()) {
             model.addAttribute("produtos", produtoService.buscarPorCategoria(categoria));
@@ -84,11 +95,13 @@ public class PageController {
 
     @GetMapping("/api/auth/verificar")
     @ResponseBody
-    public ResponseEntity<?> verificarAutenticacao(HttpSession session) {
-        Cliente cliente = (Cliente) session.getAttribute("clienteLogado");
-        if (cliente != null) {
-            // Retorna um objeto simples com o nome para o header
-            return ResponseEntity.ok(Map.of("nome", cliente.getNome()));
+    public ResponseEntity<?> verificarAutenticacao(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            var cliente = clienteRepository.findByEmail(email);
+            if (cliente.isPresent()) {
+                return ResponseEntity.ok(Map.of("nome", cliente.get().getNome()));
+            }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

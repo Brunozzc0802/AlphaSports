@@ -12,7 +12,6 @@
 </head>
 <body>
 
-<!-- Header -->
 <header class="header">
     <div class="container header-content">
         <a th:href="@{/}" class="logo">
@@ -22,60 +21,50 @@
         <div class="search-bar">
             <input type="text" placeholder="Buscar produtos..." id="searchInput">
             <button class="search-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.3-4.3"></path>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
             </button>
         </div>
 
         <nav class="header-nav">
             <div class="nav-link user-dropdown-container" id="userInfo">
-                <a th:href="@{/login}" class="nav-link user-link" id="userLink">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <a th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/adminUsuarios} :(${#authorization.expression('hasRole(''CLIENTE'')')} ? @{/perfil} : @{/auth/login})">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                    <span id="userName">Entrar</span>
                 </a>
+                <span id="userName" th:text="${#authentication.principal != 'anonymousUser'} ? ${#authentication.principal.nome} : 'Entrar'"></span>
             </div>
-
             <a th:href="@{/carrinho}" class="nav-link cart-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="8" cy="21" r="1"></circle>
-                    <circle cx="19" cy="21" r="1"></circle>
-                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
                 <span>Carrinho</span>
                 <span class="cart-count" id="cartCount">0</span>
             </a>
 
-            <a href="#" onclick="fazerLogout(event)" class="nav-link cart-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                Sair
-            </a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="nav-link cart-link" style="background:none; border:none; cursor:pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Sair
+                </button>
+            </form>
+
         </nav>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        </button>
     </div>
 
-    <!-- Categories -->
     <nav class="categories-nav">
         <div class="container">
             <ul class="categories-list">
-                <li><a th:href="@{/produtos(categoria='todos')}">Todos</a></li>
-                <li><a th:href="@{/produtos(categoria='calcados')}">Calçados</a></li>
-                <li><a th:href="@{/produtos(categoria='roupas')}">Roupas</a></li>
-                <li><a th:href="@{/produtos(categoria='equipamentos')}">Equipamentos</a></li>
-                <li><a th:href="@{/produtos(categoria='futebol')}">Futebol</a></li>
-                <li><a th:href="@{/produtos(categoria='corrida')}">Corrida</a></li>
-                <li><a th:href="@{/produtos(categoria='fitness')}">Fitness</a></li>
+                <li><a th:href="@{/produtos(categoria=todos)}">Todos</a></li>
+                <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
+                <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
+                <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
+                <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
+                <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
+                <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
                 <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
             </ul>
         </div>

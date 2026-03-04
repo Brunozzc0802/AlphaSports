@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 "/ativarUsuario/**"
                         ).hasRole("ADMINISTRADOR")
 
-                        .requestMatchers("/cliente/**").hasRole("CLIENTE")
+                        .requestMatchers("/cliente/**", "/perfil", "/perfil/**").hasRole("CLIENTE")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

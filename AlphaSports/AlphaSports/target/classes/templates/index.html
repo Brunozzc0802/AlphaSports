@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,10 +18,9 @@
     </div>
 </div>
 
-<!-- Header -->
 <header class="header">
     <div class="container header-content">
-        <a href="/" class="logo">
+        <a th:href="@{/}" class="logo">
             <img th:src="@{/images/Logo.png}" alt="AlphaSports">
         </a>
 
@@ -54,6 +53,7 @@
                     Sair
                 </button>
             </form>
+
         </nav>
 
         <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -61,7 +61,6 @@
         </button>
     </div>
 
-    <!-- Categories Nav -->
     <nav class="categories-nav">
         <div class="container">
             <ul class="categories-list">
@@ -78,7 +77,6 @@
     </nav>
 </header>
 
-<!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
         <span>Menu</span>
