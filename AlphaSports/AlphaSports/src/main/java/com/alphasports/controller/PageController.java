@@ -73,6 +73,9 @@ public class PageController {
     public String produtos(
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) String busca,
+            @RequestParam(required = false) java.math.BigDecimal precoMin,
+            @RequestParam(required = false) java.math.BigDecimal precoMax,
+            @RequestParam(defaultValue = "relevance") String ordenar,
             Authentication authentication,
             Model model) {
 
@@ -83,13 +86,37 @@ public class PageController {
             );
         }
 
-        if (categoria != null && !categoria.isEmpty()) {
-            model.addAttribute("produtos", produtoService.buscarPorCategoria(categoria));
+        java.util.List<com.alphasports.model.Produto> produtos;
+
+        if (categoria != null && !categoria.isEmpty() && !categoria.equals("todos")) {
+            produtos = produtoService.buscarPorCategoria(categoria);
         } else if (busca != null && !busca.isEmpty()) {
-            model.addAttribute("produtos", produtoService.buscar(busca));
+            produtos = produtoService.buscar(busca);
         } else {
-            model.addAttribute("produtos", produtoService.listarAtivo());
+            produtos = produtoService.listarAtivo();
         }
+
+        // Filtro de preço
+        if (precoMin != null)
+            produtos = produtos.stream().filter(p -> p.getPreco().compareTo(precoMin) >= 0).toList();
+        if (precoMax != null)
+            produtos = produtos.stream().filter(p -> p.getPreco().compareTo(precoMax) <= 0).toList();
+
+        // Ordenação
+        switch (ordenar) {
+            case "price-asc"  -> produtos = new java.util.ArrayList<>(produtos);
+            case "price-desc" -> produtos = new java.util.ArrayList<>(produtos);
+            default -> {}
+        }
+        if ("price-asc".equals(ordenar))
+            produtos.sort(java.util.Comparator.comparing(com.alphasports.model.Produto::getPreco));
+        else if ("price-desc".equals(ordenar))
+            produtos.sort(java.util.Comparator.comparing(com.alphasports.model.Produto::getPreco).reversed());
+
+        model.addAttribute("produtos", produtos);
+        model.addAttribute("totalProdutos", produtos.size());
+        model.addAttribute("categoriaAtiva", categoria);
+
         return "produtos";
     }
 
