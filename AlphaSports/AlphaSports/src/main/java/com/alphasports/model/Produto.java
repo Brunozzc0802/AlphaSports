@@ -46,7 +46,7 @@ public class Produto {
     private String tamanhos;
 
     @Column(name = "estoque")
-    private Integer estoque;
+    private Integer estoque = 0;
 
     @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;

@@ -23,7 +23,7 @@ public class AdminEstoqueController {
     public String exibirTelaEstoque(Model model) {
         List<EstoqueViewDTO> listaEstoque = movimentacaoRepository.findEstoqueAgrupadoPorProdutoETamanho();
         model.addAttribute("listaEstoque", listaEstoque);
-        model.addAttribute("todosProdutos", produtoRepository.findAll());
+        model.addAttribute("todosProdutos", produtoRepository.findByAtivoTrueOrderById());
         return "adminEstoque";
     }
 }
