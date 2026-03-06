@@ -303,9 +303,7 @@
                         </span>
           </td>
           <td class="actions-cell">
-            <button class="btn-action edit"
-                    th:onclick="'abrirDetalhes(' + ${p.id} + ')'"
-                    title="Ver detalhes / Alterar status">
+            <button class="btn-action edit" th:onclick="|abrirDetalhes(${p.id})|" title="Ver detalhes / Alterar status">
               <i class="fas fa-eye"></i>
             </button>
           </td>
