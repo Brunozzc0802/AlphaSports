@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaSports - Admin Pedidos</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <style>
+    /* ── Badge de Status ── */
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-status.AGUARDANDO_PAGAMENTO { background:#fff7ed; color:#c2410c; }
+    .badge-status.PAGO                 { background:#f0fdf4; color:#166534; }
+    .badge-status.EM_SEPARACAO         { background:#eff6ff; color:#1d4ed8; }
+    .badge-status.ENVIADO              { background:#fdf4ff; color:#7e22ce; }
+    .badge-status.ENTREGUE             { background:#f0fdf4; color:#065f46; }
+    .badge-status.CANCELADO            { background:#fef2f2; color:#991b1b; }
+
+    /* ── Drawer de Detalhes ── */
+    .drawer-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 900;
+    }
+    .drawer-overlay.open { display: block; }
+
+    .drawer {
+      position: fixed;
+      top: 0; right: -520px;
+      width: 100%; max-width: 500px;
+      height: 100vh;
+      background: #fff;
+      z-index: 901;
+      overflow-y: auto;
+      transition: right .3s ease;
+      box-shadow: -6px 0 32px rgba(0,0,0,.13);
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer.open { right: 0; }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 24px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .drawer-header h2 { font-size: 1.1rem; color: #111; margin: 0; }
+    .drawer-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 22px; color: #64748b;
+      line-height: 1; padding: 4px;
+    }
+    .drawer-close:hover { color: #111; }
+
+    .drawer-body { padding: 24px; flex: 1; }
+
+    .drawer-section {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .drawer-section h3 {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #94a3b8;
+      margin: 0 0 12px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: .9rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: #64748b; }
+    .info-row .value { font-weight: 600; color: #111; }
+
+    .item-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .item-row:last-child { border-bottom: none; }
+    .item-img {
+      width: 52px; height: 52px;
+      border-radius: 8px; object-fit: cover;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+    .item-info { flex: 1; }
+    .item-info .name { font-weight: 600; font-size: .9rem; color: #111; }
+    .item-info .meta { font-size: .8rem; color: #64748b; margin-top: 2px; }
+    .item-price { font-weight: 700; font-size: .9rem; color: #111; }
+
+    /* ── Seletor de status no drawer ── */
+    .status-change {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    }
+    .status-select {
+      flex: 1; min-width: 180px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: .9rem;
+      background: #fff;
+      color: #111;
+      outline: none;
+      cursor: pointer;
+    }
+    .status-select:focus { border-color: #111; }
+    .btn-atualizar {
+      background: #111; color: #fff;
+      border: none; border-radius: 10px;
+      padding: 10px 20px; font-size: .9rem;
+      font-weight: 600; cursor: pointer;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .btn-atualizar:hover { background: #333; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 32px; right: 32px;
+      min-width: 280px; max-width: 380px;
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.13);
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px; z-index: 9999;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    #toast .toast-icon {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    #toast.success .toast-icon { background: #dcfce7; color: #16a34a; }
+    #toast.error   .toast-icon { background: #fee2e2; color: #b91c1c; }
+    #toast .toast-body { display: flex; flex-direction: column; gap: 2px; }
+    #toast .toast-title { font-weight: 700; font-size: 14px; color: #1e293b; }
+    #toast .toast-msg   { font-size: 13px; color: #64748b; }
+    #toast .toast-close { margin-left: auto; background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 16px; }
+    #toast .toast-bar {
+      position: absolute; bottom: 0; left: 0; height: 3px;
+      border-radius: 0 0 14px 14px; width: 100%; transform-origin: left;
+    }
+    #toast.success .toast-bar { background: #16a34a; }
+    #toast.error   .toast-bar { background: #b91c1c; }
+    @keyframes shrink { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+    #toast.show .toast-bar { animation: shrink 3.5s linear forwards; }
+
+    /* ── Filtro por status ── */
+    .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+    }
+    .filter-btn {
+      padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      border: 2px solid #e2e8f0; background: #fff; cursor: pointer;
+      transition: all .15s; color: #475569;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: #111; border-color: #111; color: #fff;
+    }
+
+    .total-badge {
+      background: #111; color: #fff;
+      border-radius: 20px; padding: 2px 10px;
+      font-size: 12px; font-weight: 700;
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="container header-content">
+    <a th:href="@{/}" class="logo">
+      <img th:src="@{/images/Logo.png}" alt="AlphaSports">
+    </a>
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar pedidos..." id="searchInput">
+      <button class="search-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+    </div>
+    <nav class="header-nav">
+      <div class="nav-link user-dropdown-container">
+        <a th:href="@{/adminUsuarios}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </a>
+        <span th:text="${#authentication.principal != 'anonymousUser'} ? ${#authentication.principal.nome} : 'Admin'"></span>
+      </div>
+      <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit" class="nav-link cart-link" style="background:none;border:none;cursor:pointer;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sair
+        </button>
+      </form>
+    </nav>
+  </div>
+  <nav class="categories-nav">
+    <div class="container">
+      <ul class="categories-list">
+        <li><a th:href="@{/produtos(categoria=todos)}">Todos</a></li>
+        <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
+        <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
+        <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
+        <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
+        <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
+        <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
+        <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div class="perfil-wrapper container">
+  <aside class="perfil-menu">
+    <h3>Painel Admin</h3>
+    <ul>
+      <li><a th:href="@{/adminUsuarios}"><i class="fas fa-users"></i> Usuários</a></li>
+      <li><a th:href="@{/adminProdutos}"><i class="fas fa-box"></i> Produtos</a></li>
+      <li><a th:href="@{/adminMarca}"><i class="fas fa-tags"></i> Marcas</a></li>
+      <li><a th:href="@{/adminClientes}"><i class="fas fa-user-friends"></i> Clientes</a></li>
+      <li><a th:href="@{/adminEstoque}"><i class="fas fa-boxes"></i> Estoque</a></li>
+      <li class="active"><a th:href="@{/adminPedidos}"><i class="fas fa-shopping-bag"></i> Pedidos</a></li>
+      <li><a th:href="@{/adminRelatorios}"><i class="fas fa-chart-line"></i> Relatórios</a></li>
+    </ul>
+  </aside>
+
+  <main class="perfil-content">
+    <div class="admin-header-flex">
+      <h1>Pedidos <span class="total-badge" th:text="${pedidos.size()}">0</span></h1>
+    </div>
+
+    <!-- Filtros rápidos por status -->
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-status="TODOS" onclick="filtrar(this)">Todos</button>
+      <button class="filter-btn" data-status="AGUARDANDO_PAGAMENTO" onclick="filtrar(this)">Aguardando</button>
+      <button class="filter-btn" data-status="PAGO" onclick="filtrar(this)">Pagos</button>
+      <button class="filter-btn" data-status="EM_SEPARACAO" onclick="filtrar(this)">Em Separação</button>
+      <button class="filter-btn" data-status="ENVIADO" onclick="filtrar(this)">Enviados</button>
+      <button class="filter-btn" data-status="ENTREGUE" onclick="filtrar(this)">Entregues</button>
+      <button class="filter-btn" data-status="CANCELADO" onclick="filtrar(this)">Cancelados</button>
+    </div>
+
+    <div class="card">
+      <table class="admin-table" id="tabelaPedidos">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>CLIENTE</th>
+          <th>DATA</th>
+          <th>TOTAL</th>
+          <th>STATUS</th>
+          <th style="text-align:right;">AÇÕES</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${pedidos}"
+            th:data-status="${p.status.name()}"
+            th:id="'row-' + ${p.id}">
+          <td style="font-weight:700; color:#64748b;">
+            #<span th:text="${#strings.toString(p.id).length() < 4 ? #strings.concat('000', p.id).substring(#strings.toString(p.id).length()) : p.id}"></span>
+          </td>
+          <td>
+            <div style="font-weight:600;" th:text="${p.cliente != null ? p.cliente.nome : 'Cliente'}"></div>
+            <div style="font-size:.8rem;color:#94a3b8;" th:text="${p.cliente != null ? p.cliente.email : ''}"></div>
+          </td>
+          <td th:text="${#temporals.format(p.dataPedido, 'dd/MM/yyyy HH:mm')}"></td>
+          <td style="font-weight:700; color:#10b981;">
+            R$ <span th:text="${#numbers.formatDecimal(p.total, 1, 'POINT', 2, 'COMMA')}"></span>
+          </td>
+          <td>
+                        <span th:class="'badge-status ' + ${p.status.name()}"
+                              th:text="${p.status.descricao}"
+                              th:id="'badge-' + ${p.id}">
+                        </span>
+          </td>
+          <td class="actions-cell">
+            <button class="btn-action edit"
+                    th:onclick="'abrirDetalhes(' + ${p.id} + ')'"
+                    title="Ver detalhes / Alterar status">
+              <i class="fas fa-eye"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- Estado vazio -->
+      <div th:if="${#lists.isEmpty(pedidos)}"
+           style="text-align:center;padding:60px 20px;color:#94a3b8;">
+        <i class="fas fa-shopping-bag" style="font-size:48px;margin-bottom:16px;display:block;"></i>
+        <h3 style="color:#64748b;">Nenhum pedido encontrado</h3>
+        <p>Os pedidos realizados pelos clientes aparecerão aqui.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ─────── DRAWER DE DETALHES ─────── -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="fecharDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2 id="drawerTitle">Pedido #0000</h2>
+    <button class="drawer-close" onclick="fecharDrawer()">×</button>
+  </div>
+  <div class="drawer-body" id="drawerBody">
+    <p style="color:#94a3b8;text-align:center;padding:40px 0;">Carregando...</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+  <div class="toast-icon"><i id="toastIcon" class="fas fa-check"></i></div>
+  <div class="toast-body">
+    <span class="toast-title" id="toastTitle"></span>
+    <span class="toast-msg"   id="toastMsg"></span>
+  </div>
+  <button class="toast-close" onclick="fecharToast()"><i class="fas fa-times"></i></button>
+  <div class="toast-bar"></div>
+</div>
+
+<!-- Injeta os pedidos como JSON para o JS -->
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  const pedidosData = /*[[${pedidos}]]*/ [];
+  /*]]>*/
+</script>
+
+<script>
+  /* ─── Toast ─── */
+  let toastTimer = null;
+  function mostrarToast(tipo, titulo, msg) {
+    const el = document.getElementById('toast');
+    el.className = tipo;
+    document.getElementById('toastTitle').textContent = titulo;
+    document.getElementById('toastMsg').textContent   = msg;
+    document.getElementById('toastIcon').className    = tipo === 'success' ? 'fas fa-check' : 'fas fa-exclamation';
+    void el.offsetWidth;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(fecharToast, 3500);
+  }
+  function fecharToast() { document.getElementById('toast').classList.remove('show'); }
+
+  /* ─── Filtro por Status ─── */
+  function filtrar(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const status = btn.dataset.status;
+    document.querySelectorAll('#tabelaPedidos tbody tr').forEach(row => {
+      row.style.display = (status === 'TODOS' || row.dataset.status === status) ? '' : 'none';
+    });
+  }
+
+  /* ─── Busca por texto ─── */
+  document.getElementById('searchInput').addEventListener('input', function() {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('#tabelaPedidos tbody tr').forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
+  });
+
+  /* ─── Abrir Drawer com detalhes do pedido ─── */
+  const statusLabels = {
+    'AGUARDANDO_PAGAMENTO': 'Aguardando Pagamento',
+    'PAGO':                 'Pago',
+    'EM_SEPARACAO':         'Em Separação',
+    'ENVIADO':              'Enviado',
+    'ENTREGUE':             'Entregue',
+    'CANCELADO':            'Cancelado'
+  };
+
+  async function abrirDetalhes(pedidoId) {
+    document.getElementById('drawerTitle').textContent = `Pedido #${String(pedidoId).padStart(4,'0')}`;
+    document.getElementById('drawerBody').innerHTML    = '<p style="color:#94a3b8;text-align:center;padding:40px 0;"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.getElementById('drawer').classList.add('open');
+
+    try {
+      const res = await fetch(`/api/pedidos/${pedidoId}/status`);
+      // Monta o drawer a partir dos dados da tabela (sem precisar de endpoint separado de detalhes)
+      renderDrawer(pedidoId);
+    } catch (e) {
+      renderDrawer(pedidoId);
+    }
+  }
+
+  function renderDrawer(pedidoId) {
+    // Coleta dados da linha da tabela para exibir
+    const row    = document.getElementById('row-' + pedidoId);
+    const badge  = document.getElementById('badge-' + pedidoId);
+    const cells  = row ? row.querySelectorAll('td') : [];
+
+    const cliente = cells[1] ? cells[1].querySelector('div')?.textContent?.trim() : 'N/A';
+    const email   = cells[1] ? cells[1].querySelectorAll('div')[1]?.textContent?.trim() : '';
+    const data    = cells[2] ? cells[2].textContent.trim() : '';
+    const total   = cells[3] ? cells[3].textContent.trim() : '';
+    const status  = row ? row.dataset.status : '';
+
+    // Monta opções de status
+    const opcoesStatus = Object.entries(statusLabels).map(([val, label]) =>
+            `<option value="${val}" ${val === status ? 'selected' : ''}>${label}</option>`
+    ).join('');
+
+    document.getElementById('drawerBody').innerHTML = `
+        <div class="drawer-section">
+            <h3>Informações do Pedido</h3>
+            <div class="info-row">
+                <span class="label">Número</span>
+                <span class="value">#${String(pedidoId).padStart(4,'0')}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Data</span>
+                <span class="value">${data}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Total</span>
+                <span class="value" style="color:#10b981">${total}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Pagamento</span>
+                <span class="value">PIX</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Status atual</span>
+                <span class="value">
+                    <span class="badge-status ${status}">${statusLabels[status] || status}</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="drawer-section">
+            <h3>Cliente</h3>
+            <div class="info-row">
+                <span class="label">Nome</span>
+                <span class="value">${cliente}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">E-mail</span>
+                <span class="value">${email}</span>
+            </div>
+        </div>
+
+        <div class="drawer-section">
+            <h3>Alterar Status do Pedido</h3>
+            <div class="status-change">
+                <select class="status-select" id="selectStatus-${pedidoId}">
+                    ${opcoesStatus}
+                </select>
+                <button class="btn-atualizar" onclick="alterarStatus(${pedidoId})">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    `;
+  }
+
+  /* ─── Altera o status via API ─── */
+  async function alterarStatus(pedidoId) {
+    const novoStatus = document.getElementById(`selectStatus-${pedidoId}`).value;
+
+    try {
+      const res = await fetch(`/api/pedidos/${pedidoId}/alterar-status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: novoStatus })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Atualiza o badge na tabela sem recarregar a página
+        const badge = document.getElementById('badge-' + pedidoId);
+        const row   = document.getElementById('row-' + pedidoId);
+        if (badge) {
+          badge.className   = 'badge-status ' + novoStatus;
+          badge.textContent = statusLabels[novoStatus];
+        }
+        if (row) { row.dataset.status = novoStatus; }
+
+        mostrarToast('success', 'Status atualizado!', `Pedido #${String(pedidoId).padStart(4,'0')} → ${statusLabels[novoStatus]}`);
+        fecharDrawer();
+      } else {
+        mostrarToast('error', 'Erro!', data.error || 'Não foi possível atualizar o status.');
+      }
+    } catch (err) {
+      mostrarToast('error', 'Erro de conexão', 'Tente novamente.');
+    }
+  }
+
+  /* ─── Fechar Drawer ─── */
+  function fecharDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('open');
+  }
+</script>
+</body>
+</html>

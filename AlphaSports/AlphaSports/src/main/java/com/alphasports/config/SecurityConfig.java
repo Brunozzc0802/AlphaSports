@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Configuration
 public class SecurityConfig {
 
@@ -16,25 +17,29 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http
-                // Desabilitar CSRF para permitir chamadas AJAX de POST
-                .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable()) // Mantém desativado para o fetch funcionar
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**", "/auth/**", "/js/**").permitAll()
                         .requestMatchers("/esqueceu-senha", "/verificar-codigo", "/nova-senha").permitAll()
+                        .requestMatchers("/produto/**").permitAll()
 
-                        // Rotas de Admin (Adicionei a do estoque aqui)
+                        // ADMIN: Use hasAnyAuthority para evitar problemas com o prefixo ROLE_
                         .requestMatchers(
-                                "/adminUsuarios",
-                                "/adminProdutos",
-                                "/adminEstoque",
-                                "/api/estoque/**", // Libera os endpoints da API de estoque
-                                "/desativarUsuario/**",
-                                "/ativarUsuario/**"
-                        ).hasRole("ADMINISTRADOR")
+                                "/adminUsuarios", "/adminProdutos", "/adminEstoque", "/adminPedidos",
+                                "/api/estoque/**", "/api/pedidos/*/alterar-status",
+                                "/desativarUsuario/**", "/ativarUsuario/**"
+                        ).hasAnyAuthority("ROLE_ADMINISTRADOR", "ADMINISTRADOR")
 
-                        .requestMatchers("/cliente/**", "/perfil", "/perfil/**").hasRole("CLIENTE")
+                        // CLIENTE: Onde está dando o erro 403
+                        .requestMatchers(
+                                "/cliente/**", "/perfil", "/perfil/**",
+                                "/api/pedidos/criar",
+                                "/api/pedidos/*/confirmar-pagamento"
+                        ).hasAnyAuthority("ROLE_CLIENTE", "CLIENTE")
+
+                        // Qualquer um logado pode ver o status
+                        .requestMatchers("/api/pedidos/*/status").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -45,12 +50,10 @@ public class SecurityConfig {
                             if (authorities.stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"))) {
                                 response.sendRedirect("/adminUsuarios");
-                            }
-                            else if (authorities.stream()
+                            } else if (authorities.stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
                                 response.sendRedirect("/");
-                            }
-                            else {
+                            } else {
                                 response.sendRedirect("/");
                             }
                         })

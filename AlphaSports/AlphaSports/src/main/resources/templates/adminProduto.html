@@ -97,11 +97,6 @@
                 </a>
                 <span id="userName" th:text="${#authentication.principal != 'anonymousUser'} ? ${#authentication.principal.nome} : 'Entrar'"></span>
             </div>
-            <a th:href="@{/carrinho}" class="nav-link cart-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
-                <span>Carrinho</span>
-                <span class="cart-count" id="cartCount">0</span>
-            </a>
             <form th:action="@{/logout}" method="post" style="display:inline;">
                 <button type="submit" class="nav-link cart-link" style="background:none; border:none; cursor:pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
@@ -137,6 +132,7 @@
             <li><a th:href="@{/adminMarca}"><i class="fas fa-tags"></i> Marcas</a></li>
             <li><a th:href="@{/adminClientes}"><i class="fas fa-user-friends"></i> Clientes</a></li>
             <li><a th:href="@{/adminEstoque}"><i class="fas fa-boxes"></i> Estoque</a></li>
+            <li><a th:href="@{/adminPedidos}"><i class="fas fa-shopping-bag"></i> Pedidos</a></li>
             <li><a th:href="@{/adminRelatorios}"><i class="fas fa-chart-line"></i> Relatórios</a></li>
         </ul>
     </aside>

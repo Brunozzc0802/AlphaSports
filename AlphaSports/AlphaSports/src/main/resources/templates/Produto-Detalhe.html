@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${produto.nome} + ' - AlphaSports'">Produto - AlphaSports</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .detalhe-wrapper {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .detalhe-wrapper { grid-template-columns: 1fr; gap: 24px; }
+        }
+
+        /* ── Imagem ── */
+        .detalhe-imagem {
+            border-radius: 20px;
+            overflow: hidden;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .detalhe-imagem img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 20px;
+        }
+
+        /* ── Info ── */
+        .detalhe-info { display: flex; flex-direction: column; gap: 16px; }
+
+        .detalhe-marca {
+            font-size: .85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: #94a3b8;
+        }
+
+        .detalhe-nome {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #111;
+            line-height: 1.2;
+        }
+
+        .badge-desconto {
+            display: inline-block;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-weight: 700;
+            font-size: .8rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .detalhe-preco-box { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+        .preco-original {
+            font-size: 1rem;
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+        .preco-atual {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #111;
+        }
+        .preco-parcelado {
+            font-size: .85rem;
+            color: #64748b;
+        }
+
+        /* ── Tamanhos ── */
+        .tamanhos-label {
+            font-size: .85rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 8px;
+        }
+        .tamanhos-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tamanho-btn {
+            min-width: 48px;
+            padding: 8px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            font-size: .9rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .tamanho-btn:hover  { border-color: #111; color: #111; }
+        .tamanho-btn.active { border-color: #111; background: #111; color: #fff; }
+
+        /* ── Quantidade ── */
+        .qty-wrap { display: flex; align-items: center; gap: 12px; }
+        .qty-label { font-size: .85rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .06em; }
+        .qty-ctrl {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .qty-ctrl button {
+            width: 38px; height: 38px;
+            border: none; background: #f8fafc;
+            font-size: 1.2rem; font-weight: 700;
+            cursor: pointer; color: #111;
+            transition: background .15s;
+        }
+        .qty-ctrl button:hover { background: #e2e8f0; }
+        .qty-ctrl input {
+            width: 48px; height: 38px;
+            border: none; border-left: 2px solid #e2e8f0; border-right: 2px solid #e2e8f0;
+            text-align: center; font-size: 1rem; font-weight: 700; color: #111;
+            outline: none;
+        }
+
+        /* ── CTA ── */
+        .btn-comprar {
+            width: 100%;
+            padding: 16px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-comprar:hover { background: #333; }
+        .btn-comprar:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        /* ── Detalhes ── */
+        .detalhe-descricao {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 20px;
+            font-size: .9rem;
+            color: #475569;
+            line-height: 1.7;
+        }
+        .detalhe-descricao h4 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin-bottom: 10px; }
+
+        /* ── Breadcrumb ── */
+        .breadcrumb {
+            max-width: 1100px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            font-size: .85rem;
+            color: #94a3b8;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .breadcrumb a { color: #64748b; text-decoration: none; }
+        .breadcrumb a:hover { color: #111; }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed; bottom: 28px; right: 28px;
+            min-width: 260px; max-width: 360px;
+            background: #fff; border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.13);
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px; z-index: 9999;
+            opacity: 0; transform: translateY(16px);
+            transition: opacity .3s, transform .3s;
+            pointer-events: none;
+        }
+        #toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        #toast.success { border-left: 4px solid #16a34a; }
+        #toast.error   { border-left: 4px solid #dc2626; }
+        .t-icon { font-size: 20px; }
+        .t-msg  { font-size: 14px; color: #1e293b; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-content">
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/images/Logo.png}" alt="AlphaSports">
+        </a>
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar produtos..." id="searchInput">
+            <button class="search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+        </div>
+        <nav class="header-nav">
+            <div class="nav-link user-dropdown-container" id="userInfo">
+                <a th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/adminUsuarios} :(${#authorization.expression('hasRole(''CLIENTE'')')} ? @{/perfil} : @{/auth/login})">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </a>
+                <span id="userName" th:text="${#authentication.principal != 'anonymousUser'} ? ${#authentication.principal.nome} : 'Entrar'"></span>
+            </div>
+            <a th:href="@{/carrinho}" class="nav-link cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                <span>Carrinho</span>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="nav-link cart-link" style="background:none;border:none;cursor:pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Sair
+                </button>
+            </form>
+        </nav>
+    </div>
+    <nav class="categories-nav">
+        <div class="container">
+            <ul class="categories-list">
+                <li><a th:href="@{/produtos(categoria=todos)}">Todos</a></li>
+                <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
+                <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
+                <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
+                <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
+                <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
+                <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
+                <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a th:href="@{/}">Home</a> /
+    <a th:href="@{/produtos}">Produtos</a> /
+    <span th:text="${produto.nome}"></span>
+</div>
+
+<!-- Conteúdo principal -->
+<div class="detalhe-wrapper">
+
+    <!-- Imagem -->
+    <div class="detalhe-imagem">
+        <img th:src="${produto.imagem != null && produto.imagem.startsWith('http') ? produto.imagem : '/imagens/' + produto.imagem}"
+             th:alt="${produto.nome}"
+             onerror="this.src='/images/placeholder.png'">
+    </div>
+
+    <!-- Informações -->
+    <div class="detalhe-info">
+
+        <div class="detalhe-marca" th:text="${produto.marca != null ? produto.marca.nome : ''}"></div>
+
+        <h1 class="detalhe-nome" th:text="${produto.nome}"></h1>
+
+        <span class="badge-desconto"
+              th:if="${produto.desconto != null and produto.desconto > 0}"
+              th:text="'-' + ${produto.desconto} + '% OFF'">
+        </span>
+
+        <!-- Preço -->
+        <div class="detalhe-preco-box">
+            <span class="preco-original"
+                  th:if="${produto.desconto != null and produto.desconto > 0}"
+                  th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">
+            </span>
+            <span class="preco-atual" id="precoExibido"
+                  th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">
+            </span>
+        </div>
+        <p class="preco-parcelado"
+           th:text="'ou 3x de R$ ' + ${#numbers.formatDecimal(produto.preco / 3, 1, 'POINT', 2, 'COMMA')} + ' sem juros'">
+        </p>
+
+        <!-- Tamanhos -->
+        <div th:if="${produto.tamanhos != null and !#strings.isEmpty(produto.tamanhos)}">
+            <div class="tamanhos-label">Tamanho</div>
+            <div class="tamanhos-grid" id="tamanhosGrid">
+                <button class="tamanho-btn"
+                        th:each="tam : ${#strings.arraySplit(produto.tamanhos, ',')}"
+                        th:text="${#strings.trim(tam)}"
+                        th:data-tamanho="${#strings.trim(tam)}"
+                        onclick="selecionarTamanho(this)">
+                </button>
+            </div>
+        </div>
+
+        <!-- Quantidade -->
+        <div class="qty-wrap">
+            <span class="qty-label">Quantidade</span>
+            <div class="qty-ctrl">
+                <button onclick="mudarQtd(-1)">−</button>
+                <input type="number" id="quantidade" value="1" min="1" max="10" readonly>
+                <button onclick="mudarQtd(1)">+</button>
+            </div>
+        </div>
+
+        <!-- Botão Adicionar -->
+        <button class="btn-comprar" id="btnAdicionar"
+                th:data-id="${produto.id}"
+                th:data-nome="${produto.nome}"
+                th:data-preco="${produto.preco}"
+                th:data-imagem="${produto.imagem}"
+                th:data-marca="${produto.marca != null ? produto.marca.nome : ''}"
+                onclick="adicionarAoCarrinho(this)">
+            🛒 Adicionar ao Carrinho
+        </button>
+
+        <!-- Descrição -->
+        <div class="detalhe-descricao" th:if="${produto.descricao != null and !#strings.isEmpty(produto.descricao)}">
+            <h4>Descrição</h4>
+            <p th:text="${produto.descricao}"></p>
+        </div>
+
+        <!-- Info extra -->
+        <div class="detalhe-descricao">
+            <h4>Informações</h4>
+            <p>
+                Categoria: <strong th:text="${produto.categoria}"></strong><br>
+                Marca: <strong th:text="${produto.marca != null ? produto.marca.nome : 'N/A'}"></strong>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+    <span class="t-icon" id="toastIcon">✓</span>
+    <span class="t-msg"  id="toastMsg"></span>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <img th:src="@{/images/Logo.png}" alt="AlphaSports" class="footer-logo">
+                <p>Sua loja de artigos esportivos com as melhores marcas e preços.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Ajuda</h4>
+                <ul>
+                    <li><a href="#">Central de Atendimento</a></li>
+                    <li><a href="#">Trocas e Devoluções</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 AlphaSports. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/script.js}"></script>
+<script>
+    let tamanhoSelecionado = null;
+
+    /* Seleciona tamanho */
+    function selecionarTamanho(btn) {
+        document.querySelectorAll('.tamanho-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        tamanhoSelecionado = btn.dataset.tamanho;
+    }
+
+    /* Controle de quantidade */
+    function mudarQtd(delta) {
+        const input = document.getElementById('quantidade');
+        let val = parseInt(input.value) + delta;
+        if (val < 1)  val = 1;
+        if (val > 10) val = 10;
+        input.value = val;
+    }
+
+    /* Adiciona ao carrinho manipulando o localStorage diretamente
+       (o addToCart do script.js depende do array 'products' que fica
+        vazio na página de detalhe, por isso fazemos aqui) */
+    function adicionarAoCarrinho(btn) {
+        const tamanhos = document.querySelectorAll('.tamanho-btn');
+
+        if (tamanhos.length > 0 && !tamanhoSelecionado) {
+            mostrarToast('error', 'Selecione um tamanho!');
+            document.getElementById('tamanhosGrid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        const id      = parseInt(btn.dataset.id);
+        const nome    = btn.dataset.nome;
+        const preco   = parseFloat(btn.dataset.preco);
+        const imagem  = btn.dataset.imagem;
+        const marca   = btn.dataset.marca;
+        const tamanho = tamanhoSelecionado || 'Único';
+        const qtd     = parseInt(document.getElementById('quantidade').value);
+
+        // Lê o carrinho direto do localStorage (mesma chave do script.js)
+        const cartAtual = JSON.parse(localStorage.getItem('alphasports_cart')) || [];
+
+        const imagemUrl = imagem && imagem.startsWith('http') ? imagem : '/imagens/' + imagem;
+
+        const idx = cartAtual.findIndex(c => c.id === id && c.size === tamanho);
+        if (idx >= 0) {
+            cartAtual[idx].quantity += qtd;
+        } else {
+            cartAtual.push({
+                id,
+                name:  nome,
+                price: preco,
+                image: imagemUrl,
+                brand: marca,
+                size:  tamanho,
+                quantity: qtd
+            });
+        }
+
+        // Salva de volta com a mesma chave que o script.js usa
+        localStorage.setItem('alphasports_cart', JSON.stringify(cartAtual));
+
+        // Atualiza o contador no header
+        const total = cartAtual.reduce((s, c) => s + c.quantity, 0);
+        const el = document.getElementById('cartCount');
+        if (el) el.textContent = total;
+
+        mostrarToast('success', `"${nome}" adicionado ao carrinho!`);
+
+        // Animação no botão
+        btn.textContent = '✓ Adicionado!';
+        btn.style.background = '#16a34a';
+        setTimeout(() => {
+            btn.innerHTML = '🛒 Adicionar ao Carrinho';
+            btn.style.background = '';
+        }, 2000);
+    }
+
+    /* Toast simples */
+    let toastTimer = null;
+    function mostrarToast(tipo, msg) {
+        const el   = document.getElementById('toast');
+        const icon = document.getElementById('toastIcon');
+        el.className = tipo;
+        icon.textContent = tipo === 'success' ? '✓' : '✕';
+        document.getElementById('toastMsg').textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    /* Contador do carrinho ao carregar */
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof cart !== 'undefined') {
+            const total = cart.reduce((s, c) => s + c.quantity, 0);
+            const el = document.getElementById('cartCount');
+            if (el) el.textContent = total;
+        }
+    });
+</script>
+</body>
+</html>

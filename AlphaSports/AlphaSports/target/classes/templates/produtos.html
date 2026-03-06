@@ -78,9 +78,7 @@
             <!-- Sidebar de Filtros -->
             <aside class="filters-sidebar">
                 <form method="get" th:action="@{/produtos}" id="filterForm">
-                    <!-- Categoria oculta vinda da navbar -->
                     <input type="hidden" name="categoria" th:value="${categoriaAtiva}">
-
                     <div class="filter-section">
                         <h3>Preço</h3>
                         <div class="price-range">
@@ -101,11 +99,7 @@
                     </button>
                 </form>
             </aside>
-
-            <!-- Conteúdo de Produtos -->
             <div class="products-content">
-
-                <!-- Cabeçalho: contagem + ordenação -->
                 <div class="products-header">
                     <span class="results-count"
                           th:text="${totalProdutos} + ' produto(s) encontrado(s)'">
