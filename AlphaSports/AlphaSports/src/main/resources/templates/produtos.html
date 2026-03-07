@@ -62,10 +62,8 @@
                 <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
                 <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
                 <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
-                <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
                 <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
                 <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
-                <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
             </ul>
         </div>
     </nav>
@@ -144,10 +142,6 @@
                                 </div>
                             </div>
                         </a>
-                        <button class="btn btn-primary"
-                                th:onclick="|adicionarCarrinho(${produto.id})|">
-                            Adicionar ao Carrinho
-                        </button>
                     </div>
 
                     <!-- Mensagem quando não há produtos -->

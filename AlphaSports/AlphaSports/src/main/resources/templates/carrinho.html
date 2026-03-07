@@ -262,7 +262,6 @@
 <body>
 <div class="top-bar">
     <div class="container top-bar-content">
-        <span>Frete grátis para todos os produtos</span>
         <span>Atendimento: (42) 99837-9401</span>
     </div>
 </div>
@@ -309,10 +308,8 @@
                 <li><a th:href="@{/produtos(categoria=calcados)}">Calçados</a></li>
                 <li><a th:href="@{/produtos(categoria=roupas)}">Roupas</a></li>
                 <li><a th:href="@{/produtos(categoria=equipamentos)}">Equipamentos</a></li>
-                <li><a th:href="@{/produtos(categoria=futebol)}">Futebol</a></li>
                 <li><a th:href="@{/produtos(categoria=corrida)}">Corrida</a></li>
                 <li><a th:href="@{/produtos(categoria=fitness)}">Fitness</a></li>
-                <li><a th:href="@{/produtos}" class="promo-link">Promoções</a></li>
             </ul>
         </div>
     </nav>
@@ -325,11 +322,9 @@
     </div>
 </main>
 
-<!-- ─────────────── MODAL DE CHECKOUT ─────────────── -->
 <div class="checkout-overlay" id="checkoutOverlay">
     <div class="checkout-modal">
 
-        <!-- STEP 1: QR Code PIX -->
         <div class="pix-step" id="pixStep">
             <h2>📱 Pague com PIX</h2>
             <p class="subtitle">Escaneie o QR Code abaixo para concluir o pagamento</p>
