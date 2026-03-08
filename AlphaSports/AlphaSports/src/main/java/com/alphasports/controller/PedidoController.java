@@ -1,14 +1,18 @@
 package com.alphasports.controller;
 
 import com.alphasports.dto.CriarPedidoDTO;
+import com.alphasports.model.Cliente;
 import com.alphasports.model.Pedido;
-import com.alphasports.model.StatusPedido;
 import com.alphasports.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,10 +31,10 @@ public class PedidoController {
             }
             Pedido pedido = pedidoService.criarPedido(dto, authentication);
             return ResponseEntity.ok(Map.of(
-                    "pedidoId",    pedido.getId(),
-                    "codigoPix",   pedido.getCodigoPix(),
-                    "total",       pedido.getTotal(),
-                    "status",      pedido.getStatus().name()
+                    "pedidoId",  pedido.getId(),
+                    "codigoPix", pedido.getCodigoPix(),
+                    "total",     pedido.getTotal(),
+                    "status",    pedido.getStatus().name()
             ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -42,42 +46,10 @@ public class PedidoController {
         try {
             Pedido pedido = pedidoService.confirmarPagamento(id);
             return ResponseEntity.ok(Map.of(
-                    "pedidoId", pedido.getId(),
-                    "status",   pedido.getStatus().name(),
-                    "descricao", pedido.getStatus().getDescricao()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    @GetMapping("/{id}/status")
-    public ResponseEntity<?> consultarStatus(@PathVariable Long id) {
-        try {
-            Pedido pedido = pedidoService.buscarPorId(id);
-            return ResponseEntity.ok(Map.of(
                     "pedidoId",  pedido.getId(),
                     "status",    pedido.getStatus().name(),
                     "descricao", pedido.getStatus().getDescricao()
             ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    @PostMapping("/{id}/alterar-status")
-    public ResponseEntity<?> alterarStatus(@PathVariable Long id,
-                                           @RequestBody Map<String, String> body) {
-        try {
-            StatusPedido novoStatus = StatusPedido.valueOf(body.get("status"));
-            Pedido pedido = pedidoService.alterarStatus(id, novoStatus);
-            return ResponseEntity.ok(Map.of(
-                    "pedidoId",  pedido.getId(),
-                    "status",    pedido.getStatus().name(),
-                    "descricao", pedido.getStatus().getDescricao()
-            ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Status inválido"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

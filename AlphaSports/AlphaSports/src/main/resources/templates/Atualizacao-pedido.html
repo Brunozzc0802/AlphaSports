@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+    }
+    .header {
+        background-color: #111111;
+        color: #ffffff;
+        text-align: center;
+        padding: 30px 20px;
+        border-bottom: 5px solid #E60000;
+    }
+    .header h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .header h1 span { color: #E60000; }
+    .content {
+        padding: 40px 30px;
+        color: #333333;
+        line-height: 1.6;
+        font-size: 16px;
+    }
+    .pedido-info {
+        background-color: #f8f8f8;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    .pedido-info table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .pedido-info td {
+        padding: 8px 0;
+        font-size: 15px;
+        border-bottom: 1px solid #eeeeee;
+    }
+    .pedido-info td:first-child { color: #888888; width: 45%; }
+    .pedido-info td:last-child  { font-weight: 600; color: #111111; }
+    .pedido-info tr:last-child td { border-bottom: none; }
+    .status-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+    /* Status colors */
+    .status-AGUARDANDO_PAGAMENTO { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .status-PAGO                 { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .status-EM_SEPARACAO         { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .status-ENVIADO              { background: #fdf4ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+    .status-ENTREGUE             { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
+    .status-CANCELADO            { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+    .status-box {
+        text-align: center;
+        padding: 24px;
+        margin: 24px 0;
+        background: #fafafa;
+        border-radius: 12px;
+        border: 1px dashed #e0e0e0;
+    }
+    .status-box p { margin: 0 0 12px; color: #666; font-size: 14px; }
+
+    .warning {
+        background-color: #fff3f3;
+        border-left: 4px solid #E60000;
+        padding: 15px;
+        margin-top: 24px;
+        font-size: 14px;
+        color: #555555;
+    }
+    .footer {
+        background-color: #111111;
+        color: #888888;
+        text-align: center;
+        padding: 20px;
+        font-size: 12px;
+    }
+
+    /* Ícone por status */
+    .status-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Alpha<span>Sports</span></h1>
+  </div>
+
+  <div class="content">
+    <p>Olá, <strong th:text="${nomeCliente}">Cliente</strong>!</p>
+    <p>O status do seu pedido foi atualizado. Veja as informações abaixo:</p>
+
+    <div class="pedido-info">
+      <table>
+        <tr>
+          <td>Número do Pedido</td>
+          <td th:text="'#' + ${#strings.concat('0000', pedidoId).substring(#strings.length(#strings.concat('0000', pedidoId)) - 4)}">
+            #0001
+          </td>
+        </tr>
+        <tr>
+          <td>Data do Pedido</td>
+          <td th:text="${dataPedido}">01/01/2026</td>
+        </tr>
+        <tr>
+          <td>Forma de Pagamento</td>
+          <td>PIX</td>
+        </tr>
+        <tr>
+          <td>Total</td>
+          <td th:text="'R$ ' + ${totalFormatado}" style="color: #10b981;">R$ 0,00</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="status-box">
+      <p>Novo Status do Pedido</p>
+      <span th:class="'status-badge status-' + ${statusEnum}" th:text="${statusDescricao}">
+                Status
+            </span>
+    </div>
+
+    <!-- Mensagem personalizada por status -->
+    <div th:switch="${statusEnum}">
+      <p th:case="'AGUARDANDO_PAGAMENTO'">
+        Seu pedido foi recebido e está aguardando confirmação do pagamento via PIX.
+        Assim que identificarmos o pagamento, você receberá uma nova notificação.
+      </p>
+      <p th:case="'PAGO'">
+        ✅ Ótima notícia! Seu pagamento foi confirmado com sucesso.
+        Em breve seu pedido entrará em separação.
+      </p>
+      <p th:case="'EM_SEPARACAO'">
+        📦 Seu pedido está sendo preparado com cuidado pela nossa equipe.
+        Em breve será enviado para entrega.
+      </p>
+      <p th:case="'ENVIADO'">
+        🚚 Seu pedido foi enviado e está a caminho!
+        Fique de olho para recebê-lo.
+      </p>
+      <p th:case="'ENTREGUE'">
+        🎉 Seu pedido foi entregue com sucesso! Esperamos que você aproveite muito.
+        Qualquer dúvida, entre em contato conosco.
+      </p>
+      <p th:case="'CANCELADO'">
+        Infelizmente seu pedido foi cancelado. Se tiver dúvidas ou precisar de
+        assistência, entre em contato com nosso suporte.
+      </p>
+      <p th:case="*">
+        Seu pedido foi atualizado. Qualquer dúvida, entre em contato conosco.
+      </p>
+    </div>
+
+    <div class="warning">
+      <strong>Dúvidas?</strong><br>
+      Entre em contato com nossa Central de Atendimento. Estamos prontos para ajudar!
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 AlphaSports. Todos os direitos reservados.<br>
+    Este é um e-mail automático, por favor, não responda.
+  </div>
+</div>
+</body>
+</html>

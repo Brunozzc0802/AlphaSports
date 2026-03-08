@@ -17,6 +17,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     List<Pedido> findByStatusOrderByDataPedidoDesc(StatusPedido status);
 
-    @Query("SELECT p FROM Pedido p LEFT JOIN FETCH p.itens LEFT JOIN FETCH p.cliente ORDER BY p.dataPedido DESC")
+    @Query("SELECT DISTINCT p FROM Pedido p " +
+            "LEFT JOIN FETCH p.itens i " +
+            "LEFT JOIN FETCH i.produto prod " +
+            "LEFT JOIN FETCH prod.marca " +
+            "LEFT JOIN FETCH p.cliente " +
+            "ORDER BY p.dataPedido DESC")
     List<Pedido> findAllComItens();
 }
