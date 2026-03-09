@@ -58,24 +58,6 @@ src
       ├── static  
       └── application.properties  
 
-## ⚙️ Como Executar o Projeto
-
-1. Clone o repositório
-
-git clone https://github.com/seuusuario/alphasports.git
-
-2. Configure o banco de dados no arquivo **application.properties**
-
-spring.datasource.url=  
-spring.datasource.username=  
-spring.datasource.password=
-
-3. Execute o projeto com Maven
-
-mvn spring-boot:run
-
-ou execute a classe principal **AlphaSportsApplication.java**.
-
 ## 🔐 Segurança
 
 O sistema utiliza **Spring Security** para autenticação e controle de acesso, protegendo rotas administrativas e criptografando senhas com **BCrypt**.
